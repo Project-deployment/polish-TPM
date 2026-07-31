@@ -1790,7 +1790,14 @@
                         const serverSub = serverDateSubs[userId];
 
                         if (!serverSub) {
-                            serverDateSubs[userId] = localSub;
+                            // If it was already synced previously, it means the Admin deleted it on the server
+                            // So we should delete it locally too instead of merging it back
+                            if (localSub.synced) {
+                                delete localDateSubs[userId];
+                                delete serverDateSubs[userId];
+                            } else {
+                                serverDateSubs[userId] = localSub;
+                            }
                         } else {
                             // If both exist, keep the newer one based on submittedAt timestamp
                             const localTime = localSub.submittedAt ? new Date(localSub.submittedAt).getTime() : 0;
@@ -1800,6 +1807,14 @@
                             }
                         }
                     });
+
+                    // Clean up empty date objects in merged and local submissions
+                    if (merged.submissions[dateKey] && Object.keys(merged.submissions[dateKey]).length === 0) {
+                        delete merged.submissions[dateKey];
+                    }
+                    if (local.submissions[dateKey] && Object.keys(local.submissions[dateKey]).length === 0) {
+                        delete local.submissions[dateKey];
+                    }
                 });
             }
 
@@ -2712,7 +2727,8 @@
             const submissionData = {
                 isHoliday: isAllHoliday,
                 entries: entries,
-                submittedAt: new Date().toISOString()
+                submittedAt: new Date().toISOString(),
+                synced: false
             };
 
             dbState.submissions[dateVal][currentUser.id] = submissionData;
@@ -2722,6 +2738,12 @@
             showGlobalLoader(true);
             const success = await saveSubmissionToFirebase(dateVal, currentUser.id, submissionData);
             showGlobalLoader(false);
+
+            if (success) {
+                dbState.submissions[dateVal][currentUser.id].synced = true;
+                localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+            }
+
             loadUserDailyEntry();
             await customAlert("એન્ટ્રી સફળતાપૂર્વક સબમિટ કરવામાં આવી છે! (Submitted successfully!)");
         }

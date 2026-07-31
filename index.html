@@ -1745,6 +1745,29 @@
             if (!local) return JSON.parse(JSON.stringify(server || defaultState));
             if (!server) return JSON.parse(JSON.stringify(local));
 
+            // Dynamically resolve active user or device user during early page load
+            let activeUser = currentUser;
+            if (!activeUser) {
+                try {
+                    const cachedUser = sessionStorage.getItem('diamond_active_user');
+                    if (cachedUser) {
+                        activeUser = JSON.parse(cachedUser);
+                    }
+                } catch (e) {}
+            }
+
+            let deviceUserId = activeUser ? activeUser.id : null;
+            let deviceUserRole = activeUser ? activeUser.role : null;
+
+            if (!deviceUserId) {
+                deviceUserId = localStorage.getItem('diamond_last_selected_user_id');
+                const usersList = (local.users || []).concat(server.users || []);
+                const foundUser = usersList.find(u => u.id === deviceUserId);
+                if (foundUser) {
+                    deviceUserRole = foundUser.role;
+                }
+            }
+
             const merged = {
                 users: JSON.parse(JSON.stringify(server.users || [])),
                 khatas: JSON.parse(JSON.stringify(server.khatas || [])),
@@ -1797,15 +1820,15 @@
                         if (!serverSub) {
                             // If the server doesn't have this submission:
                             
-                            // 1. If the logged-in user is Admin, they never submit, so never restore any local submissions
-                            if (currentUser && currentUser.role === 'master') {
+                            // 1. If this device belongs to the Admin, never restore any local submissions
+                            if (deviceUserRole === 'master') {
                                 delete localDateSubs[userId];
                                 delete serverDateSubs[userId];
                                 return;
                             }
                             
-                            // 2. If it belongs to a different user, the current device has no right to restore it
-                            if (currentUser && userId !== currentUser.id) {
+                            // 2. If it belongs to a different user, this device has no right to restore it
+                            if (deviceUserId && userId !== deviceUserId) {
                                 delete localDateSubs[userId];
                                 delete serverDateSubs[userId];
                                 return;

@@ -2547,7 +2547,11 @@
 
             // Get assigned khatas for this user and sort alphabetically
             const assignedKhatas = dbState.khatas.filter(k => k.userId === currentUser.id);
-            assignedKhatas.sort((a, b) => a.name.localeCompare(b.name, 'gu'));
+            assignedKhatas.sort((a, b) => {
+                const locCompare = (a.location || '').localeCompare(b.location || '', 'gu');
+                if (locCompare !== 0) return locCompare;
+                return (a.name || '').localeCompare(b.name || '', 'gu');
+            });
 
             // 2. Check if a submission already exists for this date
             const dateSubmissions = dbState.submissions[dateVal] || {};

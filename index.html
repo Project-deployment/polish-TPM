@@ -1224,6 +1224,7 @@
                         <thead>
                             <tr>
                                 <th>હેડ નામ</th>
+                                <th>ખાતા નં.</th>
                                 <th>સ્ટેટસ</th>
                                 <th>સબમિટ સમય</th>
                                 <th>રજા</th>
@@ -1239,7 +1240,9 @@
                         </tbody>
                         <tfoot>
                             <tr class="totals-row">
-                                <td colspan="2" style="color: var(--accent);">કુલ સરવાળો</td>
+                                <td style="color: var(--accent);">કુલ સરવાળો</td>
+                                <td id="master-submissions-total-allocated-khatas" style="font-weight: 700;">0</td>
+                                <td></td>
                                 <td></td>
                                 <td id="master-submissions-total-holiday" style="font-weight: 700;">0</td>
                                 <td id="master-submissions-total-work-khatas" style="font-weight: 700;">0</td>
@@ -2862,6 +2865,7 @@
             let grandTaliya = 0;
             let grandPel = 0;
             let grandMathala = 0;
+            let grandAllocatedKhatas = 0;
 
             const tbody = document.getElementById('master-submissions-tbody');
             tbody.innerHTML = '';
@@ -2869,6 +2873,7 @@
             totalUsers.forEach(user => {
                 const assignedKhatas = dbState.khatas.filter(k => k.userId === user.id);
                 const khataCount = assignedKhatas.length;
+                grandAllocatedKhatas += khataCount;
 
                 const sub = dateSubmissions[user.id];
                 let statusHtml = '';
@@ -2956,7 +2961,8 @@
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="font-weight: 700; color: var(--primary);">${user.username} (${khataCount})</td>
+                    <td style="font-weight: 700; color: var(--primary);">${user.username}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${khataCount}</td>
                     <td>${statusHtml}</td>
                     <td style="font-variant-numeric: tabular-nums;">${timeStr}</td>
                     <td>${holidayHtml}</td>
@@ -2971,6 +2977,7 @@
 
 
             // Update Table Footer Totals
+            document.getElementById('master-submissions-total-allocated-khatas').textContent = grandAllocatedKhatas;
             document.getElementById('master-submissions-total-holiday').textContent = grandHoliday > 0 ? `${grandHoliday} રજા` : '0';
             document.getElementById('master-submissions-total-work-khatas').textContent = grandWorkKhatas > 0 ? `${grandWorkKhatas} ખાતા` : '0';
             document.getElementById('master-submissions-total-taliya').textContent = grandTaliya;

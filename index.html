@@ -1831,6 +1831,17 @@
                     const localData = stored ? JSON.parse(stored) : null;
 
                     if (data && data.users && data.users.length > 0) {
+                        // Mark all fetched server submissions as synced: true so they aren't treated as local offline submissions
+                        if (data.submissions) {
+                            Object.keys(data.submissions).forEach(dateKey => {
+                                Object.keys(data.submissions[dateKey]).forEach(userId => {
+                                    if (data.submissions[dateKey][userId]) {
+                                        data.submissions[dateKey][userId].synced = true;
+                                    }
+                                });
+                            });
+                        }
+
                         dbState = mergeDatabaseStates(localData, data);
                         // Save the merged state back to Firebase so it is synchronized
                         await saveFullDBToFirebase();

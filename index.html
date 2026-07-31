@@ -2844,6 +2844,9 @@
             tbody.innerHTML = '';
 
             totalUsers.forEach(user => {
+                const assignedKhatas = dbState.khatas.filter(k => k.userId === user.id);
+                const khataCount = assignedKhatas.length;
+
                 const sub = dateSubmissions[user.id];
                 let statusHtml = '';
                 let timeStr = '-';
@@ -2860,7 +2863,6 @@
                     let holidayCount = 0;
                     let holidayKhatas = [];
                     let workCount = 0;
-                    const assignedKhatas = dbState.khatas.filter(k => k.userId === user.id);
 
                     if (sub.entries && Object.keys(sub.entries).length > 0) {
                         Object.keys(sub.entries).forEach(khataId => {
@@ -2931,7 +2933,7 @@
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="font-weight: 700; color: var(--primary);">${user.username}</td>
+                    <td style="font-weight: 700; color: var(--primary);">${user.username} (${khataCount})</td>
                     <td>${statusHtml}</td>
                     <td style="font-variant-numeric: tabular-nums;">${timeStr}</td>
                     <td>${holidayHtml}</td>

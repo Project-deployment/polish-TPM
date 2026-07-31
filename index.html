@@ -1752,7 +1752,7 @@
             };
 
             // Merge Users
-            if (local.users) {
+            if (local.users && Array.isArray(local.users)) {
                 local.users.forEach(localUser => {
                     const serverUser = merged.users.find(u => u.id === localUser.id);
                     if (!serverUser) {
@@ -1762,7 +1762,7 @@
             }
 
             // Merge Khatas
-            if (local.khatas) {
+            if (local.khatas && Array.isArray(local.khatas)) {
                 local.khatas.forEach(localKhata => {
                     const serverKhata = merged.khatas.find(k => k.id === localKhata.id);
                     if (!serverKhata) {
@@ -1777,20 +1777,41 @@
             }
 
             // Merge Submissions (date -> userId -> submissionData)
-            if (local.submissions) {
+            if (local.submissions && typeof local.submissions === 'object') {
                 Object.keys(local.submissions).forEach(dateKey => {
+                    const localDateSubs = local.submissions[dateKey];
+                    if (!localDateSubs || typeof localDateSubs !== 'object') return;
+
                     if (!merged.submissions[dateKey]) {
                         merged.submissions[dateKey] = {};
                     }
-                    const localDateSubs = local.submissions[dateKey];
                     const serverDateSubs = merged.submissions[dateKey];
+                    if (!serverDateSubs || typeof serverDateSubs !== 'object') return;
 
                     Object.keys(localDateSubs).forEach(userId => {
                         const localSub = localDateSubs[userId];
+                        if (!localSub || typeof localSub !== 'object') return;
+
                         const serverSub = serverDateSubs[userId];
 
                         if (!serverSub) {
-                            // If it was already synced previously, it means the Admin deleted it on the server
+                            // If the server doesn't have this submission:
+                            
+                            // 1. If the logged-in user is Admin, they never submit, so never restore any local submissions
+                            if (currentUser && currentUser.role === 'master') {
+                                delete localDateSubs[userId];
+                                delete serverDateSubs[userId];
+                                return;
+                            }
+                            
+                            // 2. If it belongs to a different user, the current device has no right to restore it
+                            if (currentUser && userId !== currentUser.id) {
+                                delete localDateSubs[userId];
+                                delete serverDateSubs[userId];
+                                return;
+                            }
+
+                            // 3. If it was already synced previously, it means the Admin deleted it on the server
                             // So we should delete it locally too instead of merging it back
                             if (localSub.synced) {
                                 delete localDateSubs[userId];
@@ -1832,13 +1853,16 @@
 
                     if (data && data.users && data.users.length > 0) {
                         // Mark all fetched server submissions as synced: true so they aren't treated as local offline submissions
-                        if (data.submissions) {
+                        if (data.submissions && typeof data.submissions === 'object') {
                             Object.keys(data.submissions).forEach(dateKey => {
-                                Object.keys(data.submissions[dateKey]).forEach(userId => {
-                                    if (data.submissions[dateKey][userId]) {
-                                        data.submissions[dateKey][userId].synced = true;
-                                    }
-                                });
+                                const dateSubs = data.submissions[dateKey];
+                                if (dateSubs && typeof dateSubs === 'object') {
+                                    Object.keys(dateSubs).forEach(userId => {
+                                        if (dateSubs[userId]) {
+                                            dateSubs[userId].synced = true;
+                                        }
+                                    });
+                                }
                             });
                         }
 
@@ -1924,8 +1948,14 @@
             }
 
             showGlobalLoader(true);
-            const fetched = await fetchFromFirebase();
-            showGlobalLoader(false);
+            let fetched = false;
+            try {
+                fetched = await fetchFromFirebase();
+            } catch (e) {
+                console.error("fetchFromFirebase crash: ", e);
+            } finally {
+                showGlobalLoader(false);
+            }
 
             if (!fetched) {
                 try {

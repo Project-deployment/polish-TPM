@@ -1,0 +1,3585 @@
+<!DOCTYPE html>
+<html lang="gu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diamond Production Reporting System - હીરા ઉત્પાદન રિપોર્ટિંગ સિસ્ટમ</title>
+    <!-- Google Fonts: Outfit & Noto Sans Gujarati -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            /* Sleek Color Palette */
+            --bg-base: #f4f6f9;
+            --panel-bg: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(226, 232, 240, 0.8);
+            --primary: #1e293b;
+            --primary-light: #334155;
+            --accent: #2563eb;
+            --accent-glow: rgba(37, 99, 235, 0.15);
+            --success: #10b981;
+            --success-bg: #ecfdf5;
+            --success-border: #a7f3d0;
+            --danger: #ef4444;
+            --danger-bg: #fef2f2;
+            --danger-border: #fecaca;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow-subtle: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 8px -1px rgba(15, 23, 42, 0.02);
+            --shadow-glow: 0 10px 25px -5px rgba(37, 99, 235, 0.15);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans Gujarati', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at 10% 20%, rgb(239, 246, 255) 0%, rgb(244, 246, 249) 90.1%);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            font-size: 15px;
+        }
+
+        /* Glassmorphism Panel Wrapper */
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-subtle);
+            padding: 16px;
+            transition: var(--transition);
+        }
+
+        /* Top Header */
+        header {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title-group img,
+        .header-title-group svg {
+            width: 26px;
+            height: 26px;
+            color: #60a5fa;
+            filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.6));
+        }
+
+        .logo-text h1 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+
+        .logo-text p {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            line-height: 1;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-badge {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-badge .indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        /* Layout Container */
+        .app-container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 12px auto;
+            padding: 0 20px 20px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+        }
+
+        /* Login Layout */
+        .login-wrapper {
+            max-width: 450px;
+            width: 100%;
+            margin: auto;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .login-header {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .login-header h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .login-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Form styling */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--primary-light);
+        }
+
+        .form-control {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+            color: var(--danger);
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 10px;
+            display: none;
+            animation: shake 0.3s ease-in-out;
+        }
+
+        /* Tabs Navigation for Master */
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 10px 16px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        /* User view specific layouts */
+        .user-view-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .date-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .date-picker-wrapper label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--primary-light);
+        }
+
+        .holiday-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            color: var(--danger);
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .btn-holiday-toggle {
+            background: #ffffff;
+            color: var(--danger);
+            border: 2px solid var(--danger);
+            border-radius: 30px;
+            padding: 8px 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .btn-holiday-toggle.active {
+            background: var(--danger);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25);
+        }
+
+        .btn-lock-setup {
+            background: #ffffff;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            border-radius: 30px;
+            padding: 8px 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .btn-lock-setup.locked {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Beautiful Responsive Table styling */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: 0.92rem;
+        }
+
+        .custom-table th {
+            background: #f8fafc;
+            color: var(--text-muted);
+            padding: 8px 12px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.75px;
+            border-bottom: 2px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .custom-table td {
+            padding: 4px 12px;
+            border-bottom: 1px solid #cbd5e1;
+            color: var(--text-main);
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .custom-table tbody tr:nth-child(even) {
+            background: #f1f5f9;
+        }
+
+        .custom-table tbody tr:hover td {
+            background: #eff6ff !important;
+        }
+
+        .custom-table input[type="number"] {
+            width: 90px;
+            padding: 4px 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-weight: 600;
+            text-align: center;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .custom-table input[type="number"]:focus {
+            border-color: var(--accent);
+            background: #eff6ff;
+        }
+
+        .custom-table .khata-name {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .custom-table .location-badge {
+            background: #f1f5f9;
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Totals Row styling */
+        .totals-row td {
+            background: #f8fafc !important;
+            font-weight: 800;
+            color: var(--primary);
+            border-top: 2px solid #e2e8f0;
+            border-bottom: 3px double #e2e8f0;
+        }
+
+        .totals-row td:first-child {
+            color: var(--accent);
+        }
+
+        .totals-row .total-value {
+            font-size: 1.05rem;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Master Dashboard cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .metric-icon.blue {
+            background: #eff6ff;
+            color: var(--accent);
+        }
+
+        .metric-icon.emerald {
+            background: #ecfdf5;
+            color: var(--success);
+        }
+
+        .metric-icon.orange {
+            background: #fff7ed;
+            color: #f97316;
+        }
+
+        .metric-info h4 {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .metric-info .value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        /* Master Management Grid layout */
+        .management-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .management-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Prevent parent page and panel scrolling by scrolling tables internally */
+        .management-layout .table-responsive {
+            max-height: calc(100vh - 220px);
+            overflow-y: auto;
+        }
+
+        #mtab-dashboard .table-responsive {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        #mtab-reports .table-responsive,
+        #mtab-monthly-reports .table-responsive {
+            max-height: calc(100vh - 240px);
+            overflow-y: auto;
+        }
+
+        #user-panel .table-responsive {
+            max-height: calc(100vh - 180px);
+            overflow-y: auto;
+        }
+
+        .validation-error-text {
+            color: var(--danger) !important;
+            font-weight: 800 !important;
+        }
+
+        /* Utility classes */
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .flex-between h3 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .badge-status {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .badge-status.submitted {
+            background: var(--success-bg);
+            color: var(--success);
+            border: 1px solid var(--success-border);
+        }
+
+        .badge-status.pending {
+            background: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #ffedd5;
+        }
+
+        .badge-status.holiday {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid var(--danger-border);
+        }
+
+        .delete-btn-table {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .delete-btn-table:hover {
+            opacity: 1;
+        }
+
+        /* Print formatting styles */
+        @media print {
+            body {
+                background: #ffffff;
+                color: #000000;
+            }
+
+            header,
+            .tab-nav,
+            .dashboard-grid,
+            .btn-primary,
+            .top-bar-controls,
+            .non-printable {
+                display: none !important;
+            }
+
+            .printable-only {
+                display: block !important;
+            }
+
+            .glass-panel {
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                background: none;
+            }
+
+            .custom-table {
+                font-size: 0.85rem;
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+
+            .custom-table th,
+            .custom-table td {
+                border: 1px solid #cbd5e1 !important;
+                color: #000000 !important;
+                padding: 8px !important;
+            }
+        }
+
+        /* Modal styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 450px;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-4px);
+            }
+
+            75% {
+                transform: translateX(4px);
+            }
+        }
+
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 140px;
+            background-color: var(--primary);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -70px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 600px) {
+            .app-container {
+                margin: 12px auto;
+                padding: 0 10px;
+                gap: 16px;
+            }
+
+            .glass-panel {
+                padding: 16px;
+                border-radius: var(--radius-md);
+            }
+
+            header {
+                padding: 10px 16px;
+            }
+
+            .logo-text h1 {
+                font-size: 1.1rem;
+            }
+
+            .login-wrapper {
+                padding: 24px 16px;
+            }
+
+            /* Responsive Table-to-Card transformation for User view */
+            #user-entry-table thead {
+                display: none;
+            }
+
+            #user-entry-table,
+            #user-entry-table tbody,
+            #user-entry-table tr,
+            #user-entry-table td {
+                display: block;
+                width: 100%;
+            }
+
+            #user-entry-table tr {
+                background: #ffffff;
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-md);
+                padding: 8px 12px;
+                margin-bottom: 8px;
+                box-shadow: var(--shadow-subtle);
+            }
+
+            #user-entry-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px dashed #f1f5f9;
+                text-align: left;
+            }
+
+            #user-entry-table td:last-child {
+                border-bottom: none;
+            }
+
+            #user-entry-table td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: var(--text-muted);
+                font-size: 0.85rem;
+            }
+
+            #user-entry-table td input[type="number"] {
+                width: 110px;
+                text-align: right;
+                padding: 6px 8px;
+            }
+
+            /* Footer total row on mobile */
+            #user-entry-table tfoot,
+            #user-entry-table tfoot tr {
+                display: block;
+                width: 100%;
+            }
+
+            #user-entry-table tfoot tr {
+                background: #f8fafc;
+                border: 2px solid var(--accent-glow);
+                border-radius: var(--radius-md);
+                padding: 8px 12px;
+                margin-top: 8px;
+            }
+
+            #user-entry-table tfoot td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px dashed #cbd5e1;
+            }
+
+            #user-entry-table tfoot td:last-child {
+                border-bottom: none;
+            }
+
+            #user-entry-table tfoot td[colspan="3"] {
+                display: none;
+                /* Hide the desktop label cell */
+            }
+
+            #user-entry-table tfoot td::before {
+                content: attr(data-label);
+                font-weight: 800;
+                color: var(--primary);
+            }
+
+            /* User view actions wrap */
+            #user-submit-block {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 12px !important;
+                text-align: center;
+            }
+
+            #btn-submit-entry {
+                width: 100% !important;
+            }
+        }
+
+        /* Hide number input spinners/arrows */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Global Loader Overlay -->
+    <div id="global-loader" class="modal-overlay text-center"
+        style="z-index: 9999; background: rgba(15, 23, 42, 0.75); display: none; align-items: center; justify-content: center; opacity: 1; pointer-events: auto;">
+        <div style="text-align: center; color: #ffffff;">
+            <div
+                style="width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.2); border-top-color: #ffffff; border-radius: 50%; animation: spin 1s infinite linear; margin: 0 auto 16px;">
+            </div>
+            <h3 style="font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px;">ડેટાબેઝ કનેક્ટ થઈ રહ્યો છે...</h3>
+            <p style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 4px;">કૃપા કરીને થોડી રાહ જુઓ</p>
+        </div>
+    </div>
+
+    <!-- Header bar -->
+    <header>
+        <div class="header-title-group">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 3h12l4 6-10 12L2 9z" />
+                <path d="M11 3 8 9l4 12 4-12-3-6" />
+                <path d="M2 9h20" />
+            </svg>
+            <div class="logo-text">
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <h1 style="margin: 0;">ડેઇલી ખાતા હેડ રિપોર્ટ</h1>
+                    <span id="connection-status-badge" class="location-badge"
+                        style="background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); font-weight: 700; font-size: 0.72rem; padding: 2px 8px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 4px; box-shadow: none;">
+                        🔴 લૉકલ મોડ (Local Mode)
+                    </span>
+                </div>
+                <p style="margin-top: 2px;">હીરા ઉત્પાદન પોર્ટલ</p>
+            </div>
+        </div>
+        <div class="header-actions" id="header-actions" style="display: none;">
+            <div class="user-badge">
+                <span class="indicator"></span>
+                <span id="header-user-display">હેડ નામ</span>
+            </div>
+            <button class="btn-logout" onclick="logout()">લૉગઆઉટ</button>
+        </div>
+    </header>
+
+    <div class="app-container">
+
+        <!-- ==============================================
+             1. LOGIN PANEL SCREEN
+             ============================================== -->
+        <div id="login-panel" class="login-wrapper glass-panel">
+            <div class="login-header">
+                <h2>લૉગિન</h2>
+                <p>કૃપા કરીને તમારો રોલ અને પાસવર્ડ સેટ કરો</p>
+            </div>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="login-username">રોલ પસંદ કરો</label>
+                    <select id="login-username" class="form-control" onchange="togglePasswordRequired(this.value)">
+                        <!-- Populated dynamically via JS -->
+                    </select>
+                </div>
+                <div class="form-group" id="password-group">
+                    <label for="login-password">પાસવર્ડ</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="••••">
+                </div>
+                <div class="form-group"
+                    style="flex-direction: row; align-items: center; gap: 8px; margin-bottom: 20px;">
+                    <input type="checkbox" id="login-remember" style="width: 16px; height: 16px; cursor: pointer;">
+                    <label for="login-remember"
+                        style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; user-select: none; margin-bottom: 0;">મને
+                        યાદ રાખો</label>
+                </div>
+                <button type="submit" class="btn-primary">
+                    સબમિટ
+                </button>
+                <div class="error-message" id="login-error">ખોટો પાસવર્ડ! કૃપા કરીને ફરીથી પ્રયાસ કરો.</div>
+            </form>
+            <div style="text-align: center; margin-top: 16px; font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">
+                વર્ઝન: 5.2 (Cloud Wiped)
+            </div>
+        </div>
+
+        <!-- ==============================================
+             2. USER VIEW PANEL
+             ============================================== -->
+        <div id="user-panel" class="glass-panel" style="display: none;">
+            <div class="tab-nav non-printable" style="margin-bottom: 20px;">
+                <button class="tab-btn active" onclick="switchUserTab('utab-entry', this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                        stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                    ડેટા એન્ટ્રી
+                </button>
+                <button class="tab-btn" onclick="switchUserTab('utab-weekly-report', this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                        stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                    </svg>
+                    વીકલી રિપોર્ટ
+                </button>
+            </div>
+
+            <!-- Tab 1: User Data Entry -->
+            <div id="utab-entry" class="user-tab-pane">
+                <div class="user-view-header">
+                    <div class="date-picker-wrapper">
+                        <label for="user-entry-date">તારીખ:</label>
+                        <input type="date" id="user-entry-date" class="form-control" style="width: auto;"
+                            onchange="loadUserDailyEntry()">
+                    </div>
+                </div>
+
+                <!-- Dynamic User Entry Table -->
+                <div class="table-responsive">
+                    <table class="custom-table" id="user-entry-table">
+                        <thead>
+                            <tr>
+                                <th>ખાતાનું નામ</th>
+                                <th>લોકેશન</th>
+                                <th style="text-align: center; width: 110px;">રજા</th>
+                                <th style="width: 150px;">તળિયા</th>
+                                <th style="width: 150px;">પેલ</th>
+                                <th style="width: 150px;">મથાળા</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-table-body">
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="totals-row">
+                                <td colspan="3" data-label="કુલ સરવાળો">કુલ સરવાળો</td>
+                                <td class="total-value" data-label="તળિયા કુલ" id="user-total-taliya">0</td>
+                                <td class="total-value" data-label="પેલ કુલ" id="user-total-pel">0</td>
+                                <td class="total-value" data-label="મથાળા કુલ" id="user-total-mathala">0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Submit action block -->
+                <div style="display: flex; justify-content: flex-end; gap: 16px; align-items: center;"
+                    id="user-submit-block">
+                    <span id="user-status-text" style="font-weight: 700; color: var(--text-muted);">
+                        એન્ટ્રી સબમિટ બાકી છે.
+                    </span>
+                    <button class="btn-primary" onclick="submitUserEntry()" id="btn-submit-entry"
+                        style="width: auto; padding: 12px 30px;">
+                        રિપોર્ટ સબમિટ કરો
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 2: User Weekly Report -->
+            <div id="utab-weekly-report" class="user-tab-pane" style="display: none;">
+                <div class="flex-between non-printable" style="margin-bottom: 16px;">
+                    <div class="date-picker-wrapper">
+                        <label for="user-weekly-report-date">અઠવાડિયું પસંદ કરો:</label>
+                        <input type="date" id="user-weekly-report-date" class="form-control" style="width: auto;"
+                            onchange="loadUserWeeklyReport()">
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="btn-primary" onclick="window.print()"
+                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Print PDF
+                        </button>
+                        <button class="btn-primary" onclick="exportUserWeeklyReportToExcel()"
+                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <div id="print-area-user-weekly">
+                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
+                        <h3 id="print-user-weekly-heading" style="color: var(--text-muted); margin-top: 4px;">વીકલી
+                            રિપોર્ટ: -</h3>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table" id="user-reports-table">
+                            <thead>
+                                <tr>
+                                    <th>તારીખ</th>
+                                    <th>દિવસ</th>
+                                    <th>તળિયા</th>
+                                    <th>પેલ</th>
+                                    <th>મથાળા</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-reports-tbody">
+                                <!-- Dynamic -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="totals-row">
+                                    <td colspan="2">કુલ સરવાળો</td>
+                                    <td id="user-report-total-taliya" style="font-weight: 800;">0</td>
+                                    <td id="user-report-total-pel" style="font-weight: 800;">0</td>
+                                    <td id="user-report-total-mathala" style="font-weight: 800;">0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==============================================
+             3. MASTER VIEW PANEL
+             ============================================== -->
+        <div id="master-panel" class="glass-panel" style="display: none;">
+            <div class="tab-nav non-printable">
+                <button class="tab-btn active" onclick="switchMasterTab('mtab-dashboard', this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                        stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
+                    </svg>
+                    ડેેશબોર્ડ
+                </button>
+                <button class="tab-btn" id="btn-tab-report" onclick="switchMasterTab('mtab-reports', this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                        stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                    </svg>
+                    વીકલી રિપોર્ટ
+                </button>
+                <button class="tab-btn" id="btn-tab-monthly-report"
+                    onclick="switchMasterTab('mtab-monthly-reports', this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                        stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+                    </svg>
+                    મંથલી રિપોર્ટ
+                </button>
+                <button class="tab-btn" onclick="switchMasterTab('mtab-khata', this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                        stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5-1.5l-3-1m-5.01 4.73L9 11.02" />
+                    </svg>
+                    ખાતા માસ્ટર
+                </button>
+                <button class="tab-btn" onclick="switchMasterTab('mtab-users', this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                        stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                    </svg>
+                    હેડ મેનેજમેન્ટ
+                </button>
+                <button class="tab-btn" onclick="switchMasterTab('mtab-backup', this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                        stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                    </svg>
+                    બેકઅપ ડેટા
+                </button>
+            </div>
+
+            <!-- TAB 1: DASHBOARD OVERVIEW -->
+            <div id="mtab-dashboard" class="master-tab-pane">
+                <div class="top-bar-controls flex-between">
+                    <div class="date-picker-wrapper">
+                        <label for="master-dashboard-date">રિપોર્ટ તારીખ:</label>
+                        <input type="date" id="master-dashboard-date" class="form-control" style="width: auto;"
+                            onchange="loadMasterDashboard()">
+                    </div>
+                </div>
+
+
+                <!-- Grand Summary Main Totals Section -->
+                <div class="flex-between">
+                    <h3>આજના સબમિશન સ્ટેટસ (Submissions Monitor)</h3>
+                </div>
+
+                <div class="table-responsive non-printable">
+                    <table class="custom-table" id="master-submissions-table">
+                        <thead>
+                            <tr>
+                                <th>હેડ નામ</th>
+                                <th>સ્ટેટસ</th>
+                                <th>સબમિટ સમય</th>
+                                <th>રજા</th>
+                                <th>ખાતા</th>
+                                <th>તળિયા</th>
+                                <th>પેલ</th>
+                                <th>મથાળા</th>
+                            </tr>
+                        </thead>
+                        <tbody id="master-submissions-tbody">
+                            <!-- Dynamic -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="totals-row">
+                                <td colspan="2" style="color: var(--accent);">કુલ સરવાળો</td>
+                                <td></td>
+                                <td id="master-submissions-total-holiday" style="font-weight: 700;">0</td>
+                                <td id="master-submissions-total-work-khatas" style="font-weight: 700;">0</td>
+                                <td class="total-value" id="master-submissions-total-taliya">0</td>
+                                <td class="total-value" id="master-submissions-total-pel">0</td>
+                                <td class="total-value" id="master-submissions-total-mathala">0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 2: REPORTS SECTION -->
+            <div id="mtab-reports" class="master-tab-pane" style="display: none;">
+                <div class="flex-between non-printable">
+                    <div class="date-picker-wrapper">
+                        <label for="master-report-date">અઠવાડિયું પસંદ કરો:</label>
+                        <input type="date" id="master-report-date" class="form-control" style="width: auto;"
+                            onchange="loadKhataWiseReport()">
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="btn-primary" onclick="window.print()"
+                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Print PDF
+                        </button>
+                        <button class="btn-primary" onclick="exportReportToExcel()"
+                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <div id="print-area">
+                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
+                        <h3 id="print-report-date-heading" style="color: var(--text-muted); margin-top: 4px;">અઠવાડિયું:
+                            -</h3>
+                    </div>
+
+                    <div class="flex-between">
+                        <h3>વીકલી રિપોર્ટ (સોમવાર થી શનિવાર)</h3>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table" id="master-reports-table">
+                            <thead>
+                                <tr>
+                                    <th>તારીખ</th>
+                                    <th>દિવસ</th>
+                                    <th>તળિયા</th>
+                                    <th>પેલ</th>
+                                    <th>મથાળા</th>
+                                </tr>
+                            </thead>
+                            <tbody id="master-reports-tbody">
+                                <!-- Dynamic -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="totals-row">
+                                    <td colspan="2">મેન કુલ સરવાળો</td>
+                                    <td class="total-value" id="master-report-total-taliya">0</td>
+                                    <td class="total-value" id="master-report-total-pel">0</td>
+                                    <td class="total-value" id="master-report-total-mathala">0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2.5: MONTHLY REPORTS SECTION -->
+            <div id="mtab-monthly-reports" class="master-tab-pane" style="display: none;">
+                <div class="flex-between non-printable">
+                    <div class="date-picker-wrapper">
+                        <label for="master-monthly-report-date">મહિનો પસંદ કરો:</label>
+                        <input type="month" id="master-monthly-report-date" class="form-control" style="width: auto;"
+                            onchange="loadMonthlyReport()">
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="btn-primary" onclick="window.print()"
+                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Print PDF
+                        </button>
+                        <button class="btn-primary" onclick="exportMonthlyReportToExcel()"
+                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <div id="print-area-monthly">
+                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
+                        <h3 id="print-monthly-report-heading" style="color: var(--text-muted); margin-top: 4px;">મહિનો:
+                            -</h3>
+                    </div>
+
+                    <div class="flex-between">
+                        <h3>મંથલી રિપોર્ટ (વીકલી સરવાળો)</h3>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table" id="master-monthly-reports-table">
+                            <thead>
+                                <tr>
+                                    <th>અઠવાડિયું (રેન્જ)</th>
+                                    <th>તળિયા</th>
+                                    <th>પેલ</th>
+                                    <th>મથાળા</th>
+                                </tr>
+                            </thead>
+                            <tbody id="master-monthly-reports-tbody">
+                                <!-- Dynamic -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="totals-row">
+                                    <td>મેન કુલ સરવાળો</td>
+                                    <td class="total-value" id="master-monthly-report-total-taliya">0</td>
+                                    <td class="total-value" id="master-monthly-report-total-pel">0</td>
+                                    <td class="total-value" id="master-monthly-report-total-mathala">0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: KHATA CONFIGURATION -->
+            <div id="mtab-khata" class="master-tab-pane" style="display: none;">
+                <div class="management-layout">
+                    <!-- Left: Create/Edit Khata Form -->
+                    <div class="glass-panel" style="box-shadow: none;">
+                        <h3 style="margin-bottom: 16px;" id="khata-form-title">નવું ખાતું ઉમેરો</h3>
+                        <form id="khata-config-form" onsubmit="handleSaveKhata(event)">
+                            <input type="hidden" id="khata-id-edit">
+                            <div class="form-group">
+                                <label for="khata-name-input">ખાતાનું નામ</label>
+                                <input type="text" id="khata-name-input" class="form-control" placeholder="DEPT-A"
+                                    required pattern="[A-Z0-9\\s\\-_]+"
+                                    title="Please enter in English uppercase letters, numbers, hyphens, or spaces only"
+                                    style="text-transform: uppercase;" oninput="handleKhataNameInput(this)">
+                                <div id="khata-name-feedback"
+                                    style="color: var(--danger); font-size: 0.8rem; font-weight: 600; margin-top: 4px; display: none;">
+                                    ⚠️ આ નામનું ખાતું અગાઉથી બનાવેલ છે!
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="khata-location-input">લોકેશન</label>
+                                <input type="text" id="khata-location-input" class="form-control"
+                                    placeholder="Ground Floor, Room 3" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="khata-user-input">હેડ ફાળવો (ઓપ્શનલ)</label>
+                                <select id="khata-user-input" class="form-control">
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="submit" class="btn-primary" style="flex: 1;">
+                                    સાચવો
+                                </button>
+                                <button type="button" class="btn-logout" id="btn-cancel-khata-edit"
+                                    onclick="resetKhataForm()" style="display: none; border-radius: var(--radius-md);">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Right: Khata Register list -->
+                    <div class="glass-panel" style="box-shadow: none;">
+                        <h3 style="margin-bottom: 16px;">રજિસ્ટર્ડ ખાતાઓની યાદી</h3>
+                        <div class="table-responsive">
+                            <table class="custom-table" id="master-khata-list-table">
+                                <thead>
+                                    <tr>
+                                        <th>ખાતું</th>
+                                        <th>લોકેશન</th>
+                                        <th>ફાળવેલ હેડ</th>
+                                        <th style="width: 100px;">એક્શન</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="master-khata-tbody">
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: USERS PANEL -->
+            <div id="mtab-users" class="master-tab-pane" style="display: none;">
+                <div class="management-layout">
+                    <!-- Left: Create User Form -->
+                    <div class="glass-panel" style="box-shadow: none;">
+                        <h3 style="margin-bottom: 16px;" id="user-form-title">નવો હેડ બનાવો</h3>
+                        <form id="user-config-form" onsubmit="handleSaveUser(event)">
+                            <input type="hidden" id="user-id-edit">
+                            <div class="form-group">
+                                <label for="user-name-input">હેડ નામ</label>
+                                <input type="text" id="user-name-input" class="form-control" placeholder="Ramesh"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="user-password-input">પાસવર્ડ</label>
+                                <input type="text" id="user-password-input" class="form-control"
+                                    placeholder="Enter Password" required>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="submit" class="btn-primary" style="flex: 1;">
+                                    હેડ સાચવો
+                                </button>
+                                <button type="button" class="btn-logout" id="btn-cancel-user-edit"
+                                    onclick="resetUserForm()" style="display: none; border-radius: var(--radius-md);">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Right: Users list -->
+                    <div class="glass-panel" style="box-shadow: none;">
+                        <h3 style="margin-bottom: 16px;">યુઝર્સની યાદી (User List)</h3>
+                        <div class="table-responsive">
+                            <table class="custom-table" id="master-users-list-table">
+                                <thead>
+                                    <tr>
+                                        <th>યુઝર નામ</th>
+                                        <th>પાસવર્ડ</th>
+                                        <th>એક્શન</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="master-users-tbody">
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: BACKUP & DATA RESET -->
+            <div id="mtab-backup" class="master-tab-pane" style="display: none;">
+                <div class="glass-panel"
+                    style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+                    <h3
+                        style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--accent);">
+                        ડેટા મેનેજમેન્ટ (Backup & Restore Operations)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                        આ સુવિધા તમને આખી એપ્લિકેશનનો તમામ ડેટા (બધા યુઝર્સ, ખાતાઓ અને સબમિશન એન્ટ્રીઓ) એક સિંગલ બેકઅપ
+                        ફાઇલમાં સાચવવા માટે પરવાનગી આપે છે. તમે ક્યારેય પણ તે ફાઇલ દ્વારા બધો ડેટા પુનઃપ્રાપ્ત (Restore)
+                        કરી શકો છો.
+                    </p>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <button class="btn-primary" onclick="downloadBackup()" style="width: auto;">
+                            બેકઅપ ફાઇલ ડાઉનલોડ કરો (Download Backup)
+                        </button>
+                        <button class="btn-primary" onclick="document.getElementById('import-file-selector').click()"
+                            style="background: var(--primary-light); width: auto; box-shadow: none;">
+                            રિસ્ટોર બેકઅપ (Restore Backup File)
+                        </button>
+                        <input type="file" id="import-file-selector" style="display: none;" accept=".json"
+                            onchange="importBackupData(event)">
+                    </div>
+
+                    <h3
+                        style="border-top: 1px solid var(--border-color); padding-top: 20px; color: var(--accent); margin-top: 10px;">
+                        ક્લાઉડ ડેટાબેઝ સેટિંગ્સ (Cloud Database Settings)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                        બધા હેડના ફોનમાંથી ડેટા એક જગ્યાએ મેળવવા માટે અહીં તમારા Firebase Realtime Database ની URL દાખલ
+                        કરો.
+                    </p>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <input type="url" id="firebase-url-input" class="form-control"
+                            placeholder="https://your-project-default-rtdb.firebaseio.com" style="text-align: left;">
+                    </div>
+                    <button class="btn-primary" onclick="updateFirebaseConfig()"
+                        style="width: auto; align-self: flex-start; margin-top: 4px; box-shadow: none; background: var(--accent);">
+                        સેવ અને લિંક કરો (Save & Connect)
+                    </button>
+
+
+
+                    <h3
+                        style="border-top: 1px solid var(--border-color); padding-top: 20px; color: var(--danger); margin-top: 10px;">
+                        ડેટા રીસેટ (Factory Reset)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        ચેતવણી: ફેક્ટરી રીસેટ કરવાથી તમામ ડેટા કાયમી ધોરણે ડિલીટ થઈ જશે અને ડિફોલ્ટ સેટિંગ્સ ફરીથી સેટ
+                        થઈ જશે.
+                    </p>
+                    <button class="btn-primary" onclick="factoryResetDatabase()"
+                        style="background: var(--danger); box-shadow: none; width: auto; align-self: flex-start;">
+                        ફેક્ટરી રીસેટ કરો (Factory Reset)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal for showing Holiday Khatas -->
+    <div id="holiday-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="holiday-modal-title">રજાવાળા ખાતાની યાદી (Holiday Khatas)</h3>
+                <button class="modal-close" onclick="closeHolidayModal()">&times;</button>
+            </div>
+            <div id="holiday-modal-body"
+                style="display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; margin-top: 10px;">
+                <!-- Filled dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block - State Management -->
+    <script>
+        // Database State Namespace in LocalStorage
+        const DB_KEY = 'diamond_production_db_v1';
+        let dbState = {};
+
+        function renderValWithValidation(taliya, val, displayStr) {
+            const numTaliya = parseFloat(taliya);
+            const numVal = parseFloat(val);
+            const disp = displayStr !== undefined ? displayStr : val;
+            if (!isNaN(numTaliya) && !isNaN(numVal) && numTaliya > 0 && numVal < numTaliya * 0.9) {
+                return `<span class="validation-error-text" style="color: var(--danger) !important; font-weight: 800 !important;">${disp}</span>`;
+            }
+            return disp;
+        }
+
+        // Default Configuration to initialize on first launch
+        const defaultState = {
+            users: [
+                { id: 'master', username: 'એડમિન', password: '123', role: 'master' }
+            ],
+            khatas: [],
+            submissions: {}
+        };
+
+        // Active Session Variables
+        let currentUser = null; // Stores user object when logged in
+        let userSetupMode = false; // Is user editing their list of Khatas
+
+        let FIREBASE_URL = 'https://tpm-bhaveshbhai-default-rtdb.firebaseio.com';
+
+        function showGlobalLoader(show) {
+            const loader = document.getElementById('global-loader');
+            if (loader) {
+                if (show) {
+                    loader.style.display = 'flex';
+                } else {
+                    loader.style.display = 'none';
+                }
+            }
+        }
+
+        function updateConnectionStatus(connected) {
+            const badge = document.getElementById('connection-status-badge');
+            if (badge) {
+                if (connected) {
+                    badge.style.background = 'rgba(16, 185, 129, 0.15)';
+                    badge.style.color = '#10b981';
+                    badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                    badge.innerHTML = '🟢 (Cloud Connected)';
+                } else {
+                    badge.style.background = 'rgba(239, 68, 68, 0.15)';
+                    badge.style.color = '#ef4444';
+                    badge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+                    badge.innerHTML = '🔴 (Local Mode)';
+                }
+            }
+        }
+
+        async function fetchFromFirebase() {
+            try {
+                // Bypass browser caching by appending a unique timestamp
+                const response = await fetch(FIREBASE_URL + '/.json?t=' + new Date().getTime());
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.users && data.users.length > 0) {
+                        dbState = data;
+                    } else {
+                        // If Firebase database is empty, check if we have a locally stored imported backup configuration
+                        const stored = localStorage.getItem(DB_KEY);
+                        if (stored) {
+                            const localData = JSON.parse(stored);
+                            if (localData && localData.users && localData.users.length > 1) {
+                                dbState = localData;
+                                await saveFullDBToFirebase();
+                            } else {
+                                dbState = JSON.parse(JSON.stringify(defaultState));
+                                await saveFullDBToFirebase();
+                            }
+                        } else {
+                            dbState = JSON.parse(JSON.stringify(defaultState));
+                            await saveFullDBToFirebase();
+                        }
+                    }
+                    localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+                    updateConnectionStatus(true);
+                    return true;
+                }
+            } catch (e) {
+                console.error("Firebase Load Error: ", e);
+            }
+            updateConnectionStatus(false);
+            return false;
+        }
+
+        async function saveFullDBToFirebase() {
+            try {
+                const response = await fetch(FIREBASE_URL + '/.json', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dbState)
+                });
+                if (response.ok) {
+                    localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+                    updateConnectionStatus(true);
+                    return true;
+                }
+            } catch (e) {
+                console.error("Firebase Save Full Error: ", e);
+            }
+            updateConnectionStatus(false);
+            return false;
+        }
+
+        async function saveSubmissionToFirebase(dateVal, userId, submissionData) {
+            try {
+                const response = await fetch(FIREBASE_URL + '/submissions/' + dateVal + '/' + userId + '.json', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(submissionData)
+                });
+                if (response.ok) {
+                    updateConnectionStatus(true);
+                    return true;
+                }
+            } catch (e) {
+                console.error("Firebase Submission Save Error: ", e);
+            }
+            updateConnectionStatus(false);
+            return false;
+        }
+
+        // Initialize Database
+        async function initDB() {
+            // Force set the target Firebase Database URL provided by the user
+            const targetUrl = 'https://tpm-bhaveshbhai-default-rtdb.firebaseio.com';
+            const savedFirebaseUrl = localStorage.getItem('diamond_firebase_url');
+            if (savedFirebaseUrl !== targetUrl) {
+                localStorage.setItem('diamond_firebase_url', targetUrl);
+                localStorage.removeItem(DB_KEY); // clear local storage cache of old database
+                sessionStorage.removeItem('diamond_active_user'); // clear any active dummy user session
+                FIREBASE_URL = targetUrl;
+            } else {
+                FIREBASE_URL = targetUrl;
+            }
+
+            const fbInput = document.getElementById('firebase-url-input');
+            if (fbInput) {
+                fbInput.value = FIREBASE_URL;
+            }
+
+            showGlobalLoader(true);
+            const fetched = await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            if (!fetched) {
+                try {
+                    const stored = localStorage.getItem(DB_KEY);
+                    if (stored) {
+                        dbState = JSON.parse(stored);
+                    } else {
+                        dbState = JSON.parse(JSON.stringify(defaultState));
+                    }
+                } catch (e) {
+                    console.error("Local load fallback error: ", e);
+                    dbState = JSON.parse(JSON.stringify(defaultState));
+                }
+            }
+
+            if (!dbState.users || dbState.users.length === 0) {
+                dbState.users = JSON.parse(JSON.stringify(defaultState.users));
+            }
+            if (!dbState.khatas || dbState.khatas.length === 0) {
+                dbState.khatas = JSON.parse(JSON.stringify(defaultState.khatas));
+            }
+            if (!dbState.submissions) {
+                dbState.submissions = {};
+            }
+            dbState.khatas.forEach(k => {
+                if (k.userId === undefined) k.userId = '';
+            });
+
+            if (dbState.submissions && dbState.submissions["2026-07-30"]) {
+                delete dbState.submissions["2026-07-30"];
+            }
+        }
+
+        async function saveDB() {
+            try {
+                localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+                showGlobalLoader(true);
+                await saveFullDBToFirebase();
+                showGlobalLoader(false);
+            } catch (e) {
+                alert("લૉકલ સ્ટોરેજ સેવ ભૂલ! (Storage Error: " + e.message + ")");
+            }
+        }
+
+        // Helper to get formatted today string (YYYY-MM-DD)
+        function getTodayDateString() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1;
+            let dd = today.getDate();
+            if (mm < 10) mm = '0' + mm;
+            if (dd < 10) dd = '0' + dd;
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        // ==============================================
+        // PAGE NAVIGATION / LOGIN FLOW
+        // ==============================================
+        window.addEventListener('DOMContentLoaded', async () => {
+            await initDB();
+            populateLoginRoles();
+            // Automatically select the active date picker values to today
+            const todayStr = getTodayDateString();
+            document.getElementById('user-entry-date').value = todayStr;
+            document.getElementById('user-weekly-report-date').value = todayStr;
+            document.getElementById('master-dashboard-date').value = todayStr;
+            document.getElementById('master-report-date').value = todayStr;
+            document.getElementById('master-monthly-report-date').value = todayStr.substring(0, 7);
+
+            // Setup Form Enter Key Navigations
+            setupKhataFormNavigations();
+            setupLoginFormNavigations();
+
+            restoreRememberedUser();
+
+            // Enter key navigation inside the user data entry table
+            const userTableBody = document.getElementById('user-table-body');
+            if (userTableBody) {
+                userTableBody.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
+                            e.preventDefault();
+                            const currentInput = e.target;
+                            const tr = currentInput.closest('tr');
+
+                            if (currentInput.classList.contains('taliya-input')) {
+                                const pelInput = tr.querySelector('.pel-input');
+                                if (pelInput && !pelInput.disabled) {
+                                    pelInput.focus();
+                                }
+                            } else if (currentInput.classList.contains('pel-input')) {
+                                const mathalaInput = tr.querySelector('.mathala-input');
+                                if (mathalaInput && !mathalaInput.disabled) {
+                                    mathalaInput.focus();
+                                }
+                            } else if (currentInput.classList.contains('mathala-input')) {
+                                // Go to next row's taliya input
+                                const nextTr = tr.nextElementSibling;
+                                if (nextTr) {
+                                    const nextTaliya = nextTr.querySelector('.taliya-input');
+                                    if (nextTaliya && !nextTaliya.disabled) {
+                                        nextTaliya.focus();
+                                    } else {
+                                        // If next row is disabled (holiday), try to find the next active one
+                                        let candidateTr = nextTr;
+                                        while (candidateTr) {
+                                            const taliya = candidateTr.querySelector('.taliya-input');
+                                            if (taliya && !taliya.disabled) {
+                                                taliya.focus();
+                                                break;
+                                            }
+                                            candidateTr = candidateTr.nextElementSibling;
+                                        }
+                                    }
+                                } else {
+                                    // Last row: focus on the submit button
+                                    const btnSubmit = document.getElementById('btn-submit-entry');
+                                    if (btnSubmit) {
+                                        btnSubmit.focus();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Check if there is an active session
+            const cachedUser = sessionStorage.getItem('diamond_active_user');
+            if (cachedUser) {
+                const userObj = JSON.parse(cachedUser);
+                // Verify user still exists in db
+                const verified = dbState.users.find(u => u.id === userObj.id);
+                if (verified) {
+                    loginAs(verified);
+                } else {
+                    sessionStorage.removeItem('diamond_active_user');
+                }
+            }
+        });
+
+        function setupKhataFormNavigations() {
+            const nameInput = document.getElementById('khata-name-input');
+            const locInput = document.getElementById('khata-location-input');
+            const userInput = document.getElementById('khata-user-input');
+            const form = document.getElementById('khata-config-form');
+
+            if (nameInput) {
+                nameInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (locInput) {
+                            locInput.focus();
+                        }
+                    }
+                });
+            }
+
+            if (locInput) {
+                locInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (userInput) {
+                            userInput.focus();
+                            if (typeof userInput.showPicker === 'function') {
+                                try {
+                                    userInput.showPicker();
+                                } catch (err) {
+                                    console.log("showPicker not supported or blocked: ", err);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (userInput) {
+                userInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (form) {
+                            form.requestSubmit();
+                        }
+                    }
+                });
+            }
+        }
+
+        function setupLoginFormNavigations() {
+            const loginSelect = document.getElementById('login-username');
+            const loginPassword = document.getElementById('login-password');
+            const loginForm = document.getElementById('login-form');
+
+            if (loginSelect) {
+                loginSelect.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const passGrp = document.getElementById('password-group');
+                        const isPassVisible = passGrp && passGrp.style.display !== 'none';
+                        if (isPassVisible) {
+                            if (loginPassword) loginPassword.focus();
+                        } else {
+                            if (loginForm) loginForm.requestSubmit();
+                        }
+                    }
+                });
+            }
+
+            if (loginPassword) {
+                loginPassword.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (loginForm) loginForm.requestSubmit();
+                    }
+                });
+            }
+        }
+
+        function populateLoginRoles() {
+            const select = document.getElementById('login-username');
+            select.innerHTML = '';
+            // Add users
+            dbState.users.forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u.id;
+                opt.textContent = u.username;
+                select.appendChild(opt);
+            });
+        }
+
+        function restoreRememberedUser() {
+            const rememberUser = localStorage.getItem('diamond_remember_user') === 'true';
+            const lastUserId = localStorage.getItem('diamond_last_selected_user_id');
+            const rememberCheckbox = document.getElementById('login-remember');
+
+            if (rememberCheckbox) {
+                rememberCheckbox.checked = rememberUser;
+            }
+
+            if (rememberUser && lastUserId) {
+                const select = document.getElementById('login-username');
+                const exists = dbState.users.find(u => u.id === lastUserId);
+                if (exists && select) {
+                    select.value = lastUserId;
+                    togglePasswordRequired(lastUserId);
+
+                    // Auto-focus password input if required
+                    const passGrp = document.getElementById('password-group');
+                    const loginPassword = document.getElementById('login-password');
+                    if (passGrp && passGrp.style.display !== 'none' && loginPassword) {
+                        loginPassword.focus();
+                    }
+                }
+            } else {
+                const select = document.getElementById('login-username');
+                if (select) {
+                    togglePasswordRequired(select.value);
+                }
+            }
+        }
+
+        function togglePasswordRequired(userId) {
+            const user = dbState.users.find(u => u.id === userId);
+            const passGrp = document.getElementById('password-group');
+
+            if (user && user.role === 'master') {
+                passGrp.style.display = 'flex';
+                document.getElementById('login-password').required = true;
+            } else {
+                // If user password is set, require it, otherwise optional
+                const hasPassword = user && user.password && user.password.trim() !== '';
+                passGrp.style.display = hasPassword ? 'flex' : 'none';
+                document.getElementById('login-password').required = hasPassword;
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const userId = document.getElementById('login-username').value;
+            const passwordInput = document.getElementById('login-password').value;
+            const user = dbState.users.find(u => u.id === userId);
+            const errDiv = document.getElementById('login-error');
+
+            if (!user) return;
+
+            // Validate password if required
+            const hasPassword = user.password && user.password.trim() !== '';
+            if (user.role === 'master' || hasPassword) {
+                if (user.password !== passwordInput) {
+                    errDiv.style.display = 'block';
+                    return;
+                }
+            }
+
+            errDiv.style.display = 'none';
+            document.getElementById('login-password').value = '';
+
+            // Remember User checkbox logic
+            const rememberCheckbox = document.getElementById('login-remember');
+            if (rememberCheckbox && rememberCheckbox.checked) {
+                localStorage.setItem('diamond_last_selected_user_id', user.id);
+                localStorage.setItem('diamond_remember_user', 'true');
+            } else {
+                localStorage.removeItem('diamond_last_selected_user_id');
+                localStorage.removeItem('diamond_remember_user');
+            }
+
+            // Set session storage
+            sessionStorage.setItem('diamond_active_user', JSON.stringify(user));
+            loginAs(user);
+        }
+
+        function loginAs(user) {
+            currentUser = user;
+            document.getElementById('login-panel').style.display = 'none';
+            document.getElementById('header-actions').style.display = 'flex';
+            document.getElementById('header-user-display').textContent = user.username;
+
+            if (user.role === 'master') {
+                document.getElementById('user-panel').style.display = 'none';
+                document.getElementById('master-panel').style.display = 'block';
+                loadMasterDashboard();
+            } else {
+                document.getElementById('master-panel').style.display = 'none';
+                document.getElementById('user-panel').style.display = 'block';
+
+                // Reset user tabs to default "Data Entry" tab
+                const panes = document.querySelectorAll('#user-panel .user-tab-pane');
+                panes.forEach(pane => pane.style.display = 'none');
+                document.getElementById('utab-entry').style.display = 'block';
+
+                const buttons = document.querySelectorAll('#user-panel .tab-btn');
+                buttons.forEach((btn, idx) => {
+                    if (idx === 0) btn.classList.add('active');
+                    else btn.classList.remove('active');
+                });
+
+                loadUserDailyEntry();
+            }
+        }
+
+        // Logout
+        function logout() {
+            sessionStorage.removeItem('diamond_active_user');
+            currentUser = null;
+            document.getElementById('header-actions').style.display = 'none';
+            document.getElementById('user-panel').style.display = 'none';
+            document.getElementById('master-panel').style.display = 'none';
+            document.getElementById('login-panel').style.display = 'flex';
+            populateLoginRoles();
+            restoreRememberedUser();
+        }
+
+        // ==============================================
+        // 2. USER DATA ENTRY INTERFACE & SUBMIT
+        // ==============================================
+        function switchUserTab(tabId, btnEl) {
+            const panes = document.querySelectorAll('#user-panel .user-tab-pane');
+            panes.forEach(pane => pane.style.display = 'none');
+
+            const buttons = document.querySelectorAll('#user-panel .tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).style.display = 'block';
+            btnEl.classList.add('active');
+
+            if (tabId === 'utab-weekly-report') {
+                loadUserWeeklyReport();
+            } else {
+                loadUserDailyEntry();
+            }
+        }
+
+        async function loadUserWeeklyReport() {
+            if (!currentUser) return;
+            const dateVal = document.getElementById('user-weekly-report-date').value;
+            if (!dateVal) return;
+
+            showGlobalLoader(true);
+            const fetched = await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            if (!fetched) {
+                const stored = localStorage.getItem(DB_KEY);
+                if (stored) {
+                    dbState = JSON.parse(stored);
+                }
+            }
+
+            const weekDates = getMonToSatDates(dateVal);
+            const headingText = `અઠવાડિયું: ${weekDates[0].displayDate} થી ${weekDates[5].displayDate}`;
+            document.getElementById('print-user-weekly-heading').textContent = headingText;
+
+            const tbody = document.getElementById('user-reports-tbody');
+            tbody.innerHTML = '';
+
+            let totalTaliya = 0;
+            let totalPel = 0;
+            let totalMathala = 0;
+
+            weekDates.forEach(wd => {
+                let dateTaliya = 0;
+                let datePel = 0;
+                let dateMathala = 0;
+                let hasSubmissions = false;
+
+                const dateSubmissions = dbState.submissions[wd.dateKey] || {};
+                const userSub = dateSubmissions[currentUser.id];
+
+                if (userSub) {
+                    hasSubmissions = true;
+                    if (!userSub.isHoliday && userSub.entries) {
+                        Object.values(userSub.entries).forEach(ent => {
+                            if (ent && !ent.isHoliday) {
+                                dateTaliya += ent.taliya || 0;
+                                datePel += ent.pel || 0;
+                                dateMathala += ent.mathala || 0;
+                            }
+                        });
+                    }
+                }
+
+                let taliyaDisplay = dateTaliya;
+                let pelDisplay = datePel;
+                let mathalaDisplay = dateMathala;
+
+                if (!hasSubmissions) {
+                    taliyaDisplay = '-';
+                    pelDisplay = '-';
+                    mathalaDisplay = '-';
+                } else {
+                    totalTaliya += dateTaliya;
+                    totalPel += datePel;
+                    totalMathala += dateMathala;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary);">${wd.displayDate}</td>
+                    <td><span class="location-badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700;">${wd.dayName}</span></td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${taliyaDisplay}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, pelDisplay)}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, mathalaDisplay)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('user-report-total-taliya').textContent = totalTaliya;
+            document.getElementById('user-report-total-pel').innerHTML = renderValWithValidation(totalTaliya, totalPel);
+            document.getElementById('user-report-total-mathala').innerHTML = renderValWithValidation(totalTaliya, totalMathala);
+        }
+
+        function exportUserWeeklyReportToExcel() {
+            if (!currentUser) return;
+            const dateVal = document.getElementById('user-weekly-report-date').value;
+            if (!dateVal) return;
+
+            const weekDates = getMonToSatDates(dateVal);
+
+            let csvContent = `User Weekly Production Report - Head: ${currentUser.username}\n`;
+            csvContent += `Week: ${weekDates[0].displayDate} to ${weekDates[5].displayDate}\n\n`;
+            csvContent += "Date,Day,Taliya,Pel,Mathala\n";
+
+            let totalTaliya = 0;
+            let totalPel = 0;
+            let totalMathala = 0;
+
+            weekDates.forEach(wd => {
+                let dateTaliya = 0;
+                let datePel = 0;
+                let dateMathala = 0;
+                let hasSubmissions = false;
+
+                const dateSubmissions = dbState.submissions[wd.dateKey] || {};
+                const userSub = dateSubmissions[currentUser.id];
+
+                if (userSub) {
+                    hasSubmissions = true;
+                    if (!userSub.isHoliday && userSub.entries) {
+                        Object.values(userSub.entries).forEach(ent => {
+                            if (ent && !ent.isHoliday) {
+                                dateTaliya += ent.taliya || 0;
+                                datePel += ent.pel || 0;
+                                dateMathala += ent.mathala || 0;
+                            }
+                        });
+                    }
+                }
+
+                let t = dateTaliya, p = datePel, m = dateMathala;
+                if (!hasSubmissions) {
+                    t = "-";
+                    p = "-";
+                    m = "-";
+                } else {
+                    totalTaliya += dateTaliya;
+                    totalPel += datePel;
+                    totalMathala += dateMathala;
+                }
+
+                csvContent += `"${wd.displayDate}","${wd.dayName}",${t},${p},${m}\n`;
+            });
+
+            csvContent += `Grand Total,,${totalTaliya},${totalPel},${totalMathala}\n`;
+
+            const csvData = "\uFEFF" + csvContent;
+            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `weekly_report_${currentUser.username}_${weekDates[0].displayDate}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function loadUserDailyEntry() {
+            if (!currentUser) return;
+            const dateVal = document.getElementById('user-entry-date').value;
+            if (!dateVal) return;
+
+            showGlobalLoader(true);
+            const fetched = await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            if (!fetched) {
+                const stored = localStorage.getItem(DB_KEY);
+                if (stored) {
+                    dbState = JSON.parse(stored);
+                }
+            }
+
+            const tbody = document.getElementById('user-table-body');
+            tbody.innerHTML = '';
+
+            // Get assigned khatas for this user
+            const assignedKhatas = dbState.khatas.filter(k => k.userId === currentUser.id);
+
+            // 2. Check if a submission already exists for this date
+            const dateSubmissions = dbState.submissions[dateVal] || {};
+            const userSub = dateSubmissions[currentUser.id];
+            const isSubmitted = !!userSub;
+
+            if (assignedKhatas.length === 0) {
+                // Display message if no khatas assigned
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td colspan="6" style="text-align: center; color: var(--danger); font-weight: 700; padding: 24px;">
+                        ⚠️ તમારા નામ પર કોઈ ખાતું એલોકેટ કરેલ નથી. કૃપા કરીને એડમિનનો સંપર્ક કરો.
+                    </td>
+                `;
+                tbody.appendChild(tr);
+                document.getElementById('btn-submit-entry').disabled = true;
+            } else {
+                document.getElementById('btn-submit-entry').disabled = false;
+                // Render inputs
+                renderFixedKhataRows(assignedKhatas, userSub, isSubmitted);
+            }
+
+            calculateUserTableTotals();
+            updateSubmissionStatusUI(isSubmitted, userSub);
+        }
+
+        function updateSubmissionStatusUI(isSubmitted, userSub) {
+            const btnSubmit = document.getElementById('btn-submit-entry');
+            const statusText = document.getElementById('user-status-text');
+
+            if (isSubmitted) {
+                statusText.innerHTML = `✅ સબમિટ થઈ ગયેલ છે (${new Date(userSub.submittedAt).toLocaleTimeString()})`;
+                statusText.style.color = "var(--success)";
+                btnSubmit.textContent = "ફરીથી સબમિટ કરો (Re-Submit)";
+            } else {
+                statusText.innerHTML = `⚠️ એન્ટ્રી સબમિટ બાકી છે.`;
+                statusText.style.color = "var(--danger)";
+                btnSubmit.textContent = "રિપોર્ટ સબમિટ કરો (Submit Report)";
+            }
+        }
+
+        function renderFixedKhataRows(assignedKhatas, userSub, isSubmitted) {
+            const tbody = document.getElementById('user-table-body');
+            tbody.innerHTML = '';
+
+            assignedKhatas.forEach(khataObj => {
+                // Load existing submitted values if any
+                let taliyaVal = 0;
+                let pelVal = 0;
+                let mathalaVal = 0;
+                let isKhataHoliday = false;
+
+                if (userSub && userSub.entries && userSub.entries[khataObj.id]) {
+                    const ent = userSub.entries[khataObj.id];
+                    taliyaVal = ent.taliya || 0;
+                    pelVal = ent.pel || 0;
+                    mathalaVal = ent.mathala || 0;
+                    isKhataHoliday = !!ent.isHoliday;
+                }
+
+                const tr = document.createElement('tr');
+                tr.dataset.khataId = khataObj.id;
+                tr.innerHTML = `
+                    <td data-label="ખાતાનું નામ (Khata)">
+                        <span class="khata-name">${khataObj.name}</span>
+                    </td>
+                    <td data-label="લોકેશન (Location)">
+                        <span class="location-badge">${khataObj.location}</span>
+                    </td>
+                    <td data-label="રજા (Holiday)" style="text-align: center;">
+                        <input type="checkbox" class="khata-holiday-checkbox" 
+                               ${isKhataHoliday ? 'checked' : ''} 
+                               onchange="toggleKhataHoliday(this)"
+                               style="width: 18px; height: 18px; cursor: pointer; display: inline-block; vertical-align: middle;">
+                    </td>
+                    <td data-label="તળિયા (Taliya)">
+                        <input type="number" min="0" class="form-control taliya-input" 
+                               value="${taliyaVal}" 
+                               oninput="calculateUserTableTotals()" 
+                               onfocus="if(this.value === '0') { this.value = ''; } else { this.select(); }"
+                               onblur="if(this.value === '') { this.value = '0'; }"
+                               ${isKhataHoliday ? 'disabled' : ''}>
+                    </td>
+                    <td data-label="પેલ (Pel)">
+                        <input type="number" min="0" class="form-control pel-input" 
+                               value="${pelVal}" 
+                               oninput="calculateUserTableTotals()" 
+                               onfocus="if(this.value === '0') { this.value = ''; } else { this.select(); }"
+                               onblur="if(this.value === '') { this.value = '0'; }"
+                               ${isKhataHoliday ? 'disabled' : ''}>
+                    </td>
+                    <td data-label="મથાળા (Mathala)">
+                        <input type="number" min="0" class="form-control mathala-input" 
+                               value="${mathalaVal}" 
+                               oninput="calculateUserTableTotals()" 
+                               onfocus="if(this.value === '0') { this.value = ''; } else { this.select(); }"
+                               onblur="if(this.value === '') { this.value = '0'; }"
+                               ${isKhataHoliday ? 'disabled' : ''}>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleKhataHoliday(checkboxEl) {
+            const tr = checkboxEl.closest('tr');
+            const isChecked = checkboxEl.checked;
+
+            const taliyaInput = tr.querySelector('.taliya-input');
+            const pelInput = tr.querySelector('.pel-input');
+            const mathalaInput = tr.querySelector('.mathala-input');
+
+            if (isChecked) {
+                // If it is a holiday, reset numbers to 0 and disable them
+                if (taliyaInput) { taliyaInput.value = 0; taliyaInput.disabled = true; }
+                if (pelInput) { pelInput.value = 0; pelInput.disabled = true; }
+                if (mathalaInput) { mathalaInput.value = 0; mathalaInput.disabled = true; }
+            } else {
+                // Enable inputs
+                if (taliyaInput) { taliyaInput.disabled = false; }
+                if (pelInput) { pelInput.disabled = false; }
+                if (mathalaInput) { mathalaInput.disabled = false; }
+            }
+            calculateUserTableTotals();
+        }
+
+        function calculateUserTableTotals() {
+            let totalTaliya = 0;
+            let totalPel = 0;
+            let totalMathala = 0;
+
+            const rows = document.querySelectorAll('#user-table-body tr');
+            rows.forEach(row => {
+                const tInput = row.querySelector('.taliya-input');
+                const pInput = row.querySelector('.pel-input');
+                const mInput = row.querySelector('.mathala-input');
+
+                if (tInput && pInput && mInput) {
+                    const taliyaVal = parseInt(tInput.value) || 0;
+                    const pelVal = parseInt(pInput.value) || 0;
+                    const mathalaVal = parseInt(mInput.value) || 0;
+
+                    if (!tInput.disabled) {
+                        totalTaliya += taliyaVal;
+                    }
+                    if (!pInput.disabled) {
+                        totalPel += pelVal;
+                        if (taliyaVal > 0 && pelVal < taliyaVal * 0.9) {
+                            pInput.style.color = 'var(--danger)';
+                            pInput.style.borderColor = 'var(--danger)';
+                            pInput.style.fontWeight = '800';
+                        } else {
+                            pInput.style.color = '';
+                            pInput.style.borderColor = '';
+                            pInput.style.fontWeight = '';
+                        }
+                    }
+                    if (!mInput.disabled) {
+                        totalMathala += mathalaVal;
+                        if (taliyaVal > 0 && mathalaVal < taliyaVal * 0.9) {
+                            mInput.style.color = 'var(--danger)';
+                            mInput.style.borderColor = 'var(--danger)';
+                            mInput.style.fontWeight = '800';
+                        } else {
+                            mInput.style.color = '';
+                            mInput.style.borderColor = '';
+                            mInput.style.fontWeight = '';
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('user-total-taliya').textContent = totalTaliya;
+
+            const pelTotalEl = document.getElementById('user-total-pel');
+            pelTotalEl.textContent = totalPel;
+            if (totalTaliya > 0 && totalPel < totalTaliya * 0.9) {
+                pelTotalEl.style.color = 'var(--danger)';
+                pelTotalEl.style.fontWeight = '800';
+            } else {
+                pelTotalEl.style.color = '';
+                pelTotalEl.style.fontWeight = '';
+            }
+
+            const mathalaTotalEl = document.getElementById('user-total-mathala');
+            mathalaTotalEl.textContent = totalMathala;
+            if (totalTaliya > 0 && totalMathala < totalTaliya * 0.9) {
+                mathalaTotalEl.style.color = 'var(--danger)';
+                mathalaTotalEl.style.fontWeight = '800';
+            } else {
+                mathalaTotalEl.style.color = '';
+                mathalaTotalEl.style.fontWeight = '';
+            }
+        }
+
+        // Push User Data to Master DB
+        function submitUserEntry() {
+            const dateVal = document.getElementById('user-entry-date').value;
+            if (!dateVal) return;
+
+            const assignedKhatas = dbState.khatas.filter(k => k.userId === currentUser.id);
+            if (assignedKhatas.length === 0) {
+                alert("તમારા નામ પર કોઈ ખાતું એલોકેટ કરેલ નથી. (No accounts allocated to your name.)");
+                return;
+            }
+
+            const entries = {};
+            const rows = document.querySelectorAll('#user-table-body tr');
+            let validationOk = true;
+
+            rows.forEach(row => {
+                const khataId = row.dataset.khataId;
+                if (!khataId) return;
+
+                const holidayCheckbox = row.querySelector('.khata-holiday-checkbox');
+                const isKhataHoliday = holidayCheckbox ? holidayCheckbox.checked : false;
+
+                const taliya = isKhataHoliday ? 0 : (parseInt(row.querySelector('.taliya-input').value) || 0);
+                const pel = isKhataHoliday ? 0 : (parseInt(row.querySelector('.pel-input').value) || 0);
+                const mathala = isKhataHoliday ? 0 : (parseInt(row.querySelector('.mathala-input').value) || 0);
+
+                if (taliya < 0 || pel < 0 || mathala < 0) {
+                    validationOk = false;
+                }
+
+                entries[khataId] = {
+                    taliya: taliya,
+                    pel: pel,
+                    mathala: mathala,
+                    isHoliday: isKhataHoliday
+                };
+            });
+
+            if (!validationOk) {
+                alert("તમામ રકમ ૦ અથવા તેનાથી વધારે હોવી જોઈએ. (Production values cannot be negative.)");
+                return;
+            }
+
+            // Write into DB State
+            if (!dbState.submissions[dateVal]) {
+                dbState.submissions[dateVal] = {};
+            }
+
+            const isAllHoliday = Object.values(entries).every(e => e.isHoliday);
+
+            const submissionData = {
+                isHoliday: isAllHoliday,
+                entries: entries,
+                submittedAt: new Date().toISOString()
+            };
+
+            dbState.submissions[dateVal][currentUser.id] = submissionData;
+
+            localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+
+            showGlobalLoader(true);
+            saveSubmissionToFirebase(dateVal, currentUser.id, submissionData).then(success => {
+                showGlobalLoader(false);
+                loadUserDailyEntry();
+                alert("એન્ટ્રી સફળતાપૂર્વક સબમિટ કરવામાં આવી છે! (Submitted successfully!)");
+            });
+        }
+
+        // ==============================================
+        // 3. MASTER PANEL LOGIC (DASHBOARD & REPORTS)
+        // ==============================================
+        function switchMasterTab(paneId, btn) {
+            // Tab button updates
+            document.querySelectorAll('#master-panel .tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // View pane updates
+            document.querySelectorAll('.master-tab-pane').forEach(p => p.style.display = 'none');
+            document.getElementById(paneId).style.display = 'block';
+
+            if (paneId === 'mtab-dashboard') {
+                loadMasterDashboard();
+            } else if (paneId === 'mtab-reports') {
+                loadKhataWiseReport();
+            } else if (paneId === 'mtab-monthly-reports') {
+                loadMonthlyReport();
+            } else if (paneId === 'mtab-khata') {
+                renderMasterKhataList();
+            } else if (paneId === 'mtab-users') {
+                renderMasterUserList();
+            }
+        }
+
+        // Master Overview / Submissions Dashboard
+        async function loadMasterDashboard() {
+            const dateVal = document.getElementById('master-dashboard-date').value;
+            if (!dateVal) return;
+
+            showGlobalLoader(true);
+            const fetched = await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            if (!fetched) {
+                const stored = localStorage.getItem(DB_KEY);
+                if (stored) {
+                    dbState = JSON.parse(stored);
+                }
+            }
+
+            const dateSubmissions = dbState.submissions[dateVal] || {};
+            const totalUsers = dbState.users.filter(u => u.role === 'user');
+
+            let submittedCount = 0;
+            let grandHoliday = 0;
+            let grandWorkKhatas = 0;
+            let grandTaliya = 0;
+            let grandPel = 0;
+            let grandMathala = 0;
+
+            const tbody = document.getElementById('master-submissions-tbody');
+            tbody.innerHTML = '';
+
+            totalUsers.forEach(user => {
+                const sub = dateSubmissions[user.id];
+                let statusHtml = '';
+                let timeStr = '-';
+                let holidayHtml = '-';
+                let workHtml = '-';
+                let taliya = '-';
+                let pel = '-';
+                let mathala = '-';
+
+                if (sub) {
+                    submittedCount++;
+                    timeStr = new Date(sub.submittedAt).toLocaleTimeString();
+
+                    let holidayCount = 0;
+                    let holidayKhatas = [];
+                    let workCount = 0;
+                    const assignedKhatas = dbState.khatas.filter(k => k.userId === user.id);
+
+                    if (sub.entries && Object.keys(sub.entries).length > 0) {
+                        Object.keys(sub.entries).forEach(khataId => {
+                            const ent = sub.entries[khataId];
+                            if (ent.isHoliday) {
+                                holidayCount++;
+                                const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
+                                if (khataObj) {
+                                    holidayKhatas.push(khataObj.name);
+                                } else {
+                                    holidayKhatas.push(khataId);
+                                }
+                            } else {
+                                workCount++;
+                            }
+                        });
+                    } else if (sub.isHoliday) {
+                        holidayCount = assignedKhatas.length;
+                        holidayKhatas = assignedKhatas.map(k => k.name);
+                    }
+
+                    if (holidayCount > 0) {
+                        grandHoliday += holidayCount;
+                        const escapedUser = user.username.replace(/['"\\]/g, '');
+                        const escapedKhatas = holidayKhatas.map(name => name.replace(/['"\\]/g, ''));
+                        holidayHtml = `<button class="btn-holiday-toggle active btn-sm" style="display:inline-block; padding:2px 8px; font-size:0.8rem; box-shadow:none; cursor:pointer;" onclick='openHolidayDetails("${escapedUser}", ${JSON.stringify(escapedKhatas)})'>${holidayCount} રજા</button>`;
+                    } else {
+                        holidayHtml = `<span style="color:var(--text-muted); font-size:0.85rem;">0</span>`;
+                    }
+
+                    if (workCount > 0) {
+                        grandWorkKhatas += workCount;
+                        workHtml = `<button class="btn-primary btn-sm" style="display:inline-block; padding:2px 8px; font-size:0.8rem; box-shadow:none; cursor:pointer; background:var(--accent); border:1px solid var(--accent); color:#ffffff; border-radius:30px; line-height:1;" onclick="openWorkDetails('${user.id}')">${workCount} ખાતા</button>`;
+                    } else {
+                        workHtml = `<span style="color:var(--text-muted); font-size:0.85rem;">0</span>`;
+                    }
+
+                    if (sub.isHoliday) {
+                        statusHtml = '<span class="badge-status holiday">OK</span>';
+                        taliya = 0;
+                        pel = 0;
+                        mathala = 0;
+                    } else {
+                        statusHtml = '<span class="badge-status submitted">OK</span>';
+                        // Sum the entries for this user
+                        let uT = 0, uP = 0, uM = 0;
+                        Object.values(sub.entries).forEach(ent => {
+                            uT += ent.taliya || 0;
+                            uP += ent.pel || 0;
+                            uM += ent.mathala || 0;
+                        });
+                        taliya = uT;
+                        pel = uP;
+                        mathala = uM;
+
+                        grandTaliya += uT;
+                        grandPel += uP;
+                        grandMathala += uM;
+                    }
+                } else {
+                    statusHtml = '<span class="badge-status pending">BAKI</span>';
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary);">${user.username}</td>
+                    <td>${statusHtml}</td>
+                    <td style="font-variant-numeric: tabular-nums;">${timeStr}</td>
+                    <td>${holidayHtml}</td>
+                    <td>${workHtml}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${taliya}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliya, pel)}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliya, mathala)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+
+            // Update Table Footer Totals
+            document.getElementById('master-submissions-total-holiday').textContent = grandHoliday > 0 ? `${grandHoliday} રજા` : '0';
+            document.getElementById('master-submissions-total-work-khatas').textContent = grandWorkKhatas > 0 ? `${grandWorkKhatas} ખાતા` : '0';
+            document.getElementById('master-submissions-total-taliya').textContent = grandTaliya;
+            document.getElementById('master-submissions-total-pel').innerHTML = renderValWithValidation(grandTaliya, grandPel);
+            document.getElementById('master-submissions-total-mathala').innerHTML = renderValWithValidation(grandTaliya, grandMathala);
+        }
+
+        function deleteSubmission(dateKey, userId) {
+            if (confirm("શું તમે આ એન્ટ્રી ડિલીટ કરવા માંગો છો? આનાથી રીઅલ-ટાઇમ રિપોર્ટ બદલાઈ જશે. (Are you sure you want to delete this submission?)")) {
+                if (dbState.submissions[dateKey] && dbState.submissions[dateKey][userId]) {
+                    delete dbState.submissions[dateKey][userId];
+                    saveDB();
+                    loadMasterDashboard();
+                }
+            }
+        }
+
+        // CENTRALIZED WEEKLY REPORT (MONDAY TO SATURDAY)
+        function getMonToSatDates(dateString) {
+            const dates = [];
+            const date = new Date(dateString);
+            const day = date.getDay(); // 0 is Sunday, 1 is Monday, ... 6 is Saturday
+
+            const offsetToMonday = day === 0 ? -6 : 1 - day;
+            const monday = new Date(date);
+            monday.setDate(date.getDate() + offsetToMonday);
+
+            for (let i = 0; i < 6; i++) {
+                const d = new Date(monday);
+                d.setDate(monday.getDate() + i);
+
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                const dateKey = `${yyyy}-${mm}-${dd}`;
+
+                const dayNames = ['રવિવાર', 'સોમવાર', 'મંગળવાર', 'બુધવાર', 'ગુરુવાર', 'શુક્રવાર', 'શનિવાર'];
+                const dayName = dayNames[d.getDay()];
+
+                dates.push({ dateKey, dayName, displayDate: `${dd}-${mm}-${yyyy}` });
+            }
+            return dates;
+        }
+
+        async function loadKhataWiseReport() {
+            const dateVal = document.getElementById('master-report-date').value;
+            if (!dateVal) return;
+
+            showGlobalLoader(true);
+            const fetched = await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            if (!fetched) {
+                const stored = localStorage.getItem(DB_KEY);
+                if (stored) {
+                    dbState = JSON.parse(stored);
+                }
+            }
+
+            const weekDates = getMonToSatDates(dateVal);
+            document.getElementById('print-report-date-heading').textContent = `અઠવાડિયું: ${weekDates[0].displayDate} થી ${weekDates[5].displayDate}`;
+
+            const tbody = document.getElementById('master-reports-tbody');
+            tbody.innerHTML = '';
+
+            let totalTaliya = 0;
+            let totalPel = 0;
+            let totalMathala = 0;
+
+            weekDates.forEach(wd => {
+                let dateTaliya = 0;
+                let datePel = 0;
+                let dateMathala = 0;
+                let hasSubmissions = false;
+
+                const dateSubmissions = dbState.submissions[wd.dateKey] || {};
+
+                Object.values(dateSubmissions).forEach(userSub => {
+                    if (userSub) {
+                        hasSubmissions = true;
+                        if (!userSub.isHoliday && userSub.entries) {
+                            Object.values(userSub.entries).forEach(ent => {
+                                if (ent && !ent.isHoliday) {
+                                    dateTaliya += ent.taliya || 0;
+                                    datePel += ent.pel || 0;
+                                    dateMathala += ent.mathala || 0;
+                                }
+                            });
+                        }
+                    }
+                });
+
+                let taliyaDisplay = dateTaliya;
+                let pelDisplay = datePel;
+                let mathalaDisplay = dateMathala;
+
+                if (!hasSubmissions) {
+                    taliyaDisplay = '-';
+                    pelDisplay = '-';
+                    mathalaDisplay = '-';
+                } else {
+                    totalTaliya += dateTaliya;
+                    totalPel += datePel;
+                    totalMathala += dateMathala;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary);">${wd.displayDate}</td>
+                    <td><span class="location-badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700;">${wd.dayName}</span></td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${taliyaDisplay}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, pelDisplay)}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, mathalaDisplay)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Update Report totals
+            document.getElementById('master-report-total-taliya').textContent = totalTaliya;
+            document.getElementById('master-report-total-pel').innerHTML = renderValWithValidation(totalTaliya, totalPel);
+            document.getElementById('master-report-total-mathala').innerHTML = renderValWithValidation(totalTaliya, totalMathala);
+        }
+
+        // CENTRALIZED MONTHLY REPORT (WEEKLY TOTALS BREAKDOWN)
+        function getWeeksOfMonth(year, month) {
+            const weeks = [];
+            const start = new Date(year, month, 1);
+            const end = new Date(year, month + 1, 0);
+
+            const firstDay = start.getDay();
+            const offsetToMonday = firstDay === 0 ? -6 : 1 - firstDay;
+            const currentMonday = new Date(start);
+            currentMonday.setDate(start.getDate() + offsetToMonday);
+
+            while (currentMonday <= end) {
+                const saturday = new Date(currentMonday);
+                saturday.setDate(currentMonday.getDate() + 5);
+
+                weeks.push({
+                    monday: new Date(currentMonday),
+                    saturday: new Date(saturday),
+                    displayRange: `${formatDateRangeString(currentMonday)} થી ${formatDateRangeString(saturday)}`
+                });
+
+                currentMonday.setDate(currentMonday.getDate() + 7);
+            }
+            return weeks;
+        }
+
+        function formatDateRangeString(date) {
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            return `${dd}-${mm}`;
+        }
+
+        async function loadMonthlyReport() {
+            const monthVal = document.getElementById('master-monthly-report-date').value; // format: "YYYY-MM"
+            if (!monthVal) return;
+
+            showGlobalLoader(true);
+            const fetched = await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            if (!fetched) {
+                const stored = localStorage.getItem(DB_KEY);
+                if (stored) {
+                    dbState = JSON.parse(stored);
+                }
+            }
+
+            const parts = monthVal.split('-');
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1; // 0-indexed month
+
+            // Format month display in Gujarati
+            const gujMonthNames = [
+                'જાન્યુઆરી', 'ફેબ્રુઆરી', 'માર્ચ', 'એપ્રિલ', 'મે', 'જૂન',
+                'જુલાઈ', 'ઑગસ્ટ', 'સપ્ટેમ્બર', 'ઑક્ટોબર', 'નવેમ્બર', 'ડિસેમ્બર'
+            ];
+            const displayMonth = `${gujMonthNames[month]} - ${year}`;
+            document.getElementById('print-monthly-report-heading').textContent = `મહિનો: ${displayMonth}`;
+
+            const tbody = document.getElementById('master-monthly-reports-tbody');
+            tbody.innerHTML = '';
+
+            const weeks = getWeeksOfMonth(year, month);
+
+            let totalTaliya = 0;
+            let totalPel = 0;
+            let totalMathala = 0;
+
+            weeks.forEach((week, index) => {
+                let weekTaliya = 0;
+                let weekPel = 0;
+                let weekMathala = 0;
+                let hasData = false;
+
+                // Loop Monday (0) to Saturday (5)
+                for (let i = 0; i < 6; i++) {
+                    const d = new Date(week.monday);
+                    d.setDate(week.monday.getDate() + i);
+
+                    // Format as dateKey
+                    const dy = d.getFullYear();
+                    const dm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    const dateKey = `${dy}-${dm}-${dd}`;
+
+                    const dateSubmissions = dbState.submissions[dateKey] || {};
+                    Object.values(dateSubmissions).forEach(userSub => {
+                        if (userSub) {
+                            hasData = true;
+                            if (!userSub.isHoliday && userSub.entries) {
+                                Object.values(userSub.entries).forEach(ent => {
+                                    if (ent && !ent.isHoliday) {
+                                        weekTaliya += ent.taliya || 0;
+                                        weekPel += ent.pel || 0;
+                                        weekMathala += ent.mathala || 0;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+
+                let taliyaDisplay = weekTaliya;
+                let pelDisplay = weekPel;
+                let mathalaDisplay = weekMathala;
+
+                if (!hasData) {
+                    taliyaDisplay = '-';
+                    pelDisplay = '-';
+                    mathalaDisplay = '-';
+                } else {
+                    totalTaliya += weekTaliya;
+                    totalPel += weekPel;
+                    totalMathala += weekMathala;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary);">અઠવાડિયું ${index + 1} (${week.displayRange})</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${taliyaDisplay}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, pelDisplay)}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, mathalaDisplay)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('master-monthly-report-total-taliya').textContent = totalTaliya;
+            document.getElementById('master-monthly-report-total-pel').innerHTML = renderValWithValidation(totalTaliya, totalPel);
+            document.getElementById('master-monthly-report-total-mathala').innerHTML = renderValWithValidation(totalTaliya, totalMathala);
+        }
+
+        function exportMonthlyReportToExcel() {
+            const monthVal = document.getElementById('master-monthly-report-date').value;
+            if (!monthVal) return;
+
+            const parts = monthVal.split('-');
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1;
+
+            const gujMonthNames = [
+                'જાન્યુઆરી', 'ફેબ્રુઆરી', 'માર્ચ', 'એપ્રિલ', 'મે', 'જૂન',
+                'જુલાઈ', 'ઑગસ્ટ', 'સપ્ટેમ્બર', 'ઑક્ટોબર', 'નવેમ્બર', 'ડિસેમ્બર'
+            ];
+            const displayMonth = `${gujMonthNames[month]} - ${year}`;
+            const weeks = getWeeksOfMonth(year, month);
+
+            let csvContent = `Diamond Production Monthly Report - Month: ${displayMonth}\n\n`;
+            csvContent += "Week,Range,Taliya,Pel,Mathala\n";
+
+            let totalTaliya = 0;
+            let totalPel = 0;
+            let totalMathala = 0;
+
+            weeks.forEach((week, index) => {
+                let weekTaliya = 0;
+                let weekPel = 0;
+                let weekMathala = 0;
+                let hasData = false;
+
+                for (let i = 0; i < 6; i++) {
+                    const d = new Date(week.monday);
+                    d.setDate(week.monday.getDate() + i);
+
+                    const dy = d.getFullYear();
+                    const dm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    const dateKey = `${dy}-${dm}-${dd}`;
+
+                    const dateSubmissions = dbState.submissions[dateKey] || {};
+                    Object.values(dateSubmissions).forEach(userSub => {
+                        if (userSub) {
+                            hasData = true;
+                            if (!userSub.isHoliday && userSub.entries) {
+                                Object.values(userSub.entries).forEach(ent => {
+                                    if (ent && !ent.isHoliday) {
+                                        weekTaliya += ent.taliya || 0;
+                                        weekPel += ent.pel || 0;
+                                        weekMathala += ent.mathala || 0;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+
+                let t = weekTaliya, p = weekPel, m = weekMathala;
+                if (!hasData) {
+                    t = "-";
+                    p = "-";
+                    m = "-";
+                } else {
+                    totalTaliya += weekTaliya;
+                    totalPel += weekPel;
+                    totalMathala += weekMathala;
+                }
+
+                csvContent += `"અઠવાડિયું ${index + 1}","${week.displayRange}",${t},${p},${m}\n`;
+            });
+
+            csvContent += `Grand Total,,${totalTaliya},${totalPel},${totalMathala}\n`;
+
+            const csvData = "\uFEFF" + csvContent;
+            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `diamond_monthly_report_${monthVal}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // ==============================================
+        // MASTER: KHATA CONFIGURATION MANAGEMENT
+        // ==============================================
+        function populateKhataUserDropdown() {
+            const select = document.getElementById('khata-user-input');
+            if (!select) return;
+            select.innerHTML = '<option value="">-- યુઝર પસંદ કરો (Select User) --</option>';
+            dbState.users.filter(u => u.role === 'user').forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u.id;
+                opt.textContent = u.username;
+                select.appendChild(opt);
+            });
+        }
+
+        function renderMasterKhataList() {
+            const tbody = document.getElementById('master-khata-tbody');
+            tbody.innerHTML = '';
+
+            populateKhataUserDropdown();
+
+            dbState.khatas.forEach(khata => {
+                const userOptionsHtml = dbState.users
+                    .filter(u => u.role === 'user')
+                    .map(u => `<option value="${u.id}" ${u.id === khata.userId ? 'selected' : ''}>${u.username}</option>`)
+                    .join('');
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700;">${khata.name}</td>
+                    <td><span class="location-badge">${khata.location}</span></td>
+                    <td>
+                        <select class="form-control" style="width: auto; padding: 4px 8px; font-size: 0.85rem;" onchange="updateInlineKhataAssignment('${khata.id}', this.value)">
+                            <option value="">-- ફાળવેલ નથી (Unassigned) --</option>
+                            ${userOptionsHtml}
+                        </select>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-primary btn-sm" onclick="editKhata('${khata.id}')" style="background: var(--primary-light); box-shadow: none;">એડિટ</button>
+                            <button class="btn-logout btn-sm" onclick="deleteKhata('${khata.id}')">ડિલીટ</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateInlineKhataAssignment(khataId, userId) {
+            const khata = dbState.khatas.find(k => k.id === khataId);
+            if (khata) {
+                khata.userId = userId;
+                saveDB();
+            }
+        }
+
+        function handleKhataNameInput(inputEl) {
+            // Force uppercase and clean characters
+            inputEl.value = inputEl.value.toUpperCase().replace(/[^A-Z0-9\s\-_]/g, '');
+
+            const nameVal = inputEl.value.trim();
+            const editId = document.getElementById('khata-id-edit').value;
+            const feedbackEl = document.getElementById('khata-name-feedback');
+            const submitBtn = document.querySelector('#khata-config-form button[type="submit"]');
+
+            if (!nameVal) {
+                if (feedbackEl) feedbackEl.style.display = 'none';
+                inputEl.style.borderColor = '';
+                inputEl.style.boxShadow = '';
+                if (submitBtn) submitBtn.disabled = false;
+                return;
+            }
+
+            // Check if duplicate name exists
+            const duplicate = dbState.khatas.find(k => k.name.toUpperCase() === nameVal && k.id !== editId);
+
+            if (duplicate) {
+                if (feedbackEl) feedbackEl.style.display = 'block';
+                inputEl.style.borderColor = 'var(--danger)';
+                inputEl.style.boxShadow = '0 0 0 3px var(--danger-bg)';
+                if (submitBtn) submitBtn.disabled = true;
+            } else {
+                if (feedbackEl) feedbackEl.style.display = 'none';
+                inputEl.style.borderColor = '';
+                inputEl.style.boxShadow = '';
+                if (submitBtn) submitBtn.disabled = false;
+            }
+        }
+
+        function handleSaveKhata(event) {
+            event.preventDefault();
+            const id = document.getElementById('khata-id-edit').value;
+            const name = document.getElementById('khata-name-input').value.trim().toUpperCase();
+            const location = document.getElementById('khata-location-input').value.trim();
+            const userId = document.getElementById('khata-user-input').value;
+
+            if (!name || !location) return;
+
+            // Final safety check for duplicates
+            const duplicate = dbState.khatas.find(k => k.name.toUpperCase() === name && k.id !== id);
+            if (duplicate) {
+                alert("ભૂલ: આ નામનું ખાતું અગાઉથી બનેલું છે!");
+                return;
+            }
+
+            if (id) {
+                // Edit
+                const index = dbState.khatas.findIndex(k => k.id === id);
+                if (index !== -1) {
+                    dbState.khatas[index].name = name;
+                    dbState.khatas[index].location = location;
+                    dbState.khatas[index].userId = userId;
+                }
+            } else {
+                // Add New
+                const newId = 'khata_' + Date.now();
+                dbState.khatas.push({ id: newId, name, location, userId });
+            }
+
+            saveDB();
+            resetKhataForm();
+            renderMasterKhataList();
+            alert("ખાતું સફળતાપૂર્વક સાચવવામાં આવ્યું છે.");
+            const nameInput = document.getElementById('khata-name-input');
+            if (nameInput) {
+                nameInput.focus();
+            }
+        }
+
+        function editKhata(id) {
+            const khata = dbState.khatas.find(k => k.id === id);
+            if (!khata) return;
+
+            document.getElementById('khata-id-edit').value = khata.id;
+            document.getElementById('khata-name-input').value = khata.name;
+            document.getElementById('khata-location-input').value = khata.location;
+            document.getElementById('khata-user-input').value = khata.userId || '';
+
+            document.getElementById('khata-form-title').textContent = "ખાતાની ગોઠવણી બદલો";
+            document.getElementById('btn-cancel-khata-edit').style.display = 'inline-block';
+        }
+
+        function resetKhataForm() {
+            document.getElementById('khata-id-edit').value = '';
+            document.getElementById('khata-config-form').reset();
+            document.getElementById('khata-user-input').value = '';
+            document.getElementById('khata-form-title').textContent = "નવું ખાતું ઉમેરો";
+            document.getElementById('btn-cancel-khata-edit').style.display = 'none';
+
+            // Clear name validation styles
+            const nameInput = document.getElementById('khata-name-input');
+            const feedbackEl = document.getElementById('khata-name-feedback');
+            const submitBtn = document.querySelector('#khata-config-form button[type="submit"]');
+            if (nameInput) {
+                nameInput.style.borderColor = '';
+                nameInput.style.boxShadow = '';
+            }
+            if (feedbackEl) {
+                feedbackEl.style.display = 'none';
+            }
+            if (submitBtn) {
+                submitBtn.disabled = false;
+            }
+        }
+
+        function deleteKhata(id) {
+            if (confirm("ચેતવણી: આ ખાતું ડિલીટ કરવાથી તેનાથી સંબંધિત તમામ રેકોર્ડ દૂર થશે. ચાલુ રાખવું છે?")) {
+                dbState.khatas = dbState.khatas.filter(k => k.id !== id);
+                saveDB();
+                renderMasterKhataList();
+            }
+        }
+
+        // ==============================================
+        // MASTER: USER MANAGEMENT
+        // ==============================================
+        function renderMasterUserList() {
+            const tbody = document.getElementById('master-users-tbody');
+            tbody.innerHTML = '';
+
+            dbState.users.forEach(user => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; cursor: pointer; text-decoration: underline dashed var(--primary-light);" title="ડબલ-ક્લિક કરીને નામ બદલો (Double-click to rename)" ondblclick="renameUserDirectly('${user.id}')">${user.username}</td>
+                    <td style="font-family: monospace; font-size: 0.95rem;">${user.password || '<i>નથી સેટ કરેલો</i>'}</td>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-primary btn-sm" onclick="editUser('${user.id}')" style="background: var(--primary-light); box-shadow: none;">પાસવર્ડ બદલો</button>
+                            ${user.id !== 'master' ? `<button class="btn-logout btn-sm" onclick="deleteUser('${user.id}')">ડિલીટ હેડ</button>` : ''}
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function renameUserDirectly(userId) {
+            const user = dbState.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            const newName = prompt("નવું નામ દાખલ કરો: (Enter new name)", user.username);
+            if (newName && newName.trim()) {
+                user.username = newName.trim();
+                await saveDB();
+                renderMasterUserList();
+                populateLoginRoles();
+                
+                if (currentUser && currentUser.id === userId) {
+                    currentUser.username = user.username;
+                    sessionStorage.setItem('diamond_active_user', JSON.stringify(currentUser));
+                    document.getElementById('header-user-display').textContent = user.username;
+                }
+            }
+        }
+
+        function handleSaveUser(event) {
+            event.preventDefault();
+            const id = document.getElementById('user-id-edit').value;
+            const name = document.getElementById('user-name-input').value.trim();
+            const password = document.getElementById('user-password-input').value.trim();
+
+            if (!name || !password) return;
+
+            if (id) {
+                // Edit
+                const index = dbState.users.findIndex(u => u.id === id);
+                if (index !== -1) {
+                    dbState.users[index].username = name;
+                    dbState.users[index].password = password;
+                    
+                    if (currentUser && currentUser.id === id) {
+                        currentUser.username = name;
+                        sessionStorage.setItem('diamond_active_user', JSON.stringify(currentUser));
+                        document.getElementById('header-user-display').textContent = name;
+                    }
+                }
+            } else {
+                // Add New
+                const newId = 'user_' + Date.now();
+                dbState.users.push({
+                    id: newId,
+                    username: name,
+                    password: password,
+                    role: 'user'
+                });
+            }
+
+            saveDB();
+            resetUserForm();
+            renderMasterUserList();
+            alert("હેડની વિગતો સફળતાપૂર્વક સાચવવામાં આવી છે.");
+        }
+
+        function editUser(id) {
+            const user = dbState.users.find(u => u.id === id);
+            if (!user) return;
+
+            document.getElementById('user-id-edit').value = user.id;
+            document.getElementById('user-name-input').value = user.username;
+            document.getElementById('user-name-input').disabled = false;
+            document.getElementById('user-password-input').value = user.password;
+
+            document.getElementById('user-form-title').textContent = "હેડની વિગતો બદલો";
+            document.getElementById('btn-cancel-user-edit').style.display = 'inline-block';
+        }
+
+        function resetUserForm() {
+            document.getElementById('user-id-edit').value = '';
+            document.getElementById('user-name-input').disabled = false;
+            document.getElementById('user-config-form').reset();
+            document.getElementById('user-form-title').textContent = "નવો હેડ બનાવો";
+            document.getElementById('btn-cancel-user-edit').style.display = 'none';
+        }
+
+        function deleteUser(id) {
+            if (id === 'master') return;
+            if (confirm("શું તમે આ હેડને ડિલીટ કરવા માંગો છો? તેનાથી તેની ગોઠવણ અને સબમિટ કરેલ ડેટા દૂર થઈ જશે.")) {
+                dbState.users = dbState.users.filter(u => u.id !== id);
+
+                // Clear their configurations on Khatas
+                dbState.khatas.forEach(k => {
+                    if (k.userId === id) {
+                        k.userId = '';
+                    }
+                });
+
+                saveDB();
+                renderMasterUserList();
+            }
+        }
+
+        // ==============================================
+        // BACKUP, RESTORE & EXCEL EXPORTS
+        // ==============================================
+        function downloadBackup() {
+            const jsonStr = JSON.stringify(dbState, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `diamond_erp_backup_${getTodayDateString()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        async function updateFirebaseConfig() {
+            let url = document.getElementById('firebase-url-input').value.trim();
+            if (!url) {
+                alert("કૃપા કરીને સાચી URL દાખલ કરો. (Please enter a valid URL.)");
+                return;
+            }
+            if (url.endsWith('/')) {
+                url = url.substring(0, url.length - 1);
+            }
+            localStorage.setItem('diamond_firebase_url', url);
+            FIREBASE_URL = url;
+
+            showGlobalLoader(true);
+            const fetched = await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            if (fetched) {
+                alert("ડેટાબેઝ સફળતાપૂર્વક લિંક અને સેવ થઈ ગયો છે! (Database URL saved and linked!)");
+                location.reload();
+            } else {
+                alert("લિંક કરવામાં ભૂલ આવી! કૃપા કરીને URL ચકાસો. (Connection failed. Please check the URL.)");
+            }
+        }
+
+        function importBackupData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function (e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (parsed.users && parsed.khatas) {
+                        if (!parsed.submissions) {
+                            parsed.submissions = {};
+                        }
+                        dbState = parsed;
+                        await saveDB();
+                        alert("બેકઅપ ડેટા સફળતાપૂર્વક લોડ થઈ ગયો છે! (Backup restored successfully!)");
+                        location.reload();
+                    } else {
+                        alert("ખોટી ફાઇલ! બેકઅપ ફાઇલમાં યુઝર્સ અને ખાતાનો ડેટા હોવો જરૂરી છે. (Invalid file structure.)");
+                    }
+                } catch (err) {
+                    alert("ફાઇલ લોડ કરવામાં નિષ્ફળતા: " + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        async function factoryResetDatabase() {
+            if (confirm("ચેતવણી: ફેક્ટરી રીસેટ કરવાથી બધો ડેટા ડિલીટ થઈ જશે અને ડિફોલ્ટ સેટિંગ્સ ફરી સેટ થશે. શું તમે ચાલુ રાખવા માંગો છો? (Warning: This will delete everything permanently!)")) {
+                dbState = JSON.parse(JSON.stringify(defaultState));
+                localStorage.removeItem(DB_KEY);
+                showGlobalLoader(true);
+                await saveFullDBToFirebase();
+                showGlobalLoader(false);
+                alert("ડેટાબેઝ સફળતાપૂર્વક રીસેટ થઈ ગયો છે! (Reset completed!)");
+                location.reload();
+            }
+        }
+
+        function exportReportToExcel() {
+            const dateVal = document.getElementById('master-report-date').value;
+            if (!dateVal) return;
+
+            const weekDates = getMonToSatDates(dateVal);
+
+            let csvContent = `Diamond Production Weekly Report - Week: ${weekDates[0].displayDate} to ${weekDates[5].displayDate}\n\n`;
+            csvContent += "Date,Day,Taliya,Pel,Mathala\n";
+
+            let totalTaliya = 0;
+            let totalPel = 0;
+            let totalMathala = 0;
+
+            weekDates.forEach(wd => {
+                let dateTaliya = 0;
+                let datePel = 0;
+                let dateMathala = 0;
+                let hasSubmissions = false;
+
+                const dateSubmissions = dbState.submissions[wd.dateKey] || {};
+
+                Object.values(dateSubmissions).forEach(userSub => {
+                    if (userSub) {
+                        hasSubmissions = true;
+                        if (!userSub.isHoliday && userSub.entries) {
+                            Object.values(userSub.entries).forEach(ent => {
+                                if (ent && !ent.isHoliday) {
+                                    dateTaliya += ent.taliya || 0;
+                                    datePel += ent.pel || 0;
+                                    dateMathala += ent.mathala || 0;
+                                }
+                            });
+                        }
+                    }
+                });
+
+                let t = dateTaliya, p = datePel, m = dateMathala;
+                if (!hasSubmissions) {
+                    t = "-";
+                    p = "-";
+                    m = "-";
+                } else {
+                    totalTaliya += dateTaliya;
+                    totalPel += datePel;
+                    totalMathala += dateMathala;
+                }
+
+                csvContent += `"${wd.displayDate}","${wd.dayName}",${t},${p},${m}\n`;
+            });
+
+            csvContent += `Grand Total,,${totalTaliya},${totalPel},${totalMathala}\n`;
+
+            const csvData = "\uFEFF" + csvContent;
+            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `diamond_weekly_report_${weekDates[0].displayDate}_to_${weekDates[5].displayDate}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Holiday Modal Handler Functions
+        function openHolidayDetails(username, khataNames) {
+            const modal = document.getElementById('holiday-modal');
+            const title = document.getElementById('holiday-modal-title');
+            const body = document.getElementById('holiday-modal-body');
+
+            if (!modal || !title || !body) return;
+
+            const contentEl = modal.querySelector('.modal-content');
+            if (contentEl) {
+                contentEl.style.maxWidth = '450px';
+            }
+
+            title.textContent = `${username} - રજાવાળા ખાતા`;
+            body.innerHTML = '';
+
+            khataNames.forEach(name => {
+                const item = document.createElement('div');
+                item.style.padding = '10px 14px';
+                item.style.background = '#fef2f2';
+                item.style.border = '1px solid #fecaca';
+                item.style.borderRadius = 'var(--radius-md)';
+                item.style.color = 'var(--danger)';
+                item.style.fontWeight = '700';
+                item.style.fontSize = '0.95rem';
+                item.textContent = name;
+                body.appendChild(item);
+            });
+
+            modal.classList.add('active');
+        }
+
+        function openWorkDetails(userId) {
+            const dateVal = document.getElementById('master-dashboard-date').value;
+            const sub = dbState.submissions[dateVal]?.[userId];
+            const user = dbState.users.find(u => u.id === userId);
+            if (!sub || !user) return;
+
+            // Get assigned khatas to lookup locations
+            const assignedKhatas = dbState.khatas.filter(k => k.userId === userId);
+
+            const workKhatas = [];
+            if (sub.entries) {
+                Object.keys(sub.entries).forEach(khataId => {
+                    const ent = sub.entries[khataId];
+                    if (!ent.isHoliday) {
+                        const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
+                        workKhatas.push({
+                            name: khataObj ? khataObj.name : khataId,
+                            location: khataObj ? khataObj.location : '',
+                            taliya: ent.taliya || 0,
+                            pel: ent.pel || 0,
+                            mathala: ent.mathala || 0
+                        });
+                    }
+                });
+            }
+
+            const modal = document.getElementById('holiday-modal');
+            const title = document.getElementById('holiday-modal-title');
+            const body = document.getElementById('holiday-modal-body');
+
+            if (!modal || !title || !body) return;
+
+            const contentEl = modal.querySelector('.modal-content');
+            if (contentEl) {
+                contentEl.style.maxWidth = '550px';
+            }
+
+            title.textContent = `${user.username} ના સક્રિય ખાતાની વિગતો`;
+            body.innerHTML = '';
+
+            if (workKhatas.length === 0) {
+                const item = document.createElement('div');
+                item.style.padding = '10px 14px';
+                item.style.color = 'var(--text-muted)';
+                item.style.textAlign = 'center';
+                item.textContent = 'કોઈ સક્રિય ખાતું નથી';
+                body.appendChild(item);
+            } else {
+                let tableHtml = `
+                    <div class="table-responsive" style="margin-bottom: 0;">
+                        <table class="custom-table" style="font-size: 0.85rem; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>ખાતાનું નામ</th>
+                                    <th>લોકેશન</th>
+                                    <th style="width: 65px;">તળિયા</th>
+                                    <th style="width: 65px;">પેલ</th>
+                                    <th style="width: 65px;">મથાળા</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                let totalTaliya = 0;
+                let totalPel = 0;
+                let totalMathala = 0;
+
+                workKhatas.forEach(k => {
+                    totalTaliya += k.taliya;
+                    totalPel += k.pel;
+                    totalMathala += k.mathala;
+
+                    tableHtml += `
+                        <tr>
+                            <td style="font-weight: 700; color: var(--accent);">${k.name}</td>
+                            <td><span class="location-badge" style="font-size: 0.75rem; padding: 2px 6px; white-space: nowrap;">${k.location}</span></td>
+                            <td style="font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums;">${k.taliya}</td>
+                            <td style="font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums;">${renderValWithValidation(k.taliya, k.pel)}</td>
+                            <td style="font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums;">${renderValWithValidation(k.taliya, k.mathala)}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHtml += `
+                            </tbody>
+                            <tfoot>
+                                <tr class="totals-row">
+                                    <td colspan="2" style="color: var(--accent); font-weight: 800;">કુલ સરવાળો</td>
+                                    <td style="font-weight: 800; font-variant-numeric: tabular-nums;">${totalTaliya}</td>
+                                    <td style="font-weight: 800; font-variant-numeric: tabular-nums;">${renderValWithValidation(totalTaliya, totalPel)}</td>
+                                    <td style="font-weight: 800; font-variant-numeric: tabular-nums;">${renderValWithValidation(totalTaliya, totalMathala)}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                `;
+
+                body.innerHTML = tableHtml;
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeHolidayModal() {
+            const modal = document.getElementById('holiday-modal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        // Close modal when clicking outside of modal-content
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('holiday-modal');
+            if (e.target === modal) {
+                closeHolidayModal();
+            }
+        });
+    </script>
+</body>
+
+</html>

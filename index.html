@@ -1000,7 +1000,7 @@
                 </div>
                 <div class="form-group" id="password-group">
                     <label for="login-password">પાસવર્ડ</label>
-                    <input type="password" id="login-password" class="form-control" placeholder="••••">
+                    <input type="password" id="login-password" class="form-control" placeholder="••••" autocomplete="new-password">
                 </div>
                 <div class="form-group"
                     style="flex-direction: row; align-items: center; gap: 8px; margin-bottom: 20px;">
@@ -1379,7 +1379,7 @@
                                 <input type="text" id="khata-name-input" class="form-control" placeholder="DEPT-A"
                                     required pattern="[A-Z0-9\\s\\-_]+"
                                     title="Please enter in English uppercase letters, numbers, hyphens, or spaces only"
-                                    style="text-transform: uppercase;" oninput="handleKhataNameInput(this)">
+                                    style="text-transform: uppercase;" oninput="handleKhataNameInput(this)" autocomplete="off">
                                 <div id="khata-name-feedback"
                                     style="color: var(--danger); font-size: 0.8rem; font-weight: 600; margin-top: 4px; display: none;">
                                     ⚠️ આ નામનું ખાતું અગાઉથી બનાવેલ છે!
@@ -1388,7 +1388,8 @@
                             <div class="form-group">
                                 <label for="khata-location-input">લોકેશન</label>
                                 <input type="text" id="khata-location-input" class="form-control"
-                                    placeholder="Ground Floor, Room 3" required>
+                                    placeholder="Ground Floor, Room 3" required list="location-suggestions">
+                                <datalist id="location-suggestions"></datalist>
                             </div>
                             <div class="form-group">
                                 <label for="khata-user-input">હેડ ફાળવો (ઓપ્શનલ)</label>
@@ -1441,12 +1442,12 @@
                             <div class="form-group">
                                 <label for="user-name-input">હેડ નામ</label>
                                 <input type="text" id="user-name-input" class="form-control" placeholder="Ramesh"
-                                    required>
+                                    required autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label for="user-password-input">પાસવર્ડ</label>
                                 <input type="text" id="user-password-input" class="form-control"
-                                    placeholder="Enter Password" required>
+                                    placeholder="Enter Password" required autocomplete="new-password">
                             </div>
                             <div style="display: flex; gap: 10px;">
                                 <button type="submit" class="btn-primary" style="flex: 1;">
@@ -1712,20 +1713,22 @@
                 const response = await fetch(FIREBASE_URL + '/.json?t=' + new Date().getTime());
                 if (response.ok) {
                     const data = await response.json();
+                    const stored = localStorage.getItem(DB_KEY);
+                    const localData = stored ? JSON.parse(stored) : null;
+
                     if (data && data.users && data.users.length > 0) {
-                        dbState = data;
+                        // If we have more users locally than the server has (e.g. newly added heads), preserve local and upload
+                        if (localData && localData.users && localData.users.length > data.users.length) {
+                            dbState = localData;
+                            await saveFullDBToFirebase();
+                        } else {
+                            dbState = data;
+                        }
                     } else {
                         // If Firebase database is empty, check if we have a locally stored imported backup configuration
-                        const stored = localStorage.getItem(DB_KEY);
-                        if (stored) {
-                            const localData = JSON.parse(stored);
-                            if (localData && localData.users && localData.users.length > 1) {
-                                dbState = localData;
-                                await saveFullDBToFirebase();
-                            } else {
-                                dbState = JSON.parse(JSON.stringify(defaultState));
-                                await saveFullDBToFirebase();
-                            }
+                        if (localData && localData.users && localData.users.length > 1) {
+                            dbState = localData;
+                            await saveFullDBToFirebase();
                         } else {
                             dbState = JSON.parse(JSON.stringify(defaultState));
                             await saveFullDBToFirebase();
@@ -1842,8 +1845,11 @@
             try {
                 localStorage.setItem(DB_KEY, JSON.stringify(dbState));
                 showGlobalLoader(true);
-                await saveFullDBToFirebase();
+                const saved = await saveFullDBToFirebase();
                 showGlobalLoader(false);
+                if (!saved) {
+                    await customAlert("ચેતવણી: ડેટા ફાયરબેઝ સર્વર પર સાચવી શકાયો નથી! કૃપા કરીને તમારા Firebase Database ના Rules (નિયમો) ચેક કરો. (Firebase save failed. Check your Firebase Rules.)");
+                }
             } catch (e) {
                 await customAlert("લૉકલ સ્ટોરેજ સેવ ભૂલ! (Storage Error: " + e.message + ")");
             }
@@ -3134,6 +3140,21 @@
                     </td>
                 `;
                 tbody.appendChild(tr);
+            });
+
+            populateLocationSuggestions();
+        }
+
+        function populateLocationSuggestions() {
+            const datalist = document.getElementById('location-suggestions');
+            if (!datalist) return;
+            datalist.innerHTML = '';
+            
+            const locations = [...new Set(dbState.khatas.map(k => k.location).filter(loc => loc && loc.trim()))];
+            locations.forEach(loc => {
+                const opt = document.createElement('option');
+                opt.value = loc;
+                datalist.appendChild(opt);
             });
         }
 

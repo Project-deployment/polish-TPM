@@ -1969,6 +1969,7 @@
             // Setup Form Enter Key Navigations
             setupKhataFormNavigations();
             setupLoginFormNavigations();
+            setupUserFormNavigations();
 
             restoreRememberedUser();
 
@@ -2110,6 +2111,34 @@
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         if (loginForm) loginForm.requestSubmit();
+                    }
+                });
+            }
+        }
+
+        function setupUserFormNavigations() {
+            const nameInput = document.getElementById('user-name-input');
+            const passInput = document.getElementById('user-password-input');
+            const form = document.getElementById('user-config-form');
+
+            if (nameInput) {
+                nameInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (passInput) {
+                            passInput.focus();
+                        }
+                    }
+                });
+            }
+
+            if (passInput) {
+                passInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (form) {
+                            form.requestSubmit();
+                        }
                     }
                 });
             }

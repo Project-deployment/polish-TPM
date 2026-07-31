@@ -1707,6 +1707,71 @@
             }
         }
 
+        function mergeDatabaseStates(local, server) {
+            if (!local) return JSON.parse(JSON.stringify(server || defaultState));
+            if (!server) return JSON.parse(JSON.stringify(local));
+
+            const merged = {
+                users: JSON.parse(JSON.stringify(server.users || [])),
+                khatas: JSON.parse(JSON.stringify(server.khatas || [])),
+                submissions: JSON.parse(JSON.stringify(server.submissions || {}))
+            };
+
+            // Merge Users
+            if (local.users) {
+                local.users.forEach(localUser => {
+                    const serverUser = merged.users.find(u => u.id === localUser.id);
+                    if (!serverUser) {
+                        merged.users.push(localUser);
+                    }
+                });
+            }
+
+            // Merge Khatas
+            if (local.khatas) {
+                local.khatas.forEach(localKhata => {
+                    const serverKhata = merged.khatas.find(k => k.id === localKhata.id);
+                    if (!serverKhata) {
+                        merged.khatas.push(localKhata);
+                    } else {
+                        // Preserve local assignment if server is unassigned
+                        if (!serverKhata.userId && localKhata.userId) {
+                            serverKhata.userId = localKhata.userId;
+                        }
+                    }
+                });
+            }
+
+            // Merge Submissions (date -> userId -> submissionData)
+            if (local.submissions) {
+                Object.keys(local.submissions).forEach(dateKey => {
+                    if (!merged.submissions[dateKey]) {
+                        merged.submissions[dateKey] = {};
+                    }
+                    const localDateSubs = local.submissions[dateKey];
+                    const serverDateSubs = merged.submissions[dateKey];
+
+                    Object.keys(localDateSubs).forEach(userId => {
+                        const localSub = localDateSubs[userId];
+                        const serverSub = serverDateSubs[userId];
+
+                        if (!serverSub) {
+                            serverDateSubs[userId] = localSub;
+                        } else {
+                            // If both exist, keep the newer one based on submittedAt timestamp
+                            const localTime = localSub.submittedAt ? new Date(localSub.submittedAt).getTime() : 0;
+                            const serverTime = serverSub.submittedAt ? new Date(serverSub.submittedAt).getTime() : 0;
+                            if (localTime > serverTime) {
+                                serverDateSubs[userId] = localSub;
+                            }
+                        }
+                    });
+                });
+            }
+
+            return merged;
+        }
+
         async function fetchFromFirebase() {
             try {
                 // Bypass browser caching by appending a unique timestamp
@@ -1717,13 +1782,9 @@
                     const localData = stored ? JSON.parse(stored) : null;
 
                     if (data && data.users && data.users.length > 0) {
-                        // If we have more users locally than the server has (e.g. newly added heads), preserve local and upload
-                        if (localData && localData.users && localData.users.length > data.users.length) {
-                            dbState = localData;
-                            await saveFullDBToFirebase();
-                        } else {
-                            dbState = data;
-                        }
+                        dbState = mergeDatabaseStates(localData, data);
+                        // Save the merged state back to Firebase so it is synchronized
+                        await saveFullDBToFirebase();
                     } else {
                         // If Firebase database is empty, check if we have a locally stored imported backup configuration
                         if (localData && localData.users && localData.users.length > 1) {
@@ -1788,17 +1849,14 @@
 
         // Initialize Database
         async function initDB() {
-            // Force set the target Firebase Database URL provided by the user
-            const targetUrl = 'https://tpm-bhaveshbhai-default-rtdb.firebaseio.com';
-            const savedFirebaseUrl = localStorage.getItem('diamond_firebase_url');
-            if (savedFirebaseUrl !== targetUrl) {
-                localStorage.setItem('diamond_firebase_url', targetUrl);
-                localStorage.removeItem(DB_KEY); // clear local storage cache of old database
-                sessionStorage.removeItem('diamond_active_user'); // clear any active dummy user session
-                FIREBASE_URL = targetUrl;
-            } else {
-                FIREBASE_URL = targetUrl;
+            // Load custom URL if exists in localStorage, otherwise use default URL
+            const defaultUrl = 'https://tpm-bhaveshbhai-default-rtdb.firebaseio.com';
+            let savedUrl = localStorage.getItem('diamond_firebase_url');
+            if (!savedUrl) {
+                savedUrl = defaultUrl;
+                localStorage.setItem('diamond_firebase_url', defaultUrl);
             }
+            FIREBASE_URL = savedUrl;
 
             const fbInput = document.getElementById('firebase-url-input');
             if (fbInput) {
@@ -1835,10 +1893,6 @@
             dbState.khatas.forEach(k => {
                 if (k.userId === undefined) k.userId = '';
             });
-
-            if (dbState.submissions && dbState.submissions["2026-07-30"]) {
-                delete dbState.submissions["2026-07-30"];
-            }
         }
 
         async function saveDB() {

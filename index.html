@@ -1614,6 +1614,9 @@
                 }
 
                 overlay.style.display = 'flex';
+                setTimeout(() => {
+                    overlay.classList.add('active');
+                }, 10);
                 
                 if (type === 'prompt') {
                     setTimeout(() => {
@@ -1623,7 +1626,10 @@
                 }
 
                 btnOk.onclick = function() {
-                    overlay.style.display = 'none';
+                    overlay.classList.remove('active');
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                    }, 300);
                     if (type === 'prompt') {
                         resolve(inputEl.value);
                     } else {
@@ -1632,7 +1638,10 @@
                 };
 
                 btnCancel.onclick = function() {
-                    overlay.style.display = 'none';
+                    overlay.classList.remove('active');
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                    }, 300);
                     if (type === 'prompt') {
                         resolve(null);
                     } else {
@@ -3187,9 +3196,9 @@
                         </select>
                     </td>
                     <td>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="btn-primary btn-sm" onclick="editKhata('${khata.id}')" style="background: var(--primary-light); box-shadow: none;">એડિટ</button>
-                            <button class="btn-logout btn-sm" onclick="deleteKhata('${khata.id}')">ડિલીટ</button>
+                        <div style="display: flex; gap: 8px; justify-content: center; align-items: center; height: 100%;">
+                            <button class="btn-primary btn-sm" onclick="editKhata('${khata.id}')" style="background: var(--primary-light); box-shadow: none; width: auto; flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; white-space: nowrap; margin: 0;">એડિટ</button>
+                            <button class="btn-logout btn-sm" onclick="deleteKhata('${khata.id}')" style="width: auto; flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; white-space: nowrap; margin: 0; border-radius: var(--radius-sm);">ડિલીટ</button>
                         </div>
                     </td>
                 `;
@@ -3350,9 +3359,9 @@
                     <td style="font-weight: 700; cursor: pointer; text-decoration: underline dashed var(--primary-light);" title="ડબલ-ક્લિક કરીને નામ બદલો (Double-click to rename)" ondblclick="renameUserDirectly('${user.id}')">${user.username}</td>
                     <td style="font-family: monospace; font-size: 0.95rem;">${user.password || '<i>નથી સેટ કરેલો</i>'}</td>
                     <td>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="btn-primary btn-sm" onclick="editUser('${user.id}')" style="background: var(--primary-light); box-shadow: none;">પાસવર્ડ બદલો</button>
-                            ${user.id !== 'master' ? `<button class="btn-logout btn-sm" onclick="deleteUser('${user.id}')">ડિલીટ હેડ</button>` : ''}
+                        <div style="display: flex; gap: 8px; justify-content: center; align-items: center; height: 100%;">
+                            <button class="btn-primary btn-sm" onclick="editUser('${user.id}')" style="background: var(--primary-light); box-shadow: none; width: auto; flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; white-space: nowrap; margin: 0;">પાસવર્ડ બદલો</button>
+                            ${user.id !== 'master' ? `<button class="btn-logout btn-sm" onclick="deleteUser('${user.id}')" style="width: auto; flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; white-space: nowrap; margin: 0; border-radius: var(--radius-sm);">ડિલીટ હેડ</button>` : ''}
                         </div>
                     </td>
                 `;

@@ -2545,8 +2545,9 @@
             const tbody = document.getElementById('user-table-body');
             tbody.innerHTML = '';
 
-            // Get assigned khatas for this user
+            // Get assigned khatas for this user and sort alphabetically
             const assignedKhatas = dbState.khatas.filter(k => k.userId === currentUser.id);
+            assignedKhatas.sort((a, b) => a.name.localeCompare(b.name, 'gu'));
 
             // 2. Check if a submission already exists for this date
             const dateSubmissions = dbState.submissions[dateVal] || {};

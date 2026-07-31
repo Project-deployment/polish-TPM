@@ -1231,6 +1231,7 @@
                                 <th>તળિયા</th>
                                 <th>પેલ</th>
                                 <th>મથાળા</th>
+                                <th class="non-printable" style="width: 80px;">એક્શન</th>
                             </tr>
                         </thead>
                         <tbody id="master-submissions-tbody">
@@ -1245,6 +1246,7 @@
                                 <td class="total-value" id="master-submissions-total-taliya">0</td>
                                 <td class="total-value" id="master-submissions-total-pel">0</td>
                                 <td class="total-value" id="master-submissions-total-mathala">0</td>
+                                <td class="non-printable"></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -2859,6 +2861,11 @@
                     statusHtml = '<span class="badge-status pending">BAKI</span>';
                 }
 
+                let actionHtml = '-';
+                if (sub) {
+                    actionHtml = `<button class="btn-logout btn-sm" onclick="deleteSubmission('${dateVal}', '${user.id}')" style="padding: 4px 8px; font-size: 0.75rem; border-radius: var(--radius-sm); margin: 0; line-height: 1; display: inline-flex; align-items: center; justify-content: center; width: auto; height: auto; font-weight: 700;">ડિલીટ</button>`;
+                }
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-weight: 700; color: var(--primary);">${user.username}</td>
@@ -2869,6 +2876,7 @@
                     <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${taliya}</td>
                     <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliya, pel)}</td>
                     <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliya, mathala)}</td>
+                    <td class="non-printable">${actionHtml}</td>
                 `;
                 tbody.appendChild(tr);
             });

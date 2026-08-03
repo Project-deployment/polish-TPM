@@ -1644,9 +1644,13 @@
                         બધા હેડના ફોનમાંથી ડેટા એક જગ્યાએ મેળવવા માટે અહીં તમારા Firebase Realtime Database ની URL દાખલ
                         કરો.
                     </p>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <input type="url" id="firebase-url-input" class="form-control"
-                            placeholder="https://your-project-default-rtdb.firebaseio.com" style="text-align: left;">
+                    <div class="form-group" style="margin-bottom: 0; position: relative;">
+                        <input type="password" id="firebase-url-input" class="form-control"
+                            placeholder="https://your-project-default-rtdb.firebaseio.com" style="text-align: left; padding-right: 45px;">
+                        <button type="button" id="toggle-firebase-url-btn" onclick="toggleFirebaseUrlVisibility()" 
+                            style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1.1rem; padding: 4px; line-height: 1; outline: none; z-index: 5;">
+                            👁️
+                        </button>
                     </div>
                     <button class="btn-primary" onclick="updateFirebaseConfig()"
                         style="width: auto; align-self: flex-start; margin-top: 4px; box-shadow: none; background: var(--accent);">
@@ -1841,7 +1845,7 @@
         let currentUser = null; // Stores user object when logged in
         let userSetupMode = false; // Is user editing their list of Khatas
 
-        let FIREBASE_URL = 'https://tpm-bhaveshbhai-default-rtdb.firebaseio.com';
+        let FIREBASE_URL = atob('aHR0cHM6Ly90cG0tYmhhdmVzaGJoYWktZGVmYXVsdC1ydGRiLmZpcmViYXNlaW8uY29t');
 
         function showGlobalLoader(show) {
             const loader = document.getElementById('global-loader');
@@ -2117,7 +2121,7 @@
         // Initialize Database
         async function initDB() {
             // Load custom URL if exists in localStorage, otherwise use default URL
-            const defaultUrl = 'https://tpm-bhaveshbhai-default-rtdb.firebaseio.com';
+            const defaultUrl = atob('aHR0cHM6Ly90cG0tYmhhdmVzaGJoYWktZGVmYXVsdC1ydGRiLmZpcmViYXNlaW8uY29t');
             let savedUrl = localStorage.getItem('diamond_firebase_url');
             if (!savedUrl) {
                 savedUrl = defaultUrl;
@@ -4598,6 +4602,20 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+        }
+
+        function toggleFirebaseUrlVisibility() {
+            const input = document.getElementById('firebase-url-input');
+            const btn = document.getElementById('toggle-firebase-url-btn');
+            if (input) {
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    if (btn) btn.textContent = '🙈';
+                } else {
+                    input.type = 'password';
+                    if (btn) btn.textContent = '👁️';
+                }
+            }
         }
 
         async function updateFirebaseConfig() {

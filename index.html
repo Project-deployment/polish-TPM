@@ -1314,6 +1314,14 @@
                     </svg>
                     ડેેશબોર્ડ
                 </button>
+                <button class="tab-btn" id="btn-tab-falavni" onclick="switchMasterTab('mtab-falavni-dashboard', this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                        stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                    </svg>
+                    ફાળવણી ડેશબોર્ડ
+                </button>
                 <button class="tab-btn" id="btn-tab-report" onclick="switchMasterTab('mtab-reports', this)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
                         stroke-width="2" stroke="currentColor">
@@ -1403,6 +1411,53 @@
                                 <td class="total-value" id="master-submissions-total-taliya">0</td>
                                 <td class="total-value" id="master-submissions-total-pel">0</td>
                                 <td class="total-value" id="master-submissions-total-mathala">0</td>
+                                <td class="non-printable"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 1.5: MASTER FALAVNI DASHBOARD (For Admin to view sub-admin style dashboard) -->
+            <div id="mtab-falavni-dashboard" class="master-tab-pane" style="display: none;">
+                <div class="top-bar-controls flex-between" style="margin-bottom: 20px;">
+                    <div class="date-picker-wrapper">
+                        <label for="master-falavni-date">રિપોર્ટ તારીખ:</label>
+                        <input type="date" id="master-falavni-date" class="form-control" style="width: auto;"
+                            onchange="loadMasterFalavniDashboard()">
+                    </div>
+                </div>
+
+                <div class="flex-between">
+                    <h3>ડેઇલી હીરા ફાળવણી અહેવાલ</h3>
+                </div>
+
+                <div class="table-responsive non-printable">
+                    <table class="custom-table" id="master-falavni-table-view">
+                        <thead>
+                            <tr>
+                                <th>હેડ નામ</th>
+                                <th>ખાતા નં.</th>
+                                <th>સ્ટેટસ</th>
+                                <th>સબમિટ સમય</th>
+                                <th>રજા</th>
+                                <th>ચાલુ</th>
+                                <th>નંગ</th>
+                                <th class="non-printable" style="width: 80px;">એક્શન</th>
+                            </tr>
+                        </thead>
+                        <tbody id="master-falavni-tbody-view">
+                            <!-- Dynamic -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="totals-row">
+                                <td style="color: var(--accent);">કુલ સરવાળો</td>
+                                <td id="master-falavni-total-allocated" style="font-weight: 700;">0</td>
+                                <td></td>
+                                <td></td>
+                                <td id="master-falavni-total-holiday" style="font-weight: 700;">0</td>
+                                <td id="master-falavni-total-work" style="font-weight: 700;">0</td>
+                                <td class="total-value" id="master-falavni-total-nang">0</td>
                                 <td class="non-printable"></td>
                             </tr>
                         </tfoot>
@@ -1971,30 +2026,7 @@
                 submissions: JSON.parse(JSON.stringify(server.submissions || {}))
             };
 
-            // Merge Users
-            if (deviceUserRole === 'master' && local.users && Array.isArray(local.users)) {
-                local.users.forEach(localUser => {
-                    const serverUser = merged.users.find(u => u.id === localUser.id);
-                    if (!serverUser) {
-                        merged.users.push(localUser);
-                    }
-                });
-            }
-
-            // Merge Khatas
-            if (deviceUserRole === 'master' && local.khatas && Array.isArray(local.khatas)) {
-                local.khatas.forEach(localKhata => {
-                    const serverKhata = merged.khatas.find(k => k.id === localKhata.id);
-                    if (!serverKhata) {
-                        merged.khatas.push(localKhata);
-                    } else {
-                        // Preserve local assignment if server is unassigned
-                        if (!serverKhata.userId && localKhata.userId) {
-                            serverKhata.userId = localKhata.userId;
-                        }
-                    }
-                });
-            }
+            // We no longer merge users and khatas from local storage back to Firebase to avoid duplicates and resurrection of deleted items. The Firebase server is the absolute source of truth.
 
             // Merge Submissions (date -> userId -> submissionData)
             if (local.submissions && typeof local.submissions === 'object') {
@@ -2265,6 +2297,7 @@
             document.getElementById('user-falavni-date').value = todayStr;
             document.getElementById('user-weekly-falavni-date').value = todayStr;
             document.getElementById('master-dashboard-date').value = todayStr;
+            document.getElementById('master-falavni-date').value = todayStr;
             document.getElementById('master-report-date').value = todayStr;
             document.getElementById('master-monthly-report-date').value = todayStr.substring(0, 7);
 
@@ -2565,6 +2598,15 @@
                         backupBtn.style.display = 'none';
                     } else {
                         backupBtn.style.display = '';
+                    }
+                }
+
+                const falavniTabBtn = document.getElementById('btn-tab-falavni');
+                if (falavniTabBtn) {
+                    if (user.role === 'subadmin') {
+                        falavniTabBtn.style.display = 'none';
+                    } else {
+                        falavniTabBtn.style.display = '';
                     }
                 }
 
@@ -3437,6 +3479,8 @@
                 loadKhataWiseReport();
             } else if (paneId === 'mtab-monthly-reports') {
                 loadMonthlyReport();
+            } else if (paneId === 'mtab-falavni-dashboard') {
+                loadMasterFalavniDashboard();
             } else if (paneId === 'mtab-khata') {
                 renderMasterKhataList();
             } else if (paneId === 'mtab-users') {
@@ -3643,21 +3687,25 @@
                             taliya = 0;
                             pel = 0;
                             mathala = 0;
+                            nang = 0;
                         } else {
                             statusHtml = '<span class="badge-status submitted">OK</span>';
-                            let uT = 0, uP = 0, uM = 0;
+                            let uT = 0, uP = 0, uM = 0, uN = 0;
                             Object.values(sub.entries).forEach(ent => {
                                 uT += ent.taliya || 0;
                                 uP += ent.pel || 0;
                                 uM += ent.mathala || 0;
+                                uN += ent.nang || 0;
                             });
                             taliya = uT;
                             pel = uP;
                             mathala = uM;
+                            nang = uN;
 
                             grandTaliya += uT;
                             grandPel += uP;
                             grandMathala += uM;
+                            grandNang += uN;
                         }
                     }
                 } else {
@@ -3709,6 +3757,139 @@
                 document.getElementById('master-submissions-total-pel').innerHTML = renderValWithValidation(grandTaliya, grandPel);
                 document.getElementById('master-submissions-total-mathala').innerHTML = renderValWithValidation(grandTaliya, grandMathala);
             }
+        }
+
+        async function loadMasterFalavniDashboard() {
+            const dateVal = document.getElementById('master-falavni-date').value;
+            if (!dateVal) return;
+
+            showGlobalLoader(true);
+            const fetched = await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            if (!fetched) {
+                const stored = localStorage.getItem(DB_KEY);
+                if (stored) {
+                    dbState = JSON.parse(stored);
+                }
+            }
+
+            const dateSubmissions = dbState.submissions[dateVal] || {};
+            const totalUsers = dbState.users.filter(u => u.role === 'user');
+
+            let submittedCount = 0;
+            let grandHoliday = 0;
+            let grandWorkKhatas = 0;
+            let grandNang = 0;
+            let grandAllocatedKhatas = 0;
+
+            const tbody = document.getElementById('master-falavni-tbody-view');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            totalUsers.forEach(user => {
+                const assignedKhatas = dbState.khatas.filter(k => k.userId === user.id);
+                const khataCount = assignedKhatas.length;
+                grandAllocatedKhatas += khataCount;
+
+                const sub = dateSubmissions[user.id];
+                let subExists = false;
+                if (sub) {
+                    subExists = !!(sub.isHolidayFalavni || (sub.entries && Object.values(sub.entries).some(e => e.nang !== undefined)));
+                }
+
+                let statusHtml = '';
+                let timeStr = '-';
+                let holidayHtml = '-';
+                let workHtml = '-';
+                let nang = '-';
+
+                if (subExists) {
+                    submittedCount++;
+                    timeStr = new Date(sub.submittedAt).toLocaleTimeString();
+
+                    let holidayCount = 0;
+                    let holidayKhatas = [];
+                    let workCount = 0;
+
+                    if (sub.entries && Object.keys(sub.entries).length > 0) {
+                        Object.keys(sub.entries).forEach(khataId => {
+                            const ent = sub.entries[khataId];
+                            const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
+                            if (!khataObj) return; // Skip deleted khata
+                            
+                            if (ent.isHolidayFalavni) {
+                                holidayCount++;
+                                holidayKhatas.push(khataObj.name);
+                            } else if (ent.nang !== undefined) {
+                                workCount++;
+                            }
+                        });
+                    } else {
+                        if (sub.isHolidayFalavni) {
+                            holidayCount = assignedKhatas.length;
+                            holidayKhatas = assignedKhatas.map(k => k.name);
+                        }
+                    }
+
+                    if (holidayCount > 0) {
+                        grandHoliday += holidayCount;
+                        const escapedUser = user.username.replace(/['"\\]/g, '');
+                        const escapedKhatas = holidayKhatas.map(name => name.replace(/['"\\]/g, ''));
+                        holidayHtml = `<button class="btn-holiday-toggle active btn-sm" style="display:inline-block; padding:2px 8px; font-size:0.8rem; box-shadow:none; cursor:pointer;" onclick='openHolidayDetails("${escapedUser}", ${JSON.stringify(escapedKhatas)})'>${holidayCount} રજા</button>`;
+                    } else {
+                        holidayHtml = `<span style="color:var(--text-muted); font-size:0.85rem;">0</span>`;
+                    }
+
+                    if (workCount > 0) {
+                        grandWorkKhatas += workCount;
+                        workHtml = `<button class="btn-primary btn-sm" style="display:inline-block; padding:2px 8px; font-size:0.8rem; box-shadow:none; cursor:pointer; background:var(--accent); border:1px solid var(--accent); color:#ffffff; border-radius:30px; line-height:1;" onclick="openWorkDetails('${user.id}')">${workCount} ખાતા</button>`;
+                    } else {
+                        workHtml = `<span style="color:var(--text-muted); font-size:0.85rem;">0</span>`;
+                    }
+
+                    if (sub.isHolidayFalavni) {
+                        statusHtml = '<span class="badge-status holiday">OK</span>';
+                        nang = 0;
+                    } else {
+                        statusHtml = '<span class="badge-status submitted">OK</span>';
+                        let uN = 0;
+                        Object.values(sub.entries).forEach(ent => {
+                            if (ent.nang !== undefined && !ent.isHolidayFalavni) {
+                                uN += ent.nang || 0;
+                            }
+                        });
+                        nang = uN;
+                        grandNang += uN;
+                    }
+                } else {
+                    statusHtml = '<span class="badge-status pending">BAKI</span>';
+                }
+
+                let actionHtml = '-';
+                if (subExists) {
+                    actionHtml = `<button class="btn-logout btn-sm" onclick="deleteSubmission('${dateVal}', '${user.id}')" style="padding: 4px 8px; font-size: 0.75rem; border-radius: var(--radius-sm); margin: 0; line-height: 1; display: inline-flex; align-items: center; justify-content: center; width: auto; height: auto; font-weight: 700;">ડિલીટ</button>`;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary);">${user.username}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${khataCount}</td>
+                    <td>${statusHtml}</td>
+                    <td style="font-variant-numeric: tabular-nums;">${timeStr}</td>
+                    <td>${holidayHtml}</td>
+                    <td>${workHtml}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${nang}</td>
+                    <td class="non-printable">${actionHtml}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Update Table Footer Totals
+            document.getElementById('master-falavni-total-allocated').textContent = grandAllocatedKhatas;
+            document.getElementById('master-falavni-total-holiday').textContent = grandHoliday > 0 ? `${grandHoliday} રજા` : '0';
+            document.getElementById('master-falavni-total-work').textContent = grandWorkKhatas > 0 ? `${grandWorkKhatas} ખાતા` : '0';
+            document.getElementById('master-falavni-total-nang').textContent = grandNang;
         }
 
         async function deleteSubmission(dateKey, userId) {
@@ -4449,17 +4630,24 @@
 
         async function handleSaveKhata(event) {
             event.preventDefault();
+            const submitBtn = document.querySelector('#khata-config-form button[type="submit"]');
+            if (submitBtn) submitBtn.disabled = true;
+
             const id = document.getElementById('khata-id-edit').value;
             const name = document.getElementById('khata-name-input').value.trim().toUpperCase();
             const location = document.getElementById('khata-location-input').value.trim();
             const userId = document.getElementById('khata-user-input').value;
 
-            if (!name || !location) return;
+            if (!name || !location) {
+                if (submitBtn) submitBtn.disabled = false;
+                return;
+            }
 
             // Final safety check for duplicates
             const duplicate = dbState.khatas.find(k => k.name.toUpperCase() === name && k.id !== id);
             if (duplicate) {
                 await customAlert("ભૂલ: આ નામનું ખાતું અગાઉથી બનેલું છે!");
+                if (submitBtn) submitBtn.disabled = false;
                 return;
             }
 
@@ -4584,11 +4772,17 @@
 
         async function handleSaveUser(event) {
             event.preventDefault();
+            const submitBtn = document.querySelector('#user-config-form button[type="submit"]');
+            if (submitBtn) submitBtn.disabled = true;
+
             const id = document.getElementById('user-id-edit').value;
             const name = document.getElementById('user-name-input').value.trim();
             const password = document.getElementById('user-password-input').value.trim();
 
-            if (!name || !password) return;
+            if (!name || !password) {
+                if (submitBtn) submitBtn.disabled = false;
+                return;
+            }
 
             if (id) {
                 // Edit
@@ -4643,6 +4837,8 @@
             document.getElementById('user-config-form').reset();
             document.getElementById('user-form-title').textContent = "નવો હેડ બનાવો";
             document.getElementById('btn-cancel-user-edit').style.display = 'none';
+            const submitBtn = document.querySelector('#user-config-form button[type="submit"]');
+            if (submitBtn) submitBtn.disabled = false;
         }
 
         async function deleteUser(id) {
@@ -4891,7 +5087,8 @@
         }
 
         function openWorkDetails(userId) {
-            const dateVal = document.getElementById('master-dashboard-date').value;
+            const isFalavniPane = document.getElementById('mtab-falavni-dashboard') && document.getElementById('mtab-falavni-dashboard').style.display === 'block';
+            const dateVal = isFalavniPane ? document.getElementById('master-falavni-date').value : document.getElementById('master-dashboard-date').value;
             const sub = dbState.submissions[dateVal]?.[userId];
             const user = dbState.users.find(u => u.id === userId);
             if (!sub || !user) return;
@@ -4903,7 +5100,7 @@
             if (sub.entries) {
                 Object.keys(sub.entries).forEach(khataId => {
                     const ent = sub.entries[khataId];
-                    const isHoliday = currentUser.role === 'subadmin' ? !!ent.isHolidayFalavni : !!ent.isHoliday;
+                    const isHoliday = (currentUser.role === 'subadmin' || isFalavniPane) ? !!ent.isHolidayFalavni : !!ent.isHoliday;
                     if (!isHoliday) {
                         const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
                         if (!khataObj) return; // Skip deleted khata!
@@ -4942,7 +5139,8 @@
                 body.appendChild(item);
             } else {
                 let tableHtml = '';
-                if (currentUser.role === 'subadmin') {
+                const isFalavniPane = document.getElementById('mtab-falavni-dashboard') && document.getElementById('mtab-falavni-dashboard').style.display === 'block';
+                if (currentUser.role === 'subadmin' || isFalavniPane) {
                     tableHtml = `
                         <div class="table-responsive" style="margin-bottom: 0;">
                             <table class="custom-table" style="font-size: 0.85rem; width: 100%;">

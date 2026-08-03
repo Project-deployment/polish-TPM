@@ -840,19 +840,25 @@
             }
 
             /* Responsive Table-to-Card transformation for User view */
-            #user-entry-table thead {
+            #user-entry-table thead,
+            #user-falavni-table thead {
                 display: none;
             }
 
             #user-entry-table,
             #user-entry-table tbody,
             #user-entry-table tr,
-            #user-entry-table td {
+            #user-entry-table td,
+            #user-falavni-table,
+            #user-falavni-table tbody,
+            #user-falavni-table tr,
+            #user-falavni-table td {
                 display: block;
                 width: 100%;
             }
 
-            #user-entry-table tr {
+            #user-entry-table tr,
+            #user-falavni-table tr {
                 background: #ffffff;
                 border: 1px solid var(--border-color);
                 border-radius: var(--radius-md);
@@ -861,7 +867,8 @@
                 box-shadow: var(--shadow-subtle);
             }
 
-            #user-entry-table td {
+            #user-entry-table td,
+            #user-falavni-table td {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -870,18 +877,21 @@
                 text-align: left;
             }
 
-            #user-entry-table td:last-child {
+            #user-entry-table td:last-child,
+            #user-falavni-table td:last-child {
                 border-bottom: none;
             }
 
-            #user-entry-table td::before {
+            #user-entry-table td::before,
+            #user-falavni-table td::before {
                 content: attr(data-label);
                 font-weight: 700;
                 color: var(--text-muted);
                 font-size: 0.85rem;
             }
 
-            #user-entry-table td input[type="number"] {
+            #user-entry-table td input[type="number"],
+            #user-falavni-table td input[type="number"] {
                 width: 110px;
                 text-align: right;
                 padding: 6px 8px;
@@ -889,12 +899,15 @@
 
             /* Footer total row on mobile */
             #user-entry-table tfoot,
-            #user-entry-table tfoot tr {
+            #user-entry-table tfoot tr,
+            #user-falavni-table tfoot,
+            #user-falavni-table tfoot tr {
                 display: block;
                 width: 100%;
             }
 
-            #user-entry-table tfoot tr {
+            #user-entry-table tfoot tr,
+            #user-falavni-table tfoot tr {
                 background: #f8fafc;
                 border: 2px solid var(--accent-glow);
                 border-radius: var(--radius-md);
@@ -902,7 +915,8 @@
                 margin-top: 8px;
             }
 
-            #user-entry-table tfoot td {
+            #user-entry-table tfoot td,
+            #user-falavni-table tfoot td {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -910,30 +924,40 @@
                 border-bottom: 1px dashed #cbd5e1;
             }
 
-            #user-entry-table tfoot td:last-child {
+            #user-entry-table tfoot td:last-child,
+            #user-falavni-table tfoot td:last-child {
                 border-bottom: none;
             }
 
-            #user-entry-table tfoot td[colspan="3"] {
+            #user-entry-table tfoot td[colspan="3"],
+            #user-falavni-table tfoot td[colspan="3"] {
                 display: none;
                 /* Hide the desktop label cell */
             }
 
-            #user-entry-table tfoot td::before {
+            .hide-on-mobile {
+                display: none !important;
+            }
+
+            #user-entry-table tfoot td::before,
+            #user-falavni-table tfoot td::before {
                 content: attr(data-label);
                 font-weight: 800;
                 color: var(--primary);
             }
 
             /* User view actions wrap */
-            #user-submit-block {
+            #user-submit-block,
+            #user-falavni-submit-block {
                 flex-direction: column;
                 align-items: stretch !important;
                 gap: 12px !important;
                 text-align: center;
+                display: flex;
             }
 
-            #btn-submit-entry {
+            #btn-submit-entry,
+            #btn-submit-falavni {
                 width: 100% !important;
             }
         }
@@ -1100,7 +1124,9 @@
                         </tbody>
                         <tfoot>
                             <tr class="totals-row">
-                                <td colspan="3" data-label="કુલ સરવાળો">કુલ સરવાળો</td>
+                                <td id="user-entry-khata-count" style="font-weight: 800; color: var(--accent); text-align: left;" data-label="કુલ ખાતા">કુલ ખાતા: 0</td>
+                                <td class="hide-on-mobile"></td>
+                                <td class="hide-on-mobile" style="text-align: right; color: var(--primary); font-weight: 800;">કુલ સરવાળો:</td>
                                 <td class="total-value" data-label="તળિયા કુલ" id="user-total-taliya">0</td>
                                 <td class="total-value" data-label="પેલ કુલ" id="user-total-pel">0</td>
                                 <td class="total-value" data-label="મથાળા કુલ" id="user-total-mathala">0</td>
@@ -1202,7 +1228,9 @@
                         </tbody>
                         <tfoot>
                             <tr class="totals-row">
-                                <td colspan="3" data-label="કુલ સરવાળો">કુલ સરવાળો</td>
+                                <td id="user-falavni-khata-count" style="font-weight: 800; color: var(--accent); text-align: left;" data-label="કુલ ખાતા">કુલ ખાતા: 0</td>
+                                <td class="hide-on-mobile"></td>
+                                <td class="hide-on-mobile" style="text-align: right; color: var(--primary); font-weight: 800;">કુલ સરવાળો:</td>
                                 <td class="total-value" data-label="નંગ કુલ" id="user-total-nang">0</td>
                             </tr>
                         </tfoot>
@@ -1542,7 +1570,13 @@
 
                     <!-- Right: Khata Register list -->
                     <div class="glass-panel" style="box-shadow: none;">
-                        <h3 style="margin-bottom: 16px;">રજિસ્ટર્ડ ખાતાઓની યાદી</h3>
+                        <h3 style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                            <span>રજિસ્ટર્ડ ખાતાઓની યાદી</span>
+                            <span id="master-khata-count" style="font-size: 0.85rem; color: var(--accent); background: var(--accent-glow); padding: 4px 12px; border-radius: 20px; font-weight: 700;">કુલ: 0</span>
+                        </h3>
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <input type="text" id="khata-search-input" class="form-control" placeholder="🔍 ખાતું, લોકેશન અથવા હેડ શોધો..." oninput="renderMasterKhataList()" style="text-align: left;">
+                        </div>
                         <div class="table-responsive">
                             <table class="custom-table" id="master-khata-list-table">
                                 <thead>
@@ -1938,7 +1972,7 @@
             };
 
             // Merge Users
-            if (local.users && Array.isArray(local.users)) {
+            if (deviceUserRole === 'master' && local.users && Array.isArray(local.users)) {
                 local.users.forEach(localUser => {
                     const serverUser = merged.users.find(u => u.id === localUser.id);
                     if (!serverUser) {
@@ -1948,7 +1982,7 @@
             }
 
             // Merge Khatas
-            if (local.khatas && Array.isArray(local.khatas)) {
+            if (deviceUserRole === 'master' && local.khatas && Array.isArray(local.khatas)) {
                 local.khatas.forEach(localKhata => {
                     const serverKhata = merged.khatas.find(k => k.id === localKhata.id);
                     if (!serverKhata) {
@@ -2764,6 +2798,11 @@
                 return (a.name || '').localeCompare(b.name || '', 'gu');
             });
 
+            const countEl = document.getElementById('user-falavni-khata-count');
+            if (countEl) {
+                countEl.textContent = `કુલ ખાતા: ${assignedKhatas.length}`;
+            }
+
             const dateSubmissions = dbState.submissions[dateVal] || {};
             const userSub = dateSubmissions[currentUser.id];
             const hasFalavniSubmitted = !!(userSub && userSub.entries && Object.values(userSub.entries).some(e => e.nang !== undefined));
@@ -3096,6 +3135,11 @@
                 if (locCompare !== 0) return locCompare;
                 return (a.name || '').localeCompare(b.name || '', 'gu');
             });
+
+            const countEl = document.getElementById('user-entry-khata-count');
+            if (countEl) {
+                countEl.textContent = `કુલ ખાતા: ${assignedKhatas.length}`;
+            }
 
             // 2. Check if a submission already exists for this date
             const dateSubmissions = dbState.submissions[dateVal] || {};
@@ -3533,27 +3577,20 @@
                     if (sub.entries && Object.keys(sub.entries).length > 0) {
                         Object.keys(sub.entries).forEach(khataId => {
                             const ent = sub.entries[khataId];
+                            const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
+                            if (!khataObj) return; // Skip deleted khata
+                            
                             if (currentUser.role === 'subadmin') {
                                 if (ent.isHolidayFalavni) {
                                     holidayCount++;
-                                    const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
-                                    if (khataObj) {
-                                        holidayKhatas.push(khataObj.name);
-                                    } else {
-                                        holidayKhatas.push(khataId);
-                                    }
+                                    holidayKhatas.push(khataObj.name);
                                 } else if (ent.nang !== undefined) {
                                     workCount++;
                                 }
                             } else {
                                 if (ent.isHoliday) {
                                     holidayCount++;
-                                    const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
-                                    if (khataObj) {
-                                        holidayKhatas.push(khataObj.name);
-                                    } else {
-                                        holidayKhatas.push(khataId);
-                                    }
+                                    holidayKhatas.push(khataObj.name);
                                 } else {
                                     workCount++;
                                 }
@@ -4286,35 +4323,72 @@
 
         function renderMasterKhataList() {
             const tbody = document.getElementById('master-khata-tbody');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
             populateKhataUserDropdown();
 
-            dbState.khatas.forEach(khata => {
-                const userOptionsHtml = dbState.users
-                    .filter(u => u.role === 'user')
-                    .map(u => `<option value="${u.id}" ${u.id === khata.userId ? 'selected' : ''}>${u.username}</option>`)
-                    .join('');
+            const countEl = document.getElementById('master-khata-count');
+            if (countEl) {
+                countEl.textContent = `કુલ: ${dbState.khatas.length}`;
+            }
 
+            const searchInput = document.getElementById('khata-search-input');
+            const searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+            let filteredKhatas = dbState.khatas;
+            if (searchQuery) {
+                filteredKhatas = dbState.khatas.filter(khata => {
+                    const nameMatch = (khata.name || '').toLowerCase().includes(searchQuery);
+                    const locMatch = (khata.location || '').toLowerCase().includes(searchQuery);
+                    
+                    let userMatch = false;
+                    if (khata.userId) {
+                        const assignedUser = dbState.users.find(u => u.id === khata.userId);
+                        if (assignedUser) {
+                            userMatch = assignedUser.username.toLowerCase().includes(searchQuery);
+                        }
+                    }
+                    
+                    return nameMatch || locMatch || userMatch;
+                });
+            }
+
+            if (filteredKhatas.length === 0) {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="font-weight: 700;">${khata.name}</td>
-                    <td><span class="location-badge">${khata.location}</span></td>
-                    <td>
-                        <select class="form-control" style="width: auto; padding: 4px 8px; font-size: 0.85rem;" onchange="updateInlineKhataAssignment('${khata.id}', this.value)">
-                            <option value="">-- ફાળવેલ નથી (Unassigned) --</option>
-                            ${userOptionsHtml}
-                        </select>
-                    </td>
-                    <td>
-                        <div style="display: flex; gap: 8px; justify-content: center; align-items: center; height: 100%;">
-                            <button class="btn-primary btn-sm" onclick="editKhata('${khata.id}')" style="background: var(--primary-light); box-shadow: none; width: auto; flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; white-space: nowrap; margin: 0;">એડિટ</button>
-                            <button class="btn-logout btn-sm" onclick="deleteKhata('${khata.id}')" style="width: auto; flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; white-space: nowrap; margin: 0; border-radius: var(--radius-sm);">ડિલીટ</button>
-                        </div>
+                    <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 24px; font-weight: 600;">
+                        🔍 કોઈ મેળ ખાતું પરિણામ મળ્યું નથી.
                     </td>
                 `;
                 tbody.appendChild(tr);
-            });
+            } else {
+                filteredKhatas.forEach(khata => {
+                    const userOptionsHtml = dbState.users
+                        .filter(u => u.role === 'user')
+                        .map(u => `<option value="${u.id}" ${u.id === khata.userId ? 'selected' : ''}>${u.username}</option>`)
+                        .join('');
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 700;">${khata.name}</td>
+                        <td><span class="location-badge">${khata.location}</span></td>
+                        <td>
+                            <select class="form-control" style="width: auto; padding: 4px 8px; font-size: 0.85rem;" onchange="updateInlineKhataAssignment('${khata.id}', this.value)">
+                                <option value="">-- ફાળવેલ નથી (Unassigned) --</option>
+                                ${userOptionsHtml}
+                            </select>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 8px; justify-content: center; align-items: center; height: 100%;">
+                                <button class="btn-primary btn-sm" onclick="editKhata('${khata.id}')" style="background: var(--primary-light); box-shadow: none; width: auto; flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; white-space: nowrap; margin: 0;">એડિટ</button>
+                                <button class="btn-logout btn-sm" onclick="deleteKhata('${khata.id}')" style="width: auto; flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; white-space: nowrap; margin: 0; border-radius: var(--radius-sm);">ડિલીટ</button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
 
             populateLocationSuggestions();
         }
@@ -4832,9 +4906,10 @@
                     const isHoliday = currentUser.role === 'subadmin' ? !!ent.isHolidayFalavni : !!ent.isHoliday;
                     if (!isHoliday) {
                         const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
+                        if (!khataObj) return; // Skip deleted khata!
                         workKhatas.push({
-                            name: khataObj ? khataObj.name : khataId,
-                            location: khataObj ? khataObj.location : '',
+                            name: khataObj.name,
+                            location: khataObj.location,
                             taliya: ent.taliya || 0,
                             pel: ent.pel || 0,
                             mathala: ent.mathala || 0,

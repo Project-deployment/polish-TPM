@@ -485,6 +485,19 @@
             font-variant-numeric: tabular-nums;
         }
 
+        /* Average Row styling to remove double boundary */
+        .average-row td {
+            background: #f8fafc !important;
+            font-weight: 800;
+            color: var(--primary);
+            border-top: 1px solid #e2e8f0 !important;
+            border-bottom: none !important;
+        }
+
+        .average-row td:first-child {
+            color: var(--accent);
+        }
+
         /* Master Dashboard cards */
         .dashboard-grid {
             display: grid;
@@ -964,8 +977,9 @@
             <div class="logo-text">
                 <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                     <h1 style="margin: 0;">ડેઇલી ખાતા હેડ રિપોર્ટ</h1>
-                    <span id="connection-status-badge" class="location-badge"
-                        style="background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); font-weight: 700; font-size: 0.72rem; padding: 2px 8px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 4px; box-shadow: none;">
+                    <span id="connection-status-badge" class="location-badge" onclick="location.reload()"
+                        style="background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); font-weight: 700; font-size: 0.72rem; padding: 2px 8px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 4px; box-shadow: none; cursor: pointer;"
+                        title="પેજ રિફ્રેશ કરવા ક્લિક કરો (Click to Refresh)">
                         🔴 લૉકલ મોડ (Local Mode)
                     </span>
                 </div>
@@ -1032,6 +1046,14 @@
                     </svg>
                     ડેટા એન્ટ્રી
                 </button>
+                <button class="tab-btn" onclick="switchUserTab('utab-hira-falavni', this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                        stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                    </svg>
+                    હીરા ફાળવણી
+                </button>
                 <button class="tab-btn" onclick="switchUserTab('utab-weekly-report', this)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
                         stroke-width="2" stroke="currentColor">
@@ -1039,6 +1061,14 @@
                             d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                     </svg>
                     વીકલી રિપોર્ટ
+                </button>
+                <button class="tab-btn" onclick="switchUserTab('utab-weekly-falavni', this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                        stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    વીકલી ફાળવણી રિપોર્ટ
                 </button>
             </div>
 
@@ -1145,6 +1175,102 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Tab 1.5: User Hira Falavni Entry -->
+            <div id="utab-hira-falavni" class="user-tab-pane" style="display: none;">
+                <div class="user-view-header">
+                    <div class="date-picker-wrapper">
+                        <label for="user-falavni-date">તારીખ:</label>
+                        <input type="date" id="user-falavni-date" class="form-control" style="width: auto;"
+                            onchange="loadUserFalavniEntry()">
+                    </div>
+                </div>
+
+                <!-- Dynamic User Falavni Entry Table -->
+                <div class="table-responsive">
+                    <table class="custom-table" id="user-falavni-table">
+                        <thead>
+                            <tr>
+                                <th>ખાતાનું નામ</th>
+                                <th>લોકેશન</th>
+                                <th style="text-align: center; width: 110px;">રજા</th>
+                                <th style="width: 250px;">નંગ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-falavni-table-body">
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="totals-row">
+                                <td colspan="3" data-label="કુલ સરવાળો">કુલ સરવાળો</td>
+                                <td class="total-value" data-label="નંગ કુલ" id="user-total-nang">0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Submit action block -->
+                <div style="display: flex; justify-content: flex-end; gap: 16px; align-items: center;"
+                    id="user-falavni-submit-block">
+                    <span id="user-falavni-status-text" style="font-weight: 700; color: var(--text-muted);">
+                        એન્ટ્રી સબમિટ બાકી છે.
+                    </span>
+                    <button class="btn-primary" onclick="submitUserFalavni()" id="btn-submit-falavni"
+                        style="width: auto; padding: 12px 30px;">
+                        રિપોર્ટ સબમિટ કરો
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 2.5: User Weekly Falavni Report -->
+            <div id="utab-weekly-falavni" class="user-tab-pane" style="display: none;">
+                <div class="flex-between non-printable" style="margin-bottom: 16px;">
+                    <div class="date-picker-wrapper">
+                        <label for="user-weekly-falavni-date">અઠવાડિયું પસંદ કરો:</label>
+                        <input type="date" id="user-weekly-falavni-date" class="form-control" style="width: auto;"
+                            onchange="loadUserWeeklyFalavniReport()">
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="btn-primary" onclick="window.print()"
+                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Print PDF
+                        </button>
+                        <button class="btn-primary" onclick="exportUserWeeklyFalavniToExcel()"
+                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <div id="print-area-user-weekly-falavni">
+                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
+                        <h3 id="print-user-weekly-falavni-heading" style="color: var(--text-muted); margin-top: 4px;">વીકલી
+                            ફાળવણી રિપોર્ટ: -</h3>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table" id="user-falavni-reports-table">
+                            <thead>
+                                <tr>
+                                    <th>તારીખ</th>
+                                    <th>દિવસ</th>
+                                    <th>નંગ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-falavni-reports-tbody">
+                                <!-- Dynamic -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="totals-row">
+                                    <td colspan="2">કુલ સરવાળો</td>
+                                    <td id="user-report-total-nang" style="font-weight: 800;">0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- ==============================================
@@ -1193,7 +1319,7 @@
                     </svg>
                     હેડ મેનેજમેન્ટ
                 </button>
-                <button class="tab-btn" onclick="switchMasterTab('mtab-backup', this)">
+                <button class="tab-btn" id="btn-tab-backup" onclick="switchMasterTab('mtab-backup', this)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
                         stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -1228,7 +1354,7 @@
                                 <th>સ્ટેટસ</th>
                                 <th>સબમિટ સમય</th>
                                 <th>રજા</th>
-                                <th>ખાતા</th>
+                                <th>ચાલુ</th>
                                 <th>તળિયા</th>
                                 <th>પેલ</th>
                                 <th>મથાળા</th>
@@ -1284,7 +1410,7 @@
                     </div>
 
                     <div class="flex-between">
-                        <h3>વીકલી રિપોર્ટ (સોમવાર થી શનિવાર)</h3>
+                        <h3>વીકલી રિપોર્ટ (સોમવાર થી રવિવાર)</h3>
                     </div>
 
                     <div class="table-responsive">
@@ -1704,7 +1830,8 @@
         // Default Configuration to initialize on first launch
         const defaultState = {
             users: [
-                { id: 'master', username: 'એડમિન', password: '123', role: 'master' }
+                { id: 'master', username: 'એડમિન', password: '123', role: 'master' },
+                { id: 'subadmin', username: 'sub-admin', password: '123', role: 'subadmin' }
             ],
             khatas: [],
             submissions: {}
@@ -1744,9 +1871,38 @@
             }
         }
 
+        function ensureDefaultUsers(state) {
+            if (!state) return;
+            if (!state.users) state.users = [];
+            
+            // Ensure master exists
+            let master = state.users.find(u => u.id === 'master');
+            if (!master) {
+                master = { id: 'master', username: 'એડમિન', password: '123', role: 'master' };
+                state.users.unshift(master);
+            }
+            
+            // Ensure subadmin exists
+            let subadmin = state.users.find(u => u.id === 'subadmin');
+            if (!subadmin) {
+                const masterIdx = state.users.findIndex(u => u.id === 'master');
+                state.users.splice(masterIdx + 1, 0, { id: 'subadmin', username: 'sub-admin', password: '123', role: 'subadmin' });
+            } else {
+                subadmin.username = 'sub-admin';
+            }
+        }
+
         function mergeDatabaseStates(local, server) {
-            if (!local) return JSON.parse(JSON.stringify(server || defaultState));
-            if (!server) return JSON.parse(JSON.stringify(local));
+            if (!local) {
+                const merged = JSON.parse(JSON.stringify(server || defaultState));
+                ensureDefaultUsers(merged);
+                return merged;
+            }
+            if (!server) {
+                const merged = JSON.parse(JSON.stringify(local));
+                ensureDefaultUsers(merged);
+                return merged;
+            }
 
             // Dynamically resolve active user or device user during early page load
             let activeUser = currentUser;
@@ -1865,6 +2021,7 @@
                 });
             }
 
+            ensureDefaultUsers(merged);
             return merged;
         }
 
@@ -1997,8 +2154,10 @@
                 }
             }
 
-            if (!dbState.users || dbState.users.length === 0) {
-                dbState.users = JSON.parse(JSON.stringify(defaultState.users));
+            const usersBefore = JSON.stringify(dbState.users || []);
+            ensureDefaultUsers(dbState);
+            if (usersBefore !== JSON.stringify(dbState.users || [])) {
+                await saveDB();
             }
             if (!dbState.khatas || dbState.khatas.length === 0) {
                 dbState.khatas = JSON.parse(JSON.stringify(defaultState.khatas));
@@ -2042,10 +2201,31 @@
         window.addEventListener('DOMContentLoaded', async () => {
             await initDB();
             populateLoginRoles();
+
+            if (window.location.search.includes('debug=true')) {
+                const debugDiv = document.createElement('div');
+                debugDiv.style.position = 'fixed';
+                debugDiv.style.bottom = '10px';
+                debugDiv.style.right = '10px';
+                debugDiv.style.background = 'rgba(0,0,0,0.85)';
+                debugDiv.style.color = '#fff';
+                debugDiv.style.padding = '12px';
+                debugDiv.style.borderRadius = '6px';
+                debugDiv.style.zIndex = '999999';
+                debugDiv.style.fontSize = '12px';
+                debugDiv.style.fontFamily = 'monospace';
+                debugDiv.style.maxHeight = '250px';
+                debugDiv.style.overflowY = 'auto';
+                debugDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                debugDiv.innerHTML = '<b>Active Users:</b><br>' + dbState.users.map(u => `${u.id}:${u.username}(${u.role})`).join('<br>');
+                document.body.appendChild(debugDiv);
+            }
             // Automatically select the active date picker values to today
             const todayStr = getTodayDateString();
             document.getElementById('user-entry-date').value = todayStr;
             document.getElementById('user-weekly-report-date').value = todayStr;
+            document.getElementById('user-falavni-date').value = todayStr;
+            document.getElementById('user-weekly-falavni-date').value = todayStr;
             document.getElementById('master-dashboard-date').value = todayStr;
             document.getElementById('master-report-date').value = todayStr;
             document.getElementById('master-monthly-report-date').value = todayStr.substring(0, 7);
@@ -2231,8 +2411,17 @@
         function populateLoginRoles() {
             const select = document.getElementById('login-username');
             select.innerHTML = '';
-            // Add users
-            dbState.users.forEach(u => {
+            
+            const masterUser = dbState.users.find(u => u.id === 'master');
+            const subadminUser = dbState.users.find(u => u.id === 'subadmin');
+            const otherUsers = dbState.users.filter(u => u.id !== 'master' && u.id !== 'subadmin');
+            
+            const orderedUsers = [];
+            if (masterUser) orderedUsers.push(masterUser);
+            if (subadminUser) orderedUsers.push(subadminUser);
+            orderedUsers.push(...otherUsers);
+
+            orderedUsers.forEach(u => {
                 const opt = document.createElement('option');
                 opt.value = u.id;
                 opt.textContent = u.username;
@@ -2275,7 +2464,7 @@
             const user = dbState.users.find(u => u.id === userId);
             const passGrp = document.getElementById('password-group');
 
-            if (user && user.role === 'master') {
+            if (user && (user.role === 'master' || user.role === 'subadmin')) {
                 passGrp.style.display = 'flex';
                 document.getElementById('login-password').required = true;
             } else {
@@ -2297,7 +2486,7 @@
 
             // Validate password if required
             const hasPassword = user.password && user.password.trim() !== '';
-            if (user.role === 'master' || hasPassword) {
+            if (user.role === 'master' || user.role === 'subadmin' || hasPassword) {
                 if (user.password !== passwordInput) {
                     errDiv.style.display = 'block';
                     return;
@@ -2328,10 +2517,25 @@
             document.getElementById('header-actions').style.display = 'flex';
             document.getElementById('header-user-display').textContent = user.username;
 
-            if (user.role === 'master') {
+            if (user.role === 'master' || user.role === 'subadmin') {
                 document.getElementById('user-panel').style.display = 'none';
                 document.getElementById('master-panel').style.display = 'block';
-                loadMasterDashboard();
+                
+                const backupBtn = document.getElementById('btn-tab-backup');
+                if (backupBtn) {
+                    if (user.role === 'subadmin') {
+                        backupBtn.style.display = 'none';
+                    } else {
+                        backupBtn.style.display = '';
+                    }
+                }
+
+                const dashboardBtn = document.querySelector('#master-panel .tab-btn');
+                if (dashboardBtn) {
+                    switchMasterTab('mtab-dashboard', dashboardBtn);
+                } else {
+                    loadMasterDashboard();
+                }
             } else {
                 document.getElementById('master-panel').style.display = 'none';
                 document.getElementById('user-panel').style.display = 'block';
@@ -2378,6 +2582,10 @@
 
             if (tabId === 'utab-weekly-report') {
                 loadUserWeeklyReport();
+            } else if (tabId === 'utab-hira-falavni') {
+                loadUserFalavniEntry();
+            } else if (tabId === 'utab-weekly-falavni') {
+                loadUserWeeklyFalavniReport();
             } else {
                 loadUserDailyEntry();
             }
@@ -2400,7 +2608,7 @@
             }
 
             const weekDates = getMonToSatDates(dateVal);
-            const headingText = `અઠવાડિયું: ${weekDates[0].displayDate} થી ${weekDates[5].displayDate}`;
+            const headingText = `અઠવાડિયું: ${weekDates[0].displayDate} થી ${weekDates[6].displayDate}`;
             document.getElementById('print-user-weekly-heading').textContent = headingText;
 
             const tbody = document.getElementById('user-reports-tbody');
@@ -2521,6 +2729,338 @@
             const link = document.createElement("a");
             link.setAttribute("href", url);
             link.setAttribute("download", `weekly_report_${currentUser.username}_${weekDates[0].displayDate}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function loadUserFalavniEntry() {
+            if (!currentUser) return;
+            const dateVal = document.getElementById('user-falavni-date').value;
+            if (!dateVal) return;
+
+            showGlobalLoader(true);
+            const fetched = await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            if (!fetched) {
+                const stored = localStorage.getItem(DB_KEY);
+                if (stored) {
+                    dbState = JSON.parse(stored);
+                }
+            }
+
+            const tbody = document.getElementById('user-falavni-table-body');
+            tbody.innerHTML = '';
+
+            const assignedKhatas = dbState.khatas.filter(k => k.userId === currentUser.id);
+            assignedKhatas.sort((a, b) => {
+                const locCompare = (a.location || '').localeCompare(b.location || '', 'gu');
+                if (locCompare !== 0) return locCompare;
+                return (a.name || '').localeCompare(b.name || '', 'gu');
+            });
+
+            const dateSubmissions = dbState.submissions[dateVal] || {};
+            const userSub = dateSubmissions[currentUser.id];
+            const hasFalavniSubmitted = !!(userSub && userSub.entries && Object.values(userSub.entries).some(e => e.nang !== undefined));
+
+            if (assignedKhatas.length === 0) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td colspan="4" style="text-align: center; color: var(--danger); font-weight: 700; padding: 24px;">
+                        ⚠️ તમારા નામ પર કોઈ ખાતું એલોકેટ કરેલ નથી. કૃપા કરીને એડમિનનો સંપર્ક કરો.
+                    </td>
+                `;
+                tbody.appendChild(tr);
+                document.getElementById('btn-submit-falavni').disabled = true;
+            } else {
+                document.getElementById('btn-submit-falavni').disabled = false;
+                renderFixedFalavniKhataRows(assignedKhatas, userSub);
+            }
+
+            calculateUserFalavniTotals();
+            updateFalavniSubmissionStatusUI(hasFalavniSubmitted, userSub);
+        }
+
+        function updateFalavniSubmissionStatusUI(hasFalavniSubmitted, userSub) {
+            const btnSubmit = document.getElementById('btn-submit-falavni');
+            const statusText = document.getElementById('user-falavni-status-text');
+
+            if (hasFalavniSubmitted) {
+                statusText.innerHTML = `✅ સબમિટ થઈ ગયેલ છે (${new Date(userSub.submittedAt).toLocaleTimeString()})`;
+                statusText.style.color = "var(--success)";
+                btnSubmit.textContent = "ફરીથી સબમિટ કરો (Re-Submit)";
+            } else {
+                statusText.innerHTML = `⚠️ એન્ટ્રી સબમિટ બાકી છે.`;
+                statusText.style.color = "var(--danger)";
+                btnSubmit.textContent = "રિપોર્ટ સબમિટ કરો (Submit Report)";
+            }
+        }
+
+        function renderFixedFalavniKhataRows(assignedKhatas, userSub) {
+            const tbody = document.getElementById('user-falavni-table-body');
+            tbody.innerHTML = '';
+
+            assignedKhatas.forEach(khataObj => {
+                let nangVal = 0;
+                let isKhataHoliday = false;
+
+                if (userSub && userSub.entries && userSub.entries[khataObj.id]) {
+                    const ent = userSub.entries[khataObj.id];
+                    nangVal = ent.nang !== undefined ? ent.nang : 0;
+                    isKhataHoliday = !!ent.isHolidayFalavni;
+                }
+
+                const tr = document.createElement('tr');
+                tr.dataset.khataId = khataObj.id;
+                tr.innerHTML = `
+                    <td data-label="ખાતાનું નામ (Khata)">
+                        <span class="khata-name">${khataObj.name}</span>
+                    </td>
+                    <td data-label="લોકેશન (Location)">
+                        <span class="location-badge">${khataObj.location}</span>
+                    </td>
+                    <td data-label="રજા (Holiday)" style="text-align: center;">
+                        <input type="checkbox" class="khata-holiday-checkbox" 
+                               ${isKhataHoliday ? 'checked' : ''} 
+                               onchange="toggleKhataFalavniHoliday(this)"
+                               style="width: 18px; height: 18px; cursor: pointer; display: inline-block; vertical-align: middle;">
+                    </td>
+                    <td data-label="નંગ (Nang)">
+                        <input type="number" min="0" class="form-control nang-input" 
+                               value="${nangVal}" 
+                               oninput="calculateUserFalavniTotals()" 
+                               onfocus="if(this.value === '0') { this.value = ''; } else { this.select(); }"
+                               onblur="if(this.value === '') { this.value = '0'; }"
+                               ${isKhataHoliday ? 'disabled' : ''}>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleKhataFalavniHoliday(checkboxEl) {
+            const tr = checkboxEl.closest('tr');
+            const isChecked = checkboxEl.checked;
+
+            const nangInput = tr.querySelector('.nang-input');
+
+            if (isChecked) {
+                if (nangInput) { nangInput.value = 0; nangInput.disabled = true; }
+            } else {
+                if (nangInput) { nangInput.disabled = false; }
+            }
+            calculateUserFalavniTotals();
+        }
+
+        function calculateUserFalavniTotals() {
+            let totalNang = 0;
+
+            const rows = document.querySelectorAll('#user-falavni-table-body tr');
+            rows.forEach(row => {
+                const nInput = row.querySelector('.nang-input');
+
+                if (nInput) {
+                    const nangVal = parseInt(nInput.value) || 0;
+                    if (!nInput.disabled) {
+                        totalNang += nangVal;
+                    }
+                }
+            });
+
+            document.getElementById('user-total-nang').textContent = totalNang;
+        }
+
+        async function submitUserFalavni() {
+            const dateVal = document.getElementById('user-falavni-date').value;
+            if (!dateVal) return;
+
+            const assignedKhatas = dbState.khatas.filter(k => k.userId === currentUser.id);
+            if (assignedKhatas.length === 0) {
+                await customAlert("તમારા નામ પર કોઈ ખાતું એલોકેટ કરેલ નથી. (No accounts allocated to your name.)");
+                return;
+            }
+
+            const entries = {};
+            const rows = document.querySelectorAll('#user-falavni-table-body tr');
+            let validationOk = true;
+
+            rows.forEach(row => {
+                const khataId = row.dataset.khataId;
+                if (!khataId) return;
+
+                const holidayCheckbox = row.querySelector('.khata-holiday-checkbox');
+                const isKhataHoliday = holidayCheckbox ? holidayCheckbox.checked : false;
+
+                const nang = isKhataHoliday ? 0 : (parseInt(row.querySelector('.nang-input').value) || 0);
+
+                if (nang < 0) {
+                    validationOk = false;
+                }
+
+                const existingEntry = (dbState.submissions[dateVal]?.[currentUser.id]?.entries?.[khataId]) || {};
+                entries[khataId] = {
+                    ...existingEntry,
+                    nang: nang,
+                    isHolidayFalavni: isKhataHoliday
+                };
+            });
+
+            if (!validationOk) {
+                await customAlert("નંગ ૦ અથવા તેનાથી વધારે હોવું જોઈએ. (Nang values cannot be negative.)");
+                return;
+            }
+
+            if (!dbState.submissions[dateVal]) {
+                dbState.submissions[dateVal] = {};
+            }
+
+            const isAllHoliday = Object.values(entries).every(e => e.isHolidayFalavni);
+            const existingSub = dbState.submissions[dateVal][currentUser.id] || {};
+
+            const submissionData = {
+                ...existingSub,
+                isHolidayFalavni: isAllHoliday,
+                entries: entries,
+                submittedAt: new Date().toISOString(),
+                synced: false
+            };
+
+            dbState.submissions[dateVal][currentUser.id] = submissionData;
+
+            localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+
+            showGlobalLoader(true);
+            const success = await saveSubmissionToFirebase(dateVal, currentUser.id, submissionData);
+            showGlobalLoader(false);
+
+            if (success) {
+                dbState.submissions[dateVal][currentUser.id].synced = true;
+                localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+            }
+
+            loadUserFalavniEntry();
+            await customAlert("હીરા ફાળવણી સફળતાપૂર્વક સબમિટ કરવામાં આવી છે! (Submitted successfully!)");
+        }
+
+        async function loadUserWeeklyFalavniReport() {
+            if (!currentUser) return;
+            const dateVal = document.getElementById('user-weekly-falavni-date').value;
+            if (!dateVal) return;
+
+            showGlobalLoader(true);
+            const fetched = await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            if (!fetched) {
+                const stored = localStorage.getItem(DB_KEY);
+                if (stored) {
+                    dbState = JSON.parse(stored);
+                }
+            }
+
+            const weekDates = getMonToSatDates(dateVal);
+            const headingText = `અઠવાડિયું: ${weekDates[0].displayDate} થી ${weekDates[6].displayDate}`;
+            document.getElementById('print-user-weekly-falavni-heading').textContent = headingText;
+
+            const tbody = document.getElementById('user-falavni-reports-tbody');
+            tbody.innerHTML = '';
+
+            let totalNang = 0;
+
+            weekDates.forEach(wd => {
+                let dateNang = 0;
+                let hasSubmissions = false;
+
+                const dateSubmissions = dbState.submissions[wd.dateKey] || {};
+                const userSub = dateSubmissions[currentUser.id];
+
+                if (userSub) {
+                    if (userSub.entries) {
+                        const hasAnyNang = Object.values(userSub.entries).some(e => e.nang !== undefined);
+                        if (hasAnyNang) {
+                            hasSubmissions = true;
+                            Object.values(userSub.entries).forEach(ent => {
+                                if (ent && !ent.isHolidayFalavni) {
+                                    dateNang += ent.nang || 0;
+                                }
+                            });
+                        }
+                    }
+                }
+
+                let nangDisplay = dateNang;
+
+                if (!hasSubmissions) {
+                    nangDisplay = '-';
+                } else {
+                    totalNang += dateNang;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary);">${wd.displayDate}</td>
+                    <td><span class="location-badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700;">${wd.dayName}</span></td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${nangDisplay}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('user-report-total-nang').textContent = totalNang;
+        }
+
+        function exportUserWeeklyFalavniToExcel() {
+            if (!currentUser) return;
+            const dateVal = document.getElementById('user-weekly-falavni-date').value;
+            if (!dateVal) return;
+
+            const weekDates = getMonToSatDates(dateVal);
+
+            let csvContent = `User Weekly Diamond Allocation Report - Head: ${currentUser.username}\n`;
+            csvContent += `Week: ${weekDates[0].displayDate} to ${weekDates[6].displayDate}\n\n`;
+            csvContent += "Date,Day,Nang\n";
+
+            let totalNang = 0;
+
+            weekDates.forEach(wd => {
+                let dateNang = 0;
+                let hasSubmissions = false;
+
+                const dateSubmissions = dbState.submissions[wd.dateKey] || {};
+                const userSub = dateSubmissions[currentUser.id];
+
+                if (userSub) {
+                    if (userSub.entries) {
+                        const hasAnyNang = Object.values(userSub.entries).some(e => e.nang !== undefined);
+                        if (hasAnyNang) {
+                            hasSubmissions = true;
+                            Object.values(userSub.entries).forEach(ent => {
+                                if (ent && !ent.isHolidayFalavni) {
+                                    dateNang += ent.nang || 0;
+                                }
+                            });
+                        }
+                    }
+                }
+
+                let n = dateNang;
+                if (!hasSubmissions) {
+                    n = "-";
+                } else {
+                    totalNang += dateNang;
+                }
+
+                csvContent += `"${wd.displayDate}","${wd.dayName}",${n}\n`;
+            });
+
+            csvContent += `Grand Total,,${totalNang}\n`;
+
+            const csvData = "\uFEFF" + csvContent;
+            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `weekly_falavni_report_${currentUser.username}_${weekDates[0].displayDate}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -2777,7 +3317,9 @@
                     validationOk = false;
                 }
 
+                const existing = dbState.submissions[dateVal]?.[currentUser.id]?.entries?.[khataId] || {};
                 entries[khataId] = {
+                    ...existing,
                     taliya: taliya,
                     pel: pel,
                     mathala: mathala,
@@ -2796,7 +3338,9 @@
 
             const isAllHoliday = Object.values(entries).every(e => e.isHoliday);
 
+            const existingSub = dbState.submissions[dateVal]?.[currentUser.id] || {};
             const submissionData = {
+                ...existingSub,
                 isHoliday: isAllHoliday,
                 entries: entries,
                 submittedAt: new Date().toISOString(),
@@ -2824,6 +3368,13 @@
         // 3. MASTER PANEL LOGIC (DASHBOARD & REPORTS)
         // ==============================================
         function switchMasterTab(paneId, btn) {
+            if (paneId === 'mtab-backup' && currentUser.role !== 'master') {
+                const firstTab = document.querySelector('#master-panel .tab-btn');
+                if (firstTab) {
+                    switchMasterTab('mtab-dashboard', firstTab);
+                }
+                return;
+            }
             // Tab button updates
             document.querySelectorAll('#master-panel .tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -2861,6 +3412,73 @@
                 }
             }
 
+            const thead = document.querySelector('#master-submissions-table thead');
+            const tfoot = document.querySelector('#master-submissions-table tfoot');
+
+            if (currentUser.role === 'subadmin') {
+                if (thead) {
+                    thead.innerHTML = `
+                        <tr>
+                            <th>હેડ નામ</th>
+                            <th>ખાતા નં.</th>
+                            <th>સ્ટેટસ</th>
+                            <th>સબમિટ સમય</th>
+                            <th>રજા</th>
+                            <th>ચાલુ</th>
+                            <th>નંગ</th>
+                            <th class="non-printable" style="width: 80px;">એક્શન</th>
+                        </tr>
+                    `;
+                }
+                if (tfoot) {
+                    tfoot.innerHTML = `
+                        <tr class="totals-row">
+                            <td style="color: var(--accent);">કુલ સરવાળો</td>
+                            <td id="master-submissions-total-allocated-khatas" style="font-weight: 700;">0</td>
+                            <td></td>
+                            <td></td>
+                            <td id="master-submissions-total-holiday" style="font-weight: 700;">0</td>
+                            <td id="master-submissions-total-work-khatas" style="font-weight: 700;">0</td>
+                            <td class="total-value" id="master-submissions-total-nang">0</td>
+                            <td class="non-printable"></td>
+                        </tr>
+                    `;
+                }
+            } else {
+                if (thead) {
+                    thead.innerHTML = `
+                        <tr>
+                            <th>હેડ નામ</th>
+                            <th>ખાતા નં.</th>
+                            <th>સ્ટેટસ</th>
+                            <th>સબમિટ સમય</th>
+                            <th>રજા</th>
+                            <th>ચાલુ</th>
+                            <th>તળિયા</th>
+                            <th>પેલ</th>
+                            <th>મથાળા</th>
+                            <th class="non-printable" style="width: 80px;">એક્શન</th>
+                        </tr>
+                    `;
+                }
+                if (tfoot) {
+                    tfoot.innerHTML = `
+                        <tr class="totals-row">
+                            <td style="color: var(--accent);">કુલ સરવાળો</td>
+                            <td id="master-submissions-total-allocated-khatas" style="font-weight: 700;">0</td>
+                            <td></td>
+                            <td></td>
+                            <td id="master-submissions-total-holiday" style="font-weight: 700;">0</td>
+                            <td id="master-submissions-total-work-khatas" style="font-weight: 700;">0</td>
+                            <td class="total-value" id="master-submissions-total-taliya">0</td>
+                            <td class="total-value" id="master-submissions-total-pel">0</td>
+                            <td class="total-value" id="master-submissions-total-mathala">0</td>
+                            <td class="non-printable"></td>
+                        </tr>
+                    `;
+                }
+            }
+
             const dateSubmissions = dbState.submissions[dateVal] || {};
             const totalUsers = dbState.users.filter(u => u.role === 'user');
 
@@ -2870,6 +3488,7 @@
             let grandTaliya = 0;
             let grandPel = 0;
             let grandMathala = 0;
+            let grandNang = 0;
             let grandAllocatedKhatas = 0;
 
             const tbody = document.getElementById('master-submissions-tbody');
@@ -2881,6 +3500,15 @@
                 grandAllocatedKhatas += khataCount;
 
                 const sub = dateSubmissions[user.id];
+                let subExists = false;
+                if (sub) {
+                    if (currentUser.role === 'subadmin') {
+                        subExists = !!(sub.isHolidayFalavni || (sub.entries && Object.values(sub.entries).some(e => e.nang !== undefined)));
+                    } else {
+                        subExists = true;
+                    }
+                }
+
                 let statusHtml = '';
                 let timeStr = '-';
                 let holidayHtml = '-';
@@ -2888,8 +3516,9 @@
                 let taliya = '-';
                 let pel = '-';
                 let mathala = '-';
+                let nang = '-';
 
-                if (sub) {
+                if (subExists) {
                     submittedCount++;
                     timeStr = new Date(sub.submittedAt).toLocaleTimeString();
 
@@ -2900,21 +3529,40 @@
                     if (sub.entries && Object.keys(sub.entries).length > 0) {
                         Object.keys(sub.entries).forEach(khataId => {
                             const ent = sub.entries[khataId];
-                            if (ent.isHoliday) {
-                                holidayCount++;
-                                const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
-                                if (khataObj) {
-                                    holidayKhatas.push(khataObj.name);
-                                } else {
-                                    holidayKhatas.push(khataId);
+                            if (currentUser.role === 'subadmin') {
+                                if (ent.isHolidayFalavni) {
+                                    holidayCount++;
+                                    const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
+                                    if (khataObj) {
+                                        holidayKhatas.push(khataObj.name);
+                                    } else {
+                                        holidayKhatas.push(khataId);
+                                    }
+                                } else if (ent.nang !== undefined) {
+                                    workCount++;
                                 }
                             } else {
-                                workCount++;
+                                if (ent.isHoliday) {
+                                    holidayCount++;
+                                    const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
+                                    if (khataObj) {
+                                        holidayKhatas.push(khataObj.name);
+                                    } else {
+                                        holidayKhatas.push(khataId);
+                                    }
+                                } else {
+                                    workCount++;
+                                }
                             }
                         });
-                    } else if (sub.isHoliday) {
-                        holidayCount = assignedKhatas.length;
-                        holidayKhatas = assignedKhatas.map(k => k.name);
+                    } else {
+                        if (currentUser.role === 'subadmin' && sub.isHolidayFalavni) {
+                            holidayCount = assignedKhatas.length;
+                            holidayKhatas = assignedKhatas.map(k => k.name);
+                        } else if (currentUser.role !== 'subadmin' && sub.isHoliday) {
+                            holidayCount = assignedKhatas.length;
+                            holidayKhatas = assignedKhatas.map(k => k.name);
+                        }
                     }
 
                     if (holidayCount > 0) {
@@ -2933,67 +3581,129 @@
                         workHtml = `<span style="color:var(--text-muted); font-size:0.85rem;">0</span>`;
                     }
 
-                    if (sub.isHoliday) {
-                        statusHtml = '<span class="badge-status holiday">OK</span>';
-                        taliya = 0;
-                        pel = 0;
-                        mathala = 0;
+                    if (currentUser.role === 'subadmin') {
+                        if (sub.isHolidayFalavni) {
+                            statusHtml = '<span class="badge-status holiday">OK</span>';
+                            nang = 0;
+                        } else {
+                            statusHtml = '<span class="badge-status submitted">OK</span>';
+                            let uN = 0;
+                            Object.values(sub.entries).forEach(ent => {
+                                if (ent.nang !== undefined && !ent.isHolidayFalavni) {
+                                    uN += ent.nang || 0;
+                                }
+                            });
+                            nang = uN;
+                            grandNang += uN;
+                        }
                     } else {
-                        statusHtml = '<span class="badge-status submitted">OK</span>';
-                        // Sum the entries for this user
-                        let uT = 0, uP = 0, uM = 0;
-                        Object.values(sub.entries).forEach(ent => {
-                            uT += ent.taliya || 0;
-                            uP += ent.pel || 0;
-                            uM += ent.mathala || 0;
-                        });
-                        taliya = uT;
-                        pel = uP;
-                        mathala = uM;
+                        if (sub.isHoliday) {
+                            statusHtml = '<span class="badge-status holiday">OK</span>';
+                            taliya = 0;
+                            pel = 0;
+                            mathala = 0;
+                        } else {
+                            statusHtml = '<span class="badge-status submitted">OK</span>';
+                            let uT = 0, uP = 0, uM = 0;
+                            Object.values(sub.entries).forEach(ent => {
+                                uT += ent.taliya || 0;
+                                uP += ent.pel || 0;
+                                uM += ent.mathala || 0;
+                            });
+                            taliya = uT;
+                            pel = uP;
+                            mathala = uM;
 
-                        grandTaliya += uT;
-                        grandPel += uP;
-                        grandMathala += uM;
+                            grandTaliya += uT;
+                            grandPel += uP;
+                            grandMathala += uM;
+                        }
                     }
                 } else {
                     statusHtml = '<span class="badge-status pending">BAKI</span>';
                 }
 
                 let actionHtml = '-';
-                if (sub) {
+                if (subExists) {
                     actionHtml = `<button class="btn-logout btn-sm" onclick="deleteSubmission('${dateVal}', '${user.id}')" style="padding: 4px 8px; font-size: 0.75rem; border-radius: var(--radius-sm); margin: 0; line-height: 1; display: inline-flex; align-items: center; justify-content: center; width: auto; height: auto; font-weight: 700;">ડિલીટ</button>`;
                 }
 
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight: 700; color: var(--primary);">${user.username}</td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${khataCount}</td>
-                    <td>${statusHtml}</td>
-                    <td style="font-variant-numeric: tabular-nums;">${timeStr}</td>
-                    <td>${holidayHtml}</td>
-                    <td>${workHtml}</td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${taliya}</td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliya, pel)}</td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliya, mathala)}</td>
-                    <td class="non-printable">${actionHtml}</td>
-                `;
+                if (currentUser.role === 'subadmin') {
+                    tr.innerHTML = `
+                        <td style="font-weight: 700; color: var(--primary);">${user.username}</td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${khataCount}</td>
+                        <td>${statusHtml}</td>
+                        <td style="font-variant-numeric: tabular-nums;">${timeStr}</td>
+                        <td>${holidayHtml}</td>
+                        <td>${workHtml}</td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${nang}</td>
+                        <td class="non-printable">${actionHtml}</td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td style="font-weight: 700; color: var(--primary);">${user.username}</td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${khataCount}</td>
+                        <td>${statusHtml}</td>
+                        <td style="font-variant-numeric: tabular-nums;">${timeStr}</td>
+                        <td>${holidayHtml}</td>
+                        <td>${workHtml}</td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${taliya}</td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliya, pel)}</td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliya, mathala)}</td>
+                        <td class="non-printable">${actionHtml}</td>
+                    `;
+                }
                 tbody.appendChild(tr);
             });
-
 
             // Update Table Footer Totals
             document.getElementById('master-submissions-total-allocated-khatas').textContent = grandAllocatedKhatas;
             document.getElementById('master-submissions-total-holiday').textContent = grandHoliday > 0 ? `${grandHoliday} રજા` : '0';
             document.getElementById('master-submissions-total-work-khatas').textContent = grandWorkKhatas > 0 ? `${grandWorkKhatas} ખાતા` : '0';
-            document.getElementById('master-submissions-total-taliya').textContent = grandTaliya;
-            document.getElementById('master-submissions-total-pel').innerHTML = renderValWithValidation(grandTaliya, grandPel);
-            document.getElementById('master-submissions-total-mathala').innerHTML = renderValWithValidation(grandTaliya, grandMathala);
+            if (currentUser.role === 'subadmin') {
+                document.getElementById('master-submissions-total-nang').textContent = grandNang;
+            } else {
+                document.getElementById('master-submissions-total-taliya').textContent = grandTaliya;
+                document.getElementById('master-submissions-total-pel').innerHTML = renderValWithValidation(grandTaliya, grandPel);
+                document.getElementById('master-submissions-total-mathala').innerHTML = renderValWithValidation(grandTaliya, grandMathala);
+            }
         }
 
         async function deleteSubmission(dateKey, userId) {
             if (await customConfirm("શું તમે આ એન્ટ્રી ડિલીટ કરવા માંગો છો? આનાથી રીઅલ-ટાઇમ રિપોર્ટ બદલાઈ જશે. (Are you sure you want to delete this submission?)")) {
                 if (dbState.submissions[dateKey] && dbState.submissions[dateKey][userId]) {
-                    delete dbState.submissions[dateKey][userId];
+                    if (currentUser.role === 'subadmin') {
+                        const sub = dbState.submissions[dateKey][userId];
+                        delete sub.isHolidayFalavni;
+                        if (sub.entries) {
+                            Object.keys(sub.entries).forEach(khataId => {
+                                delete sub.entries[khataId].nang;
+                                delete sub.entries[khataId].isHolidayFalavni;
+                            });
+                        }
+                        const hasProductionData = sub.entries && Object.values(sub.entries).some(e => e.taliya !== undefined);
+                        if (!hasProductionData) {
+                            delete dbState.submissions[dateKey][userId];
+                        }
+                    } else if (currentUser.role === 'master') {
+                        const sub = dbState.submissions[dateKey][userId];
+                        delete sub.isHoliday;
+                        if (sub.entries) {
+                            Object.keys(sub.entries).forEach(khataId => {
+                                delete sub.entries[khataId].taliya;
+                                delete sub.entries[khataId].pel;
+                                delete sub.entries[khataId].mathala;
+                                delete sub.entries[khataId].isHoliday;
+                            });
+                        }
+                        const hasAllocationData = sub.entries && Object.values(sub.entries).some(e => e.nang !== undefined);
+                        if (!hasAllocationData) {
+                            delete dbState.submissions[dateKey][userId];
+                        }
+                    } else {
+                        delete dbState.submissions[dateKey][userId];
+                    }
                     await saveDB();
                     loadMasterDashboard();
                 }
@@ -3010,7 +3720,7 @@
             const monday = new Date(date);
             monday.setDate(date.getDate() + offsetToMonday);
 
-            for (let i = 0; i < 6; i++) {
+            for (let i = 0; i < 7; i++) {
                 const d = new Date(monday);
                 d.setDate(monday.getDate() + i);
 
@@ -3025,6 +3735,40 @@
                 dates.push({ dateKey, dayName, displayDate: `${dd}-${mm}-${yyyy}` });
             }
             return dates;
+        }
+
+        function calculateMasterReportAverages() {
+            const daysInput = document.getElementById('master-report-avg-days');
+            if (!daysInput) return;
+            const days = parseFloat(daysInput.value) || 0;
+            
+            const totalNangEl = document.getElementById('master-report-total-nang');
+            const totalTaliyaEl = document.getElementById('master-report-total-taliya');
+            const totalPelEl = document.getElementById('master-report-total-pel');
+            const totalMathalaEl = document.getElementById('master-report-total-mathala');
+            
+            if (days <= 0) {
+                if (document.getElementById('master-report-avg-nang')) document.getElementById('master-report-avg-nang').textContent = '-';
+                if (document.getElementById('master-report-avg-taliya')) document.getElementById('master-report-avg-taliya').textContent = '-';
+                if (document.getElementById('master-report-avg-pel')) document.getElementById('master-report-avg-pel').textContent = '-';
+                if (document.getElementById('master-report-avg-mathala')) document.getElementById('master-report-avg-mathala').textContent = '-';
+                return;
+            }
+            
+            if (totalNangEl) {
+                const totalNang = parseFloat(totalNangEl.textContent) || 0;
+                document.getElementById('master-report-avg-nang').textContent = (totalNang / days).toFixed(1);
+            }
+            
+            if (totalTaliyaEl) {
+                const totalTaliya = parseFloat(totalTaliyaEl.textContent) || 0;
+                const totalPelVal = totalPelEl ? (parseFloat(totalPelEl.textContent) || 0) : 0;
+                const totalMathalaVal = totalMathalaEl ? (parseFloat(totalMathalaEl.textContent) || 0) : 0;
+                
+                document.getElementById('master-report-avg-taliya').textContent = (totalTaliya / days).toFixed(1);
+                document.getElementById('master-report-avg-pel').textContent = (totalPelVal / days).toFixed(1);
+                document.getElementById('master-report-avg-mathala').textContent = (totalMathalaVal / days).toFixed(1);
+            }
         }
 
         async function loadKhataWiseReport() {
@@ -3043,7 +3787,34 @@
             }
 
             const weekDates = getMonToSatDates(dateVal);
-            document.getElementById('print-report-date-heading').textContent = `અઠવાડિયું: ${weekDates[0].displayDate} થી ${weekDates[5].displayDate}`;
+            document.getElementById('print-report-date-heading').textContent = `અઠવાડિયું: ${weekDates[0].displayDate} થી ${weekDates[6].displayDate}`;
+
+            const thead = document.querySelector('#master-reports-table thead');
+            const tfoot = document.querySelector('#master-reports-table tfoot');
+
+            if (currentUser.role === 'subadmin') {
+                if (thead) {
+                    thead.innerHTML = `
+                        <tr>
+                            <th>તારીખ</th>
+                            <th>દિવસ</th>
+                            <th>નંગ</th>
+                        </tr>
+                    `;
+                }
+            } else {
+                if (thead) {
+                    thead.innerHTML = `
+                        <tr>
+                            <th>તારીખ</th>
+                            <th>દિવસ</th>
+                            <th>તળિયા</th>
+                            <th>પેલ</th>
+                            <th>મથાળા</th>
+                        </tr>
+                    `;
+                }
+            }
 
             const tbody = document.getElementById('master-reports-tbody');
             tbody.innerHTML = '';
@@ -3051,59 +3822,124 @@
             let totalTaliya = 0;
             let totalPel = 0;
             let totalMathala = 0;
+            let totalNang = 0;
 
             weekDates.forEach(wd => {
                 let dateTaliya = 0;
                 let datePel = 0;
                 let dateMathala = 0;
+                let dateNang = 0;
                 let hasSubmissions = false;
 
                 const dateSubmissions = dbState.submissions[wd.dateKey] || {};
 
                 Object.values(dateSubmissions).forEach(userSub => {
                     if (userSub) {
-                        hasSubmissions = true;
-                        if (!userSub.isHoliday && userSub.entries) {
-                            Object.values(userSub.entries).forEach(ent => {
-                                if (ent && !ent.isHoliday) {
-                                    dateTaliya += ent.taliya || 0;
-                                    datePel += ent.pel || 0;
-                                    dateMathala += ent.mathala || 0;
+                        if (currentUser.role === 'subadmin') {
+                            if (userSub.entries) {
+                                const hasAnyNang = Object.values(userSub.entries).some(e => e.nang !== undefined);
+                                if (hasAnyNang) {
+                                    hasSubmissions = true;
+                                    Object.values(userSub.entries).forEach(ent => {
+                                        if (ent && !ent.isHolidayFalavni) {
+                                            dateNang += ent.nang || 0;
+                                        }
+                                    });
                                 }
-                            });
+                            }
+                        } else {
+                            hasSubmissions = true;
+                            if (!userSub.isHoliday && userSub.entries) {
+                                Object.values(userSub.entries).forEach(ent => {
+                                    if (ent && !ent.isHoliday) {
+                                        dateTaliya += ent.taliya || 0;
+                                        datePel += ent.pel || 0;
+                                        dateMathala += ent.mathala || 0;
+                                    }
+                                });
+                            }
                         }
                     }
                 });
 
-                let taliyaDisplay = dateTaliya;
-                let pelDisplay = datePel;
-                let mathalaDisplay = dateMathala;
+                if (currentUser.role === 'subadmin') {
+                    let nangDisplay = dateNang;
+                    if (!hasSubmissions) {
+                        nangDisplay = '-';
+                    } else {
+                        totalNang += dateNang;
+                    }
 
-                if (!hasSubmissions) {
-                    taliyaDisplay = '-';
-                    pelDisplay = '-';
-                    mathalaDisplay = '-';
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 700; color: var(--primary);">${wd.displayDate}</td>
+                        <td><span class="location-badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700;">${wd.dayName}</span></td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${nangDisplay}</td>
+                    `;
+                    tbody.appendChild(tr);
                 } else {
-                    totalTaliya += dateTaliya;
-                    totalPel += datePel;
-                    totalMathala += dateMathala;
-                }
+                    let taliyaDisplay = dateTaliya;
+                    let pelDisplay = datePel;
+                    let mathalaDisplay = dateMathala;
 
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight: 700; color: var(--primary);">${wd.displayDate}</td>
-                    <td><span class="location-badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700;">${wd.dayName}</span></td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${taliyaDisplay}</td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, pelDisplay)}</td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, mathalaDisplay)}</td>
-                `;
-                tbody.appendChild(tr);
+                    if (!hasSubmissions) {
+                        taliyaDisplay = '-';
+                        pelDisplay = '-';
+                        mathalaDisplay = '-';
+                    } else {
+                        totalTaliya += dateTaliya;
+                        totalPel += datePel;
+                        totalMathala += dateMathala;
+                    }
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 700; color: var(--primary);">${wd.displayDate}</td>
+                        <td><span class="location-badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700;">${wd.dayName}</span></td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${taliyaDisplay}</td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, pelDisplay)}</td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, mathalaDisplay)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
             });
 
-            // Update Report totals
-            document.getElementById('master-report-total-taliya').textContent = totalTaliya;
-            document.getElementById('master-report-total-pel').innerHTML = renderValWithValidation(totalTaliya, totalPel);
-            document.getElementById('master-report-total-mathala').innerHTML = renderValWithValidation(totalTaliya, totalMathala);
+            if (currentUser.role === 'subadmin') {
+                if (tfoot) {
+                    tfoot.innerHTML = `
+                        <tr class="totals-row">
+                            <td colspan="2">મેન કુલ સરવાળો</td>
+                            <td class="total-value" id="master-report-total-nang" style="font-weight: 800;">${totalNang}</td>
+                        </tr>
+                        <tr class="average-row">
+                            <td colspan="2" style="text-align: left; font-weight: 700; color: var(--text-color);">
+                                સરેરાશ દિવસો: <input type="number" id="master-report-avg-days" value="6" min="1" class="form-control" style="width: 80px; display: inline-block; margin-left: 10px; padding: 4px 8px; height: auto; font-size: 0.9rem;" oninput="calculateMasterReportAverages()">
+                            </td>
+                            <td class="total-value" id="master-report-avg-nang" style="font-weight: 800; color: var(--accent);">0</td>
+                        </tr>
+                    `;
+                }
+            } else {
+                if (tfoot) {
+                    tfoot.innerHTML = `
+                        <tr class="totals-row">
+                            <td colspan="2">મેન કુલ સરવાળો</td>
+                            <td class="total-value" id="master-report-total-taliya">${totalTaliya}</td>
+                            <td class="total-value" id="master-report-total-pel">${renderValWithValidation(totalTaliya, totalPel)}</td>
+                            <td class="total-value" id="master-report-total-mathala">${renderValWithValidation(totalTaliya, totalMathala)}</td>
+                        </tr>
+                        <tr class="average-row">
+                            <td colspan="2" style="text-align: left; font-weight: 700; color: var(--text-color);">
+                                સરેરાશ દિવસો: <input type="number" id="master-report-avg-days" value="6" min="1" class="form-control" style="width: 80px; display: inline-block; margin-left: 10px; padding: 4px 8px; height: auto; font-size: 0.9rem;" oninput="calculateMasterReportAverages()">
+                            </td>
+                            <td class="total-value" id="master-report-avg-taliya" style="font-weight: 800; color: var(--accent);">0</td>
+                            <td class="total-value" id="master-report-avg-pel" style="font-weight: 800; color: var(--accent);">0</td>
+                            <td class="total-value" id="master-report-avg-mathala" style="font-weight: 800; color: var(--accent);">0</td>
+                        </tr>
+                    `;
+                }
+            }
+            calculateMasterReportAverages();
         }
 
         // CENTRALIZED MONTHLY REPORT (WEEKLY TOTALS BREAKDOWN)
@@ -3118,13 +3954,13 @@
             currentMonday.setDate(start.getDate() + offsetToMonday);
 
             while (currentMonday <= end) {
-                const saturday = new Date(currentMonday);
-                saturday.setDate(currentMonday.getDate() + 5);
+                const sunday = new Date(currentMonday);
+                sunday.setDate(currentMonday.getDate() + 6);
 
                 weeks.push({
                     monday: new Date(currentMonday),
-                    saturday: new Date(saturday),
-                    displayRange: `${formatDateRangeString(currentMonday)} થી ${formatDateRangeString(saturday)}`
+                    sunday: new Date(sunday),
+                    displayRange: `${formatDateRangeString(currentMonday)} થી ${formatDateRangeString(sunday)}`
                 });
 
                 currentMonday.setDate(currentMonday.getDate() + 7);
@@ -3165,6 +4001,31 @@
             const displayMonth = `${gujMonthNames[month]} - ${year}`;
             document.getElementById('print-monthly-report-heading').textContent = `મહિનો: ${displayMonth}`;
 
+            const thead = document.querySelector('#master-monthly-reports-table thead');
+            const tfoot = document.querySelector('#master-monthly-reports-table tfoot');
+
+            if (currentUser.role === 'subadmin') {
+                if (thead) {
+                    thead.innerHTML = `
+                        <tr>
+                            <th>અઠવાડિયું (રેન્જ)</th>
+                            <th>નંગ</th>
+                        </tr>
+                    `;
+                }
+            } else {
+                if (thead) {
+                    thead.innerHTML = `
+                        <tr>
+                            <th>અઠવાડિયું (રેન્જ)</th>
+                            <th>તળિયા</th>
+                            <th>પેલ</th>
+                            <th>મથાળા</th>
+                        </tr>
+                    `;
+                }
+            }
+
             const tbody = document.getElementById('master-monthly-reports-tbody');
             tbody.innerHTML = '';
 
@@ -3173,15 +4034,17 @@
             let totalTaliya = 0;
             let totalPel = 0;
             let totalMathala = 0;
+            let totalNang = 0;
 
             weeks.forEach((week, index) => {
                 let weekTaliya = 0;
                 let weekPel = 0;
                 let weekMathala = 0;
+                let weekNang = 0;
                 let hasData = false;
 
-                // Loop Monday (0) to Saturday (5)
-                for (let i = 0; i < 6; i++) {
+                // Loop Monday (0) to Sunday (6)
+                for (let i = 0; i < 7; i++) {
                     const d = new Date(week.monday);
                     d.setDate(week.monday.getDate() + i);
 
@@ -3194,47 +4057,95 @@
                     const dateSubmissions = dbState.submissions[dateKey] || {};
                     Object.values(dateSubmissions).forEach(userSub => {
                         if (userSub) {
-                            hasData = true;
-                            if (!userSub.isHoliday && userSub.entries) {
-                                Object.values(userSub.entries).forEach(ent => {
-                                    if (ent && !ent.isHoliday) {
-                                        weekTaliya += ent.taliya || 0;
-                                        weekPel += ent.pel || 0;
-                                        weekMathala += ent.mathala || 0;
+                            if (currentUser.role === 'subadmin') {
+                                if (userSub.entries) {
+                                    const hasAnyNang = Object.values(userSub.entries).some(e => e.nang !== undefined);
+                                    if (hasAnyNang) {
+                                        hasData = true;
+                                        Object.values(userSub.entries).forEach(ent => {
+                                            if (ent && !ent.isHolidayFalavni) {
+                                                weekNang += ent.nang || 0;
+                                            }
+                                        });
                                     }
-                                });
+                                }
+                            } else {
+                                hasData = true;
+                                if (!userSub.isHoliday && userSub.entries) {
+                                    Object.values(userSub.entries).forEach(ent => {
+                                        if (ent && !ent.isHoliday) {
+                                            weekTaliya += ent.taliya || 0;
+                                            weekPel += ent.pel || 0;
+                                            weekMathala += ent.mathala || 0;
+                                        }
+                                    });
+                                }
                             }
                         }
                     });
                 }
 
-                let taliyaDisplay = weekTaliya;
-                let pelDisplay = weekPel;
-                let mathalaDisplay = weekMathala;
+                if (currentUser.role === 'subadmin') {
+                    let nangDisplay = weekNang;
+                    if (!hasData) {
+                        nangDisplay = '-';
+                    } else {
+                        totalNang += weekNang;
+                    }
 
-                if (!hasData) {
-                    taliyaDisplay = '-';
-                    pelDisplay = '-';
-                    mathalaDisplay = '-';
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 700; color: var(--primary);">અઠવાડિયું ${index + 1} (${week.displayRange})</td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${nangDisplay}</td>
+                    `;
+                    tbody.appendChild(tr);
                 } else {
-                    totalTaliya += weekTaliya;
-                    totalPel += weekPel;
-                    totalMathala += weekMathala;
-                }
+                    let taliyaDisplay = weekTaliya;
+                    let pelDisplay = weekPel;
+                    let mathalaDisplay = weekMathala;
 
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight: 700; color: var(--primary);">અઠવાડિયું ${index + 1} (${week.displayRange})</td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${taliyaDisplay}</td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, pelDisplay)}</td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, mathalaDisplay)}</td>
-                `;
-                tbody.appendChild(tr);
+                    if (!hasData) {
+                        taliyaDisplay = '-';
+                        pelDisplay = '-';
+                        mathalaDisplay = '-';
+                    } else {
+                        totalTaliya += weekTaliya;
+                        totalPel += weekPel;
+                        totalMathala += weekMathala;
+                    }
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 700; color: var(--primary);">અઠવાડિયું ${index + 1} (${week.displayRange})</td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${taliyaDisplay}</td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, pelDisplay)}</td>
+                        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, mathalaDisplay)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
             });
 
-            document.getElementById('master-monthly-report-total-taliya').textContent = totalTaliya;
-            document.getElementById('master-monthly-report-total-pel').innerHTML = renderValWithValidation(totalTaliya, totalPel);
-            document.getElementById('master-monthly-report-total-mathala').innerHTML = renderValWithValidation(totalTaliya, totalMathala);
+            if (currentUser.role === 'subadmin') {
+                if (tfoot) {
+                    tfoot.innerHTML = `
+                        <tr class="totals-row">
+                            <td>મેન કુલ સરવાળો</td>
+                            <td class="total-value" id="master-monthly-report-total-nang" style="font-weight: 800;">${totalNang}</td>
+                        </tr>
+                    `;
+                }
+            } else {
+                if (tfoot) {
+                    tfoot.innerHTML = `
+                        <tr class="totals-row">
+                            <td>મેન કુલ સરવાળો</td>
+                            <td class="total-value" id="master-monthly-report-total-taliya">${totalTaliya}</td>
+                            <td class="total-value" id="master-monthly-report-total-pel">${renderValWithValidation(totalTaliya, totalPel)}</td>
+                            <td class="total-value" id="master-monthly-report-total-mathala">${renderValWithValidation(totalTaliya, totalMathala)}</td>
+                        </tr>
+                    `;
+                }
+            }
         }
 
         function exportMonthlyReportToExcel() {
@@ -3252,20 +4163,28 @@
             const displayMonth = `${gujMonthNames[month]} - ${year}`;
             const weeks = getWeeksOfMonth(year, month);
 
-            let csvContent = `Diamond Production Monthly Report - Month: ${displayMonth}\n\n`;
-            csvContent += "Week,Range,Taliya,Pel,Mathala\n";
+            let csvContent = '';
+            if (currentUser.role === 'subadmin') {
+                csvContent = `Diamond Allocation Monthly Report - Month: ${displayMonth}\n\n`;
+                csvContent += "Week,Range,Nang\n";
+            } else {
+                csvContent = `Diamond Production Monthly Report - Month: ${displayMonth}\n\n`;
+                csvContent += "Week,Range,Taliya,Pel,Mathala\n";
+            }
 
             let totalTaliya = 0;
             let totalPel = 0;
             let totalMathala = 0;
+            let totalNang = 0;
 
             weeks.forEach((week, index) => {
                 let weekTaliya = 0;
                 let weekPel = 0;
                 let weekMathala = 0;
+                let weekNang = 0;
                 let hasData = false;
 
-                for (let i = 0; i < 6; i++) {
+                for (let i = 0; i < 7; i++) {
                     const d = new Date(week.monday);
                     d.setDate(week.monday.getDate() + i);
 
@@ -3277,42 +4196,70 @@
                     const dateSubmissions = dbState.submissions[dateKey] || {};
                     Object.values(dateSubmissions).forEach(userSub => {
                         if (userSub) {
-                            hasData = true;
-                            if (!userSub.isHoliday && userSub.entries) {
-                                Object.values(userSub.entries).forEach(ent => {
-                                    if (ent && !ent.isHoliday) {
-                                        weekTaliya += ent.taliya || 0;
-                                        weekPel += ent.pel || 0;
-                                        weekMathala += ent.mathala || 0;
+                            if (currentUser.role === 'subadmin') {
+                                if (userSub.entries) {
+                                    const hasAnyNang = Object.values(userSub.entries).some(e => e.nang !== undefined);
+                                    if (hasAnyNang) {
+                                        hasData = true;
+                                        Object.values(userSub.entries).forEach(ent => {
+                                            if (ent && !ent.isHolidayFalavni) {
+                                                weekNang += ent.nang || 0;
+                                            }
+                                        });
                                     }
-                                });
+                                }
+                            } else {
+                                hasData = true;
+                                if (!userSub.isHoliday && userSub.entries) {
+                                    Object.values(userSub.entries).forEach(ent => {
+                                        if (ent && !ent.isHoliday) {
+                                            weekTaliya += ent.taliya || 0;
+                                            weekPel += ent.pel || 0;
+                                            weekMathala += ent.mathala || 0;
+                                        }
+                                    });
+                                }
                             }
                         }
                     });
                 }
 
-                let t = weekTaliya, p = weekPel, m = weekMathala;
-                if (!hasData) {
-                    t = "-";
-                    p = "-";
-                    m = "-";
+                if (currentUser.role === 'subadmin') {
+                    let n = weekNang;
+                    if (!hasData) {
+                        n = "-";
+                    } else {
+                        totalNang += weekNang;
+                    }
+                    csvContent += `"અઠવાડિયું ${index + 1}","${week.displayRange}",${n}\n`;
                 } else {
-                    totalTaliya += weekTaliya;
-                    totalPel += weekPel;
-                    totalMathala += weekMathala;
+                    let t = weekTaliya, p = weekPel, m = weekMathala;
+                    if (!hasData) {
+                        t = "-";
+                        p = "-";
+                        m = "-";
+                    } else {
+                        totalTaliya += weekTaliya;
+                        totalPel += weekPel;
+                        totalMathala += weekMathala;
+                    }
+                    csvContent += `"અઠવાડિયું ${index + 1}","${week.displayRange}",${t},${p},${m}\n`;
                 }
-
-                csvContent += `"અઠવાડિયું ${index + 1}","${week.displayRange}",${t},${p},${m}\n`;
             });
 
-            csvContent += `Grand Total,,${totalTaliya},${totalPel},${totalMathala}\n`;
+            if (currentUser.role === 'subadmin') {
+                csvContent += `Grand Total,,${totalNang}\n`;
+            } else {
+                csvContent += `Grand Total,,${totalTaliya},${totalPel},${totalMathala}\n`;
+            }
 
             const csvData = "\uFEFF" + csvContent;
             const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", `diamond_monthly_report_${monthVal}.csv`);
+            const filename = currentUser.role === 'subadmin' ? `diamond_monthly_falavni_report_${monthVal}.csv` : `diamond_monthly_report_${monthVal}.csv`;
+            link.setAttribute("download", filename);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -3513,7 +4460,12 @@
             const tbody = document.getElementById('master-users-tbody');
             tbody.innerHTML = '';
 
-            dbState.users.forEach(user => {
+            let usersToRender = dbState.users;
+            if (currentUser.role === 'subadmin') {
+                usersToRender = dbState.users.filter(u => u.id !== 'master');
+            }
+
+            usersToRender.forEach(user => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-weight: 700; cursor: pointer; text-decoration: underline dashed var(--primary-light);" title="ડબલ-ક્લિક કરીને નામ બદલો (Double-click to rename)" ondblclick="renameUserDirectly('${user.id}')">${user.username}</td>
@@ -3521,7 +4473,7 @@
                     <td>
                         <div style="display: flex; gap: 8px; justify-content: center; align-items: center; height: 100%;">
                             <button class="btn-primary btn-sm" onclick="editUser('${user.id}')" style="background: var(--primary-light); box-shadow: none; width: auto; flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; white-space: nowrap; margin: 0;">પાસવર્ડ બદલો</button>
-                            ${user.id !== 'master' ? `<button class="btn-logout btn-sm" onclick="deleteUser('${user.id}')" style="width: auto; flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; white-space: nowrap; margin: 0; border-radius: var(--radius-sm);">ડિલીટ હેડ</button>` : ''}
+                            ${(user.id !== 'master' && user.id !== 'subadmin') ? `<button class="btn-logout btn-sm" onclick="deleteUser('${user.id}')" style="width: auto; flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; white-space: nowrap; margin: 0; border-radius: var(--radius-sm);">ડિલીટ હેડ</button>` : ''}
                         </div>
                     </td>
                 `;
@@ -3530,6 +4482,10 @@
         }
 
         async function renameUserDirectly(userId) {
+            if (userId === 'master' || userId === 'subadmin') {
+                await customAlert("તમે એડમિન અથવા sub-adminનું નામ બદલી શકતા નથી. (Cannot rename Admin or sub-admin.)");
+                return;
+            }
             const user = dbState.users.find(u => u.id === userId);
             if (!user) return;
             
@@ -3592,7 +4548,11 @@
 
             document.getElementById('user-id-edit').value = user.id;
             document.getElementById('user-name-input').value = user.username;
-            document.getElementById('user-name-input').disabled = false;
+            if (user.id === 'master' || user.id === 'subadmin') {
+                document.getElementById('user-name-input').disabled = true;
+            } else {
+                document.getElementById('user-name-input').disabled = false;
+            }
             document.getElementById('user-password-input').value = user.password;
 
             document.getElementById('user-form-title').textContent = "હેડની વિગતો બદલો";
@@ -3608,7 +4568,7 @@
         }
 
         async function deleteUser(id) {
-            if (id === 'master') return;
+            if (id === 'master' || id === 'subadmin') return;
             if (await customConfirm("શું તમે આ હેડને ડિલીટ કરવા માંગો છો? તેનાથી તેની ગોઠવણ અને સબમિટ કરેલ ડેટા દૂર થઈ જશે.")) {
                 dbState.users = dbState.users.filter(u => u.id !== id);
 
@@ -3708,58 +4668,99 @@
 
             const weekDates = getMonToSatDates(dateVal);
 
-            let csvContent = `Diamond Production Weekly Report - Week: ${weekDates[0].displayDate} to ${weekDates[5].displayDate}\n\n`;
-            csvContent += "Date,Day,Taliya,Pel,Mathala\n";
+            let csvContent = '';
+            if (currentUser.role === 'subadmin') {
+                csvContent = `Diamond Allocation Weekly Report - Week: ${weekDates[0].displayDate} to ${weekDates[5].displayDate}\n\n`;
+                csvContent += "Date,Day,Nang\n";
+            } else {
+                csvContent = `Diamond Production Weekly Report - Week: ${weekDates[0].displayDate} to ${weekDates[5].displayDate}\n\n`;
+                csvContent += "Date,Day,Taliya,Pel,Mathala\n";
+            }
 
             let totalTaliya = 0;
             let totalPel = 0;
             let totalMathala = 0;
+            let totalNang = 0;
 
             weekDates.forEach(wd => {
                 let dateTaliya = 0;
                 let datePel = 0;
                 let dateMathala = 0;
+                let dateNang = 0;
                 let hasSubmissions = false;
 
                 const dateSubmissions = dbState.submissions[wd.dateKey] || {};
 
                 Object.values(dateSubmissions).forEach(userSub => {
                     if (userSub) {
-                        hasSubmissions = true;
-                        if (!userSub.isHoliday && userSub.entries) {
-                            Object.values(userSub.entries).forEach(ent => {
-                                if (ent && !ent.isHoliday) {
-                                    dateTaliya += ent.taliya || 0;
-                                    datePel += ent.pel || 0;
-                                    dateMathala += ent.mathala || 0;
+                        if (currentUser.role === 'subadmin') {
+                            if (userSub.entries) {
+                                const hasAnyNang = Object.values(userSub.entries).some(e => e.nang !== undefined);
+                                if (hasAnyNang) {
+                                    hasSubmissions = true;
+                                    Object.values(userSub.entries).forEach(ent => {
+                                        if (ent && !ent.isHolidayFalavni) {
+                                            dateNang += ent.nang || 0;
+                                        }
+                                    });
                                 }
-                            });
+                            }
+                        } else {
+                            hasSubmissions = true;
+                            if (!userSub.isHoliday && userSub.entries) {
+                                Object.values(userSub.entries).forEach(ent => {
+                                    if (ent && !ent.isHoliday) {
+                                        dateTaliya += ent.taliya || 0;
+                                        datePel += ent.pel || 0;
+                                        dateMathala += ent.mathala || 0;
+                                    }
+                                });
+                            }
                         }
                     }
                 });
 
-                let t = dateTaliya, p = datePel, m = dateMathala;
-                if (!hasSubmissions) {
-                    t = "-";
-                    p = "-";
-                    m = "-";
+                if (currentUser.role === 'subadmin') {
+                    let n = dateNang;
+                    if (!hasSubmissions) {
+                        n = "-";
+                    } else {
+                        totalNang += dateNang;
+                    }
+                    csvContent += `"${wd.displayDate}","${wd.dayName}",${n}\n`;
                 } else {
-                    totalTaliya += dateTaliya;
-                    totalPel += datePel;
-                    totalMathala += dateMathala;
+                    let t = dateTaliya, p = datePel, m = dateMathala;
+                    if (!hasSubmissions) {
+                        t = "-";
+                        p = "-";
+                        m = "-";
+                    } else {
+                        totalTaliya += dateTaliya;
+                        totalPel += datePel;
+                        totalMathala += dateMathala;
+                    }
+                    csvContent += `"${wd.displayDate}","${wd.dayName}",${t},${p},${m}\n`;
                 }
-
-                csvContent += `"${wd.displayDate}","${wd.dayName}",${t},${p},${m}\n`;
             });
 
-            csvContent += `Grand Total,,${totalTaliya},${totalPel},${totalMathala}\n`;
+            const daysInput = document.getElementById('master-report-avg-days');
+            const avgDays = daysInput ? (parseFloat(daysInput.value) || 6) : 6;
+ 
+            if (currentUser.role === 'subadmin') {
+                csvContent += `Grand Total,,${totalNang}\n`;
+                csvContent += `Average (${avgDays} Days),,${(totalNang / avgDays).toFixed(1)}\n`;
+            } else {
+                csvContent += `Grand Total,,${totalTaliya},${totalPel},${totalMathala}\n`;
+                csvContent += `Average (${avgDays} Days),,${(totalTaliya / avgDays).toFixed(1)},${(totalPel / avgDays).toFixed(1)},${(totalMathala / avgDays).toFixed(1)}\n`;
+            }
 
             const csvData = "\uFEFF" + csvContent;
             const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", `diamond_weekly_report_${weekDates[0].displayDate}_to_${weekDates[5].displayDate}.csv`);
+            const filename = currentUser.role === 'subadmin' ? `diamond_weekly_falavni_report_${weekDates[0].displayDate}_to_${weekDates[6].displayDate}.csv` : `diamond_weekly_report_${weekDates[0].displayDate}_to_${weekDates[6].displayDate}.csv`;
+            link.setAttribute("download", filename);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -3845,55 +4846,94 @@
                 item.textContent = 'કોઈ સક્રિય ખાતું નથી';
                 body.appendChild(item);
             } else {
-                let tableHtml = `
-                    <div class="table-responsive" style="margin-bottom: 0;">
-                        <table class="custom-table" style="font-size: 0.85rem; width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th>ખાતાનું નામ</th>
-                                    <th>લોકેશન</th>
-                                    <th style="width: 65px;">તળિયા</th>
-                                    <th style="width: 65px;">પેલ</th>
-                                    <th style="width: 65px;">મથાળા</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
+                let tableHtml = '';
+                if (currentUser.role === 'subadmin') {
+                    tableHtml = `
+                        <div class="table-responsive" style="margin-bottom: 0;">
+                            <table class="custom-table" style="font-size: 0.85rem; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>ખાતાનું નામ</th>
+                                        <th>લોકેશન</th>
+                                        <th style="width: 100px;">નંગ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
 
-                let totalTaliya = 0;
-                let totalPel = 0;
-                let totalMathala = 0;
-
-                workKhatas.forEach(k => {
-                    totalTaliya += k.taliya;
-                    totalPel += k.pel;
-                    totalMathala += k.mathala;
+                    let totalNang = 0;
+                    workKhatas.forEach(k => {
+                        totalNang += k.nang;
+                        tableHtml += `
+                            <tr>
+                                <td style="font-weight: 700; color: var(--accent);">${k.name}</td>
+                                <td><span class="location-badge" style="font-size: 0.75rem; padding: 2px 6px; white-space: nowrap;">${k.location}</span></td>
+                                <td style="font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums;">${k.nang}</td>
+                            </tr>
+                        `;
+                    });
 
                     tableHtml += `
-                        <tr>
-                            <td style="font-weight: 700; color: var(--accent);">${k.name}</td>
-                            <td><span class="location-badge" style="font-size: 0.75rem; padding: 2px 6px; white-space: nowrap;">${k.location}</span></td>
-                            <td style="font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums;">${k.taliya}</td>
-                            <td style="font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums;">${renderValWithValidation(k.taliya, k.pel)}</td>
-                            <td style="font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums;">${renderValWithValidation(k.taliya, k.mathala)}</td>
-                        </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="totals-row">
+                                        <td colspan="2" style="color: var(--accent); font-weight: 800;">કુલ સરવાળો</td>
+                                        <td style="font-weight: 800; font-variant-numeric: tabular-nums;">${totalNang}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     `;
-                });
+                } else {
+                    tableHtml = `
+                        <div class="table-responsive" style="margin-bottom: 0;">
+                            <table class="custom-table" style="font-size: 0.85rem; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>ખાતાનું નામ</th>
+                                        <th>લોકેશન</th>
+                                        <th style="width: 65px;">તળિયા</th>
+                                        <th style="width: 65px;">પેલ</th>
+                                        <th style="width: 65px;">મથાળા</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
 
-                tableHtml += `
-                            </tbody>
-                            <tfoot>
-                                <tr class="totals-row">
-                                    <td colspan="2" style="color: var(--accent); font-weight: 800;">કુલ સરવાળો</td>
-                                    <td style="font-weight: 800; font-variant-numeric: tabular-nums;">${totalTaliya}</td>
-                                    <td style="font-weight: 800; font-variant-numeric: tabular-nums;">${renderValWithValidation(totalTaliya, totalPel)}</td>
-                                    <td style="font-weight: 800; font-variant-numeric: tabular-nums;">${renderValWithValidation(totalTaliya, totalMathala)}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                `;
+                    let totalTaliya = 0;
+                    let totalPel = 0;
+                    let totalMathala = 0;
 
+                    workKhatas.forEach(k => {
+                        totalTaliya += k.taliya;
+                        totalPel += k.pel;
+                        totalMathala += k.mathala;
+
+                        tableHtml += `
+                            <tr>
+                                <td style="font-weight: 700; color: var(--accent);">${k.name}</td>
+                                <td><span class="location-badge" style="font-size: 0.75rem; padding: 2px 6px; white-space: nowrap;">${k.location}</span></td>
+                                <td style="font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums;">${k.taliya}</td>
+                                <td style="font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums;">${renderValWithValidation(k.taliya, k.pel)}</td>
+                                <td style="font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums;">${renderValWithValidation(k.taliya, k.mathala)}</td>
+                            </tr>
+                        `;
+                    });
+
+                    tableHtml += `
+                                </tbody>
+                                <tfoot>
+                                    <tr class="totals-row">
+                                        <td colspan="2" style="color: var(--accent); font-weight: 800;">કુલ સરવાળો</td>
+                                        <td style="font-weight: 800; font-variant-numeric: tabular-nums;">${totalTaliya}</td>
+                                        <td style="font-weight: 800; font-variant-numeric: tabular-nums;">${renderValWithValidation(totalTaliya, totalPel)}</td>
+                                        <td style="font-weight: 800; font-variant-numeric: tabular-nums;">${renderValWithValidation(totalTaliya, totalMathala)}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    `;
+                }
                 body.innerHTML = tableHtml;
             }
 

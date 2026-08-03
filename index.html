@@ -4829,14 +4829,16 @@
             if (sub.entries) {
                 Object.keys(sub.entries).forEach(khataId => {
                     const ent = sub.entries[khataId];
-                    if (!ent.isHoliday) {
+                    const isHoliday = currentUser.role === 'subadmin' ? !!ent.isHolidayFalavni : !!ent.isHoliday;
+                    if (!isHoliday) {
                         const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
                         workKhatas.push({
                             name: khataObj ? khataObj.name : khataId,
                             location: khataObj ? khataObj.location : '',
                             taliya: ent.taliya || 0,
                             pel: ent.pel || 0,
-                            mathala: ent.mathala || 0
+                            mathala: ent.mathala || 0,
+                            nang: ent.nang || 0
                         });
                     }
                 });

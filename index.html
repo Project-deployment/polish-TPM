@@ -20,8 +20,8 @@
             --border-color: rgba(226, 232, 240, 0.8);
             --primary: #1e293b;
             --primary-light: #334155;
-            --accent: #2563eb;
-            --accent-glow: rgba(37, 99, 235, 0.15);
+            --accent: #16a34a;
+            --accent-glow: rgba(22, 163, 74, 0.15);
             --success: #10b981;
             --success-bg: #ecfdf5;
             --success-border: #a7f3d0;
@@ -34,7 +34,7 @@
             --radius-md: 10px;
             --radius-sm: 6px;
             --shadow-subtle: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 8px -1px rgba(15, 23, 42, 0.02);
-            --shadow-glow: 0 10px 25px -5px rgba(37, 99, 235, 0.15);
+            --shadow-glow: 0 10px 25px -5px rgba(22, 163, 74, 0.15);
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -254,7 +254,7 @@
         }
 
         .btn-primary:hover {
-            background: #1d4ed8;
+            background: #15803d;
             transform: translateY(-1px);
         }
 
@@ -1502,6 +1502,8 @@
                                 <tr>
                                     <th>તારીખ</th>
                                     <th>દિવસ</th>
+                                    <th>ચાલુ</th>
+                                    <th>રજા</th>
                                     <th>તળિયા</th>
                                     <th>પેલ</th>
                                     <th>મથાળા</th>
@@ -1513,6 +1515,8 @@
                             <tfoot>
                                 <tr class="totals-row">
                                     <td colspan="2">મેન કુલ સરવાળો</td>
+                                    <td class="total-value" id="master-report-total-chalu">-</td>
+                                    <td class="total-value" id="master-report-total-raja">-</td>
                                     <td class="total-value" id="master-report-total-taliya">0</td>
                                     <td class="total-value" id="master-report-total-pel">0</td>
                                     <td class="total-value" id="master-report-total-mathala">0</td>
@@ -4030,6 +4034,8 @@
                         <tr>
                             <th>તારીખ</th>
                             <th>દિવસ</th>
+                            <th>ચાલુ</th>
+                            <th>રજા</th>
                             <th>તળિયા</th>
                             <th>પેલ</th>
                             <th>મથાળા</th>
@@ -4045,12 +4051,16 @@
             let totalPel = 0;
             let totalMathala = 0;
             let totalNang = 0;
+            let totalChalu = 0;
+            let totalRaja = 0;
 
             weekDates.forEach(wd => {
                 let dateTaliya = 0;
                 let datePel = 0;
                 let dateMathala = 0;
                 let dateNang = 0;
+                let dateChalu = 0;
+                let dateRaja = 0;
                 let hasSubmissions = false;
 
                 const dateSubmissions = dbState.submissions[wd.dateKey] || {};
@@ -4071,14 +4081,22 @@
                             }
                         } else {
                             hasSubmissions = true;
-                            if (!userSub.isHoliday && userSub.entries) {
+                            if (userSub.entries) {
                                 Object.values(userSub.entries).forEach(ent => {
-                                    if (ent && !ent.isHoliday) {
-                                        dateTaliya += ent.taliya || 0;
-                                        datePel += ent.pel || 0;
-                                        dateMathala += ent.mathala || 0;
+                                    if (ent) {
+                                        if (ent.isHoliday) {
+                                            dateRaja++;
+                                        } else {
+                                            dateChalu++;
+                                            dateTaliya += ent.taliya || 0;
+                                            datePel += ent.pel || 0;
+                                            dateMathala += ent.mathala || 0;
+                                        }
                                     }
                                 });
+                            } else if (userSub.isHoliday) {
+                                // whole user on holiday, no entries
+                                dateRaja++;
                             }
                         }
                     }
@@ -4103,21 +4121,29 @@
                     let taliyaDisplay = dateTaliya;
                     let pelDisplay = datePel;
                     let mathalaDisplay = dateMathala;
+                    let chaluDisplay = dateChalu;
+                    let rajaDisplay = dateRaja;
 
                     if (!hasSubmissions) {
                         taliyaDisplay = '-';
                         pelDisplay = '-';
                         mathalaDisplay = '-';
+                        chaluDisplay = '-';
+                        rajaDisplay = '-';
                     } else {
                         totalTaliya += dateTaliya;
                         totalPel += datePel;
                         totalMathala += dateMathala;
+                        totalChalu += dateChalu;
+                        totalRaja += dateRaja;
                     }
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td style="font-weight: 700; color: var(--primary);">${wd.displayDate}</td>
                         <td><span class="location-badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700;">${wd.dayName}</span></td>
+                        <td>${chaluDisplay !== '-' ? `<button class="btn-primary btn-sm" style="display:inline-block; padding:2px 8px; font-size:0.8rem; box-shadow:none; cursor:default; background:var(--accent); border:1px solid var(--accent); color:#fff; border-radius:30px; line-height:1;">${chaluDisplay} ખાતા</button>` : `<span style="color:var(--text-muted); font-size:0.85rem;">-</span>`}</td>
+                        <td>${rajaDisplay !== '-' && rajaDisplay > 0 ? `<button class="btn-holiday-toggle active btn-sm" style="display:inline-block; padding:2px 8px; font-size:0.8rem; box-shadow:none; cursor:default;">${rajaDisplay} રજા</button>` : `<span style="color:var(--text-muted); font-size:0.85rem;">${rajaDisplay === '-' ? '-' : '0'}</span>`}</td>
                         <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${taliyaDisplay}</td>
                         <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, pelDisplay)}</td>
                         <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, mathalaDisplay)}</td>
@@ -4146,12 +4172,14 @@
                     tfoot.innerHTML = `
                         <tr class="totals-row">
                             <td colspan="2">મેન કુલ સરવાળો</td>
+                            <td class="total-value" id="master-report-total-chalu">-</td>
+                            <td class="total-value" id="master-report-total-raja">-</td>
                             <td class="total-value" id="master-report-total-taliya">${totalTaliya}</td>
                             <td class="total-value" id="master-report-total-pel">${renderValWithValidation(totalTaliya, totalPel)}</td>
                             <td class="total-value" id="master-report-total-mathala">${renderValWithValidation(totalTaliya, totalMathala)}</td>
                         </tr>
                         <tr class="average-row">
-                            <td colspan="2" style="text-align: left; font-weight: 700; color: var(--text-color);">
+                            <td colspan="4" style="text-align: left; font-weight: 700; color: var(--text-color);">
                                 સરેરાશ દિવસો: <input type="number" id="master-report-avg-days" value="6" min="1" class="form-control" style="width: 80px; display: inline-block; margin-left: 10px; padding: 4px 8px; height: auto; font-size: 0.9rem;" oninput="calculateMasterReportAverages()">
                             </td>
                             <td class="total-value" id="master-report-avg-taliya" style="font-weight: 800; color: var(--accent);">0</td>
@@ -4975,6 +5003,8 @@
                 let datePel = 0;
                 let dateMathala = 0;
                 let dateNang = 0;
+                let dateChalu = 0;
+                let dateRaja = 0;
                 let hasSubmissions = false;
 
                 const dateSubmissions = dbState.submissions[wd.dateKey] || {};

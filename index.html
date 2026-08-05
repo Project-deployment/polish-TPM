@@ -1807,177 +1807,7 @@
         const DB_KEY = 'diamond_production_db_v1';
         let dbState = {};
 
-        // ============================================================
-        // 🔐 AES-256-GCM ENCRYPTION ENGINE (Web Crypto API)
-        // Military-grade encryption for all LocalStorage data.
-        // Uses PBKDF2 with 310,000 iterations for key derivation.
-        // Each encryption uses a unique random IV (12 bytes) and
-        // salt (16 bytes) for maximum security. Even identical data
-        // produces completely different ciphertext each time.
-        // ============================================================
-        const _CRYPTO_CONFIG = {
-            // Compound passphrase - multiple layers of obfuscation
-            _p1: atob('RGlhbW9uZFByb2R1Y3Rpb25TZWNyZXRLZXlAMjAyNiE='),
-            _p2: atob('QUVTLTI1Ni1HQ00tU3VwZXJTZWN1cmU='),
-            _p3: 'xK9$mP2#vL7@nQ4&',
-            iterations: 310000,
-            ivLen: 12,
-            saltLen: 16,
-            tagLen: 128
-        };
-
-        // Derive a strong AES-256 key from passphrase using PBKDF2
-        async function _deriveEncryptionKey(salt) {
-            const passphrase = _CRYPTO_CONFIG._p1 + ':' + _CRYPTO_CONFIG._p2 + ':' + _CRYPTO_CONFIG._p3;
-            const encoder = new TextEncoder();
-            const keyMaterial = await crypto.subtle.importKey(
-                'raw',
-                encoder.encode(passphrase),
-                { name: 'PBKDF2' },
-                false,
-                ['deriveKey']
-            );
-            return await crypto.subtle.deriveKey(
-                {
-                    name: 'PBKDF2',
-                    salt: salt,
-                    iterations: _CRYPTO_CONFIG.iterations,
-                    hash: 'SHA-512'
-                },
-                keyMaterial,
-                { name: 'AES-GCM', length: 256 },
-                false,
-                ['encrypt', 'decrypt']
-            );
-        }
-
-        // Encrypt plaintext string → base64 encoded ciphertext
-        async function _encryptData(plaintext) {
-            try {
-                const encoder = new TextEncoder();
-                const salt = crypto.getRandomValues(new Uint8Array(_CRYPTO_CONFIG.saltLen));
-                const iv = crypto.getRandomValues(new Uint8Array(_CRYPTO_CONFIG.ivLen));
-                const key = await _deriveEncryptionKey(salt);
-                const encrypted = await crypto.subtle.encrypt(
-                    { name: 'AES-GCM', iv: iv, tagLength: _CRYPTO_CONFIG.tagLen },
-                    key,
-                    encoder.encode(plaintext)
-                );
-                // Combine: salt(16) + iv(12) + ciphertext
-                const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
-                combined.set(salt, 0);
-                combined.set(iv, salt.length);
-                combined.set(new Uint8Array(encrypted), salt.length + iv.length);
-                // Convert to base64 with prefix marker
-                return '🔒' + btoa(String.fromCharCode(...combined));
-            } catch (e) {
-                console.error('Encryption failed:', e);
-                return null;
-            }
-        }
-
-        // Decrypt base64 ciphertext → plaintext string
-        async function _decryptData(ciphertext) {
-            try {
-                if (!ciphertext || !ciphertext.startsWith('🔒')) {
-                    return ciphertext; // Not encrypted, return as-is (migration support)
-                }
-                const raw = ciphertext.substring(2); // Remove '🔒' prefix
-                const binaryStr = atob(raw);
-                const combined = new Uint8Array(binaryStr.length);
-                for (let i = 0; i < binaryStr.length; i++) {
-                    combined[i] = binaryStr.charCodeAt(i);
-                }
-                const salt = combined.slice(0, _CRYPTO_CONFIG.saltLen);
-                const iv = combined.slice(_CRYPTO_CONFIG.saltLen, _CRYPTO_CONFIG.saltLen + _CRYPTO_CONFIG.ivLen);
-                const data = combined.slice(_CRYPTO_CONFIG.saltLen + _CRYPTO_CONFIG.ivLen);
-                const key = await _deriveEncryptionKey(salt);
-                const decrypted = await crypto.subtle.decrypt(
-                    { name: 'AES-GCM', iv: iv, tagLength: _CRYPTO_CONFIG.tagLen },
-                    key,
-                    data
-                );
-                return new TextDecoder().decode(decrypted);
-            } catch (e) {
-                console.error('Decryption failed:', e);
-                return null;
-            }
-        }
-
-        // Secure Storage Wrapper - encrypts/decrypts automatically
-        const secureStorage = {
-            async setItem(key, value) {
-                const encrypted = await _encryptData(value);
-                if (encrypted) {
-                    localStorage.setItem(key, encrypted);
-                } else {
-                    // Fallback: store encrypted hash if encryption fails
-                    localStorage.setItem(key, value);
-                }
-            },
-            async getItem(key) {
-                const stored = localStorage.getItem(key);
-                if (!stored) return null;
-                if (stored.startsWith('🔒')) {
-                    return await _decryptData(stored);
-                }
-                // Plain text found (legacy/migration) - re-encrypt it
-                await this.setItem(key, stored);
-                return stored;
-            },
-            removeItem(key) {
-                localStorage.removeItem(key);
-            }
-        };
-
-        // Secure Session Storage Wrapper
-        const secureSessionStorage = {
-            async setItem(key, value) {
-                const encrypted = await _encryptData(value);
-                if (encrypted) {
-                    sessionStorage.setItem(key, encrypted);
-                } else {
-                    sessionStorage.setItem(key, value);
-                }
-            },
-            async getItem(key) {
-                const stored = sessionStorage.getItem(key);
-                if (!stored) return null;
-                if (stored.startsWith('🔒')) {
-                    return await _decryptData(stored);
-                }
-                // Plain text found (legacy) - re-encrypt it
-                await this.setItem(key, stored);
-                return stored;
-            },
-            removeItem(key) {
-                sessionStorage.removeItem(key);
-            }
-        };
-
-        // Auto-migrate existing plain text data to encrypted format on load
-        async function _migrateToEncrypted() {
-            const keysToMigrate = [
-                DB_KEY,
-                'diamond_firebase_url',
-                'diamond_remember_user',
-                'diamond_last_selected_user_id'
-            ];
-            for (const key of keysToMigrate) {
-                const raw = localStorage.getItem(key);
-                if (raw && !raw.startsWith('🔒')) {
-                    await secureStorage.setItem(key, raw);
-                }
-            }
-            // Migrate session storage
-            const sessionKeys = ['diamond_active_user'];
-            for (const key of sessionKeys) {
-                const raw = sessionStorage.getItem(key);
-                if (raw && !raw.startsWith('🔒')) {
-                    await secureSessionStorage.setItem(key, raw);
-                }
-            }
-        }
+        
 
         function showCustomDialog({ type, title, text, defaultValue }) {
             return new Promise((resolve) => {
@@ -2161,7 +1991,7 @@
             }
         }
 
-        async function mergeDatabaseStates(local, server) {
+        function mergeDatabaseStates(local, server) {
             if (!local) {
                 const merged = JSON.parse(JSON.stringify(server || defaultState));
                 ensureDefaultUsers(merged);
@@ -2177,7 +2007,7 @@
             let activeUser = currentUser;
             if (!activeUser) {
                 try {
-                    const cachedUser = await secureSessionStorage.getItem('diamond_active_user');
+                    const cachedUser = sessionStorage.getItem('diamond_active_user');
                     if (cachedUser) {
                         activeUser = JSON.parse(cachedUser);
                     }
@@ -2188,7 +2018,7 @@
             let deviceUserRole = activeUser ? activeUser.role : null;
 
             if (!deviceUserId) {
-                deviceUserId = await secureStorage.getItem('diamond_last_selected_user_id');
+                deviceUserId = localStorage.getItem('diamond_last_selected_user_id');
                 const usersList = (local.users || []).concat(server.users || []);
                 const foundUser = usersList.find(u => u.id === deviceUserId);
                 if (foundUser) {
@@ -2277,7 +2107,7 @@
                 const response = await fetch(FIREBASE_URL + '/.json?t=' + new Date().getTime());
                 if (response.ok) {
                     const data = await response.json();
-                    const stored = await secureStorage.getItem(DB_KEY);
+                    const stored = localStorage.getItem(DB_KEY);
                     const localData = stored ? JSON.parse(stored) : null;
 
                     if (data && data.users && data.users.length > 0) {
@@ -2295,7 +2125,7 @@
                             });
                         }
 
-                        dbState = await mergeDatabaseStates(localData, data);
+                        dbState = mergeDatabaseStates(localData, data)
                         // Save the merged state back to Firebase so it is synchronized
                         await saveFullDBToFirebase();
                     } else {
@@ -2308,7 +2138,7 @@
                             await saveFullDBToFirebase();
                         }
                     }
-                    await secureStorage.setItem(DB_KEY, JSON.stringify(dbState));
+                    localStorage.setItem(DB_KEY, JSON.stringify(dbState));
                     updateConnectionStatus(true);
                     return true;
                 }
@@ -2329,7 +2159,7 @@
                     body: JSON.stringify(dbState)
                 });
                 if (response.ok) {
-                    await secureStorage.setItem(DB_KEY, JSON.stringify(dbState));
+                    localStorage.setItem(DB_KEY, JSON.stringify(dbState));
                     updateConnectionStatus(true);
                     return true;
                 }
@@ -2364,10 +2194,10 @@
         async function initDB() {
             // Load custom URL if exists in localStorage, otherwise use default URL
             const defaultUrl = atob('aHR0cHM6Ly90cG0tYmhhdmVzaGJoYWktZGVmYXVsdC1ydGRiLmZpcmViYXNlaW8uY29t');
-            let savedUrl = await secureStorage.getItem('diamond_firebase_url');
+            let savedUrl = localStorage.getItem('diamond_firebase_url');
             if (!savedUrl) {
                 savedUrl = defaultUrl;
-                await secureStorage.setItem('diamond_firebase_url', defaultUrl);
+                localStorage.setItem('diamond_firebase_url', defaultUrl);
             }
             FIREBASE_URL = savedUrl;
 
@@ -2388,7 +2218,7 @@
 
             if (!fetched) {
                 try {
-                    const stored = await secureStorage.getItem(DB_KEY);
+                    const stored = localStorage.getItem(DB_KEY);
                     if (stored) {
                         dbState = JSON.parse(stored);
                     } else {
@@ -2418,7 +2248,7 @@
 
         async function saveDB() {
             try {
-                await secureStorage.setItem(DB_KEY, JSON.stringify(dbState));
+                localStorage.setItem(DB_KEY, JSON.stringify(dbState));
                 showGlobalLoader(true);
                 const saved = await saveFullDBToFirebase();
                 showGlobalLoader(false);
@@ -2445,7 +2275,6 @@
         // PAGE NAVIGATION / LOGIN FLOW
         // ==============================================
         window.addEventListener('DOMContentLoaded', async () => {
-            await _migrateToEncrypted();
             await initDB();
             populateLoginRoles();
 
@@ -2483,7 +2312,7 @@
             setupLoginFormNavigations();
             setupUserFormNavigations();
 
-            await restoreRememberedUser();
+            restoreRememberedUser();
 
             // Enter key navigation inside the user data entry table
             const userTableBody = document.getElementById('user-table-body');
@@ -2538,7 +2367,7 @@
             }
 
             // Check if there is an active session
-            const cachedUser = await secureSessionStorage.getItem('diamond_active_user');
+            const cachedUser = sessionStorage.getItem('diamond_active_user');
             if (cachedUser) {
                 const userObj = JSON.parse(cachedUser);
                 // Verify user still exists in db
@@ -2546,7 +2375,7 @@
                 if (verified) {
                     loginAs(verified);
                 } else {
-                    secureSessionStorage.removeItem('diamond_active_user');
+                    sessionStorage.removeItem('diamond_active_user');
                 }
             }
         });
@@ -2677,9 +2506,9 @@
             });
         }
 
-        async function restoreRememberedUser() {
-            const rememberUser = (await secureStorage.getItem('diamond_remember_user')) === 'true';
-            const lastUserId = await secureStorage.getItem('diamond_last_selected_user_id');
+        function restoreRememberedUser() {
+            const rememberUser = localStorage.getItem('diamond_remember_user') === 'true';
+            const lastUserId = localStorage.getItem('diamond_last_selected_user_id');
             const rememberCheckbox = document.getElementById('login-remember');
 
             if (rememberCheckbox) {
@@ -2747,15 +2576,15 @@
             // Remember User checkbox logic
             const rememberCheckbox = document.getElementById('login-remember');
             if (rememberCheckbox && rememberCheckbox.checked) {
-                await secureStorage.setItem('diamond_last_selected_user_id', user.id);
-                await secureStorage.setItem('diamond_remember_user', 'true');
+                localStorage.setItem('diamond_last_selected_user_id', user.id);
+                localStorage.setItem('diamond_remember_user', 'true');
             } else {
-                secureStorage.removeItem('diamond_last_selected_user_id');
-                secureStorage.removeItem('diamond_remember_user');
+                localStorage.removeItem('diamond_last_selected_user_id');
+                localStorage.removeItem('diamond_remember_user');
             }
 
             // Set session storage
-            await secureSessionStorage.setItem('diamond_active_user', JSON.stringify(user));
+            sessionStorage.setItem('diamond_active_user', JSON.stringify(user));
             loginAs(user);
         }
 
@@ -2813,8 +2642,8 @@
         }
 
         // Logout
-        async function logout() {
-            secureSessionStorage.removeItem('diamond_active_user');
+        function logout() {
+            sessionStorage.removeItem('diamond_active_user');
             currentUser = null;
             document.getElementById('header-actions').style.display = 'none';
             document.getElementById('user-panel').style.display = 'none';
@@ -2858,7 +2687,7 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = await secureStorage.getItem(DB_KEY);
+                const stored = localStorage.getItem(DB_KEY);
                 if (stored) {
                     dbState = JSON.parse(stored);
                 }
@@ -3001,7 +2830,7 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = await secureStorage.getItem(DB_KEY);
+                const stored = localStorage.getItem(DB_KEY);
                 if (stored) {
                     dbState = JSON.parse(stored);
                 }
@@ -3190,7 +3019,7 @@
 
             dbState.submissions[dateVal][currentUser.id] = submissionData;
 
-            await secureStorage.setItem(DB_KEY, JSON.stringify(dbState));
+            localStorage.setItem(DB_KEY, JSON.stringify(dbState));
 
             showGlobalLoader(true);
             const success = await saveSubmissionToFirebase(dateVal, currentUser.id, submissionData);
@@ -3198,7 +3027,7 @@
 
             if (success) {
                 dbState.submissions[dateVal][currentUser.id].synced = true;
-                await secureStorage.setItem(DB_KEY, JSON.stringify(dbState));
+                localStorage.setItem(DB_KEY, JSON.stringify(dbState));
             }
 
             loadUserFalavniEntry();
@@ -3215,7 +3044,7 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = await secureStorage.getItem(DB_KEY);
+                const stored = localStorage.getItem(DB_KEY);
                 if (stored) {
                     dbState = JSON.parse(stored);
                 }
@@ -3338,7 +3167,7 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = await secureStorage.getItem(DB_KEY);
+                const stored = localStorage.getItem(DB_KEY);
                 if (stored) {
                     dbState = JSON.parse(stored);
                 }
@@ -3616,7 +3445,7 @@
 
             dbState.submissions[dateVal][currentUser.id] = submissionData;
 
-            await secureStorage.setItem(DB_KEY, JSON.stringify(dbState));
+            localStorage.setItem(DB_KEY, JSON.stringify(dbState));
 
             showGlobalLoader(true);
             const success = await saveSubmissionToFirebase(dateVal, currentUser.id, submissionData);
@@ -3624,7 +3453,7 @@
 
             if (success) {
                 dbState.submissions[dateVal][currentUser.id].synced = true;
-                await secureStorage.setItem(DB_KEY, JSON.stringify(dbState));
+                localStorage.setItem(DB_KEY, JSON.stringify(dbState));
             }
 
             loadUserDailyEntry();
@@ -3675,7 +3504,7 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = await secureStorage.getItem(DB_KEY);
+                const stored = localStorage.getItem(DB_KEY);
                 if (stored) {
                     dbState = JSON.parse(stored);
                 }
@@ -3945,7 +3774,7 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = await secureStorage.getItem(DB_KEY);
+                const stored = localStorage.getItem(DB_KEY);
                 if (stored) {
                     dbState = JSON.parse(stored);
                 }
@@ -4179,7 +4008,7 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = await secureStorage.getItem(DB_KEY);
+                const stored = localStorage.getItem(DB_KEY);
                 if (stored) {
                     dbState = JSON.parse(stored);
                 }
@@ -4406,7 +4235,7 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = await secureStorage.getItem(DB_KEY);
+                const stored = localStorage.getItem(DB_KEY);
                 if (stored) {
                     dbState = JSON.parse(stored);
                 }
@@ -4965,7 +4794,7 @@
                 
                 if (currentUser && currentUser.id === userId) {
                     currentUser.username = user.username;
-                    await secureSessionStorage.setItem('diamond_active_user', JSON.stringify(currentUser));
+                    sessionStorage.setItem('diamond_active_user', JSON.stringify(currentUser));
                     document.getElementById('header-user-display').textContent = user.username;
                 }
             }
@@ -4994,7 +4823,7 @@
                     
                     if (currentUser && currentUser.id === id) {
                         currentUser.username = name;
-                        await secureSessionStorage.setItem('diamond_active_user', JSON.stringify(currentUser));
+                        sessionStorage.setItem('diamond_active_user', JSON.stringify(currentUser));
                         document.getElementById('header-user-display').textContent = name;
                     }
                 }
@@ -5098,7 +4927,7 @@
             if (url.endsWith('/')) {
                 url = url.substring(0, url.length - 1);
             }
-            await secureStorage.setItem('diamond_firebase_url', url);
+            localStorage.setItem('diamond_firebase_url', url);
             FIREBASE_URL = url;
 
             showGlobalLoader(true);
@@ -5142,7 +4971,7 @@
         async function factoryResetDatabase() {
             if (await customConfirm("ચેતવણી: ફેક્ટરી રીસેટ કરવાથી બધો ડેટા ડિલીટ થઈ જશે અને ડિફોલ્ટ સેટિંગ્સ ફરી સેટ થશે. શું તમે ચાલુ રાખવા માંગો છો? (Warning: This will delete everything permanently!)")) {
                 dbState = JSON.parse(JSON.stringify(defaultState));
-                secureStorage.removeItem(DB_KEY);
+                localStorage.removeItem(DB_KEY);
                 showGlobalLoader(true);
                 await saveFullDBToFirebase();
                 showGlobalLoader(false);

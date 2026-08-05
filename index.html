@@ -3782,7 +3782,7 @@
 
                     if (workCount > 0) {
                         grandWorkKhatas += workCount;
-                        workHtml = `<button class="btn-primary btn-sm" style="display:inline-block; padding:2px 8px; font-size:0.8rem; box-shadow:none; cursor:pointer; background:var(--accent); border:1px solid var(--accent); color:#ffffff; border-radius:30px; line-height:1;" onclick="openWorkDetails('${user.id}')">${workCount} ખાતા</button>`;
+                        workHtml = `<button class="btn-primary btn-sm" style="display:inline-block; padding:2px 8px; font-size:0.8rem; box-shadow:none; cursor:pointer; background:var(--accent); border:1px solid var(--accent); color:#ffffff; border-radius:30px; line-height:1;" onclick="openWorkDetails('${user.id}')">${workCount} ચાલુ</button>`;
                     } else {
                         workHtml = `<span style="color:var(--text-muted); font-size:0.85rem;">0</span>`;
                     }
@@ -3870,7 +3870,7 @@
             // Update Table Footer Totals
             document.getElementById('master-submissions-total-allocated-khatas').textContent = grandAllocatedKhatas;
             document.getElementById('master-submissions-total-holiday').textContent = grandHoliday > 0 ? `${grandHoliday} રજા` : '0';
-            document.getElementById('master-submissions-total-work-khatas').textContent = grandWorkKhatas > 0 ? `${grandWorkKhatas} ખાતા` : '0';
+            document.getElementById('master-submissions-total-work-khatas').textContent = grandWorkKhatas > 0 ? `${grandWorkKhatas} ચાલુ` : '0';
             if (currentUser.role === 'subadmin') {
                 document.getElementById('master-submissions-total-nang').textContent = grandNang;
             } else {
@@ -3964,7 +3964,7 @@
 
                     if (workCount > 0) {
                         grandWorkKhatas += workCount;
-                        workHtml = `<button class="btn-primary btn-sm" style="display:inline-block; padding:2px 8px; font-size:0.8rem; box-shadow:none; cursor:pointer; background:var(--accent); border:1px solid var(--accent); color:#ffffff; border-radius:30px; line-height:1;" onclick="openWorkDetails('${user.id}')">${workCount} ખાતા</button>`;
+                        workHtml = `<button class="btn-primary btn-sm" style="display:inline-block; padding:2px 8px; font-size:0.8rem; box-shadow:none; cursor:pointer; background:var(--accent); border:1px solid var(--accent); color:#ffffff; border-radius:30px; line-height:1;" onclick="openWorkDetails('${user.id}')">${workCount} ચાલુ</button>`;
                     } else {
                         workHtml = `<span style="color:var(--text-muted); font-size:0.85rem;">0</span>`;
                     }
@@ -4009,7 +4009,7 @@
             // Update Table Footer Totals
             document.getElementById('master-falavni-total-allocated').textContent = grandAllocatedKhatas;
             document.getElementById('master-falavni-total-holiday').textContent = grandHoliday > 0 ? `${grandHoliday} રજા` : '0';
-            document.getElementById('master-falavni-total-work').textContent = grandWorkKhatas > 0 ? `${grandWorkKhatas} ખાતા` : '0';
+            document.getElementById('master-falavni-total-work').textContent = grandWorkKhatas > 0 ? `${grandWorkKhatas} ચાલુ` : '0';
             document.getElementById('master-falavni-total-nang').textContent = grandNang;
         }
 
@@ -4259,7 +4259,7 @@
                     tr.innerHTML = `
                         <td style="font-weight: 700; color: var(--primary);">${wd.displayDate}</td>
                         <td><span class="location-badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700;">${wd.dayName}</span></td>
-                        <td>${chaluDisplay !== '-' ? `<button class="btn-primary btn-sm" style="display:inline-block; padding:2px 8px; font-size:0.8rem; box-shadow:none; cursor:default; background:var(--accent); border:1px solid var(--accent); color:#fff; border-radius:30px; line-height:1;">${chaluDisplay} ખાતા</button>` : `<span style="color:var(--text-muted); font-size:0.85rem;">-</span>`}</td>
+                        <td>${chaluDisplay !== '-' ? `<button class="btn-primary btn-sm" style="display:inline-block; padding:2px 8px; font-size:0.8rem; box-shadow:none; cursor:default; background:var(--accent); border:1px solid var(--accent); color:#fff; border-radius:30px; line-height:1;">${chaluDisplay} ચાલુ</button>` : `<span style="color:var(--text-muted); font-size:0.85rem;">-</span>`}</td>
                         <td>${rajaDisplay !== '-' && rajaDisplay > 0 ? `<button class="btn-holiday-toggle active btn-sm" style="display:inline-block; padding:2px 8px; font-size:0.8rem; box-shadow:none; cursor:default;">${rajaDisplay} રજા</button>` : `<span style="color:var(--text-muted); font-size:0.85rem;">${rajaDisplay === '-' ? '-' : '0'}</span>`}</td>
                         <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${taliyaDisplay}</td>
                         <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${renderValWithValidation(taliyaDisplay, pelDisplay)}</td>
@@ -4280,7 +4280,7 @@
                             <td colspan="2" style="text-align: left; font-weight: 700; color: var(--text-color);">
                                 સરેરાશ દિવસો: <input type="number" id="master-report-avg-days" value="6" min="1" class="form-control" style="width: 80px; display: inline-block; margin-left: 10px; padding: 4px 8px; height: auto; font-size: 0.9rem;" oninput="calculateMasterReportAverages()">
                             </td>
-                            <td class="total-value" id="master-report-avg-nang" style="font-weight: 800; color: var(--accent);">0</td>
+                            <td class="total-value" id="master-report-avg-nang" style="font-weight: 600; font-size: 1.2rem; color: var(--accent);">0</td>
                         </tr>
                     `;
                 }
@@ -4299,9 +4299,9 @@
                             <td colspan="4" style="text-align: left; font-weight: 700; color: var(--text-color);">
                                 સરેરાશ દિવસો: <input type="number" id="master-report-avg-days" value="6" min="1" class="form-control" style="width: 80px; display: inline-block; margin-left: 10px; padding: 4px 8px; height: auto; font-size: 0.9rem;" oninput="calculateMasterReportAverages()">
                             </td>
-                            <td class="total-value" id="master-report-avg-taliya" style="font-weight: 800; color: var(--accent);">0</td>
-                            <td class="total-value" id="master-report-avg-pel" style="font-weight: 800; color: var(--accent);">0</td>
-                            <td class="total-value" id="master-report-avg-mathala" style="font-weight: 800; color: var(--accent);">0</td>
+                            <td class="total-value" id="master-report-avg-taliya" style="font-weight: 600; font-size: 1.2rem; color: var(--accent);">0</td>
+                            <td class="total-value" id="master-report-avg-pel" style="font-weight: 600; font-size: 1.2rem; color: var(--accent);">0</td>
+                            <td class="total-value" id="master-report-avg-mathala" style="font-weight: 600; font-size: 1.2rem; color: var(--accent);">0</td>
                         </tr>
                     `;
                 }

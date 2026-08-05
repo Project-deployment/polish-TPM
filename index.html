@@ -2143,6 +2143,38 @@
             return payload;
         }
 
+        function getLocalDB() {
+            const stored = localStorage.getItem(DB_KEY);
+            if (!stored) return null;
+            try {
+                if (stored.startsWith('{')) {
+                    // Legacy plain text storage
+                    return JSON.parse(stored);
+                }
+                const bytes = CryptoJS.AES.decrypt(stored, CRYPTO_KEY);
+                const decryptedStr = bytes.toString(CryptoJS.enc.Utf8);
+                return JSON.parse(decryptedStr);
+            } catch (e) {
+                console.error("Local DB decryption error:", e);
+                try {
+                    return JSON.parse(stored);
+                } catch (err) {
+                    return null;
+                }
+            }
+        }
+
+        function setLocalDB(state) {
+            try {
+                const str = JSON.stringify(state);
+                const encrypted = CryptoJS.AES.encrypt(str, CRYPTO_KEY).toString();
+                localStorage.setItem(DB_KEY, encrypted);
+            } catch (e) {
+                console.error("Local DB encryption error:", e);
+                localStorage.setItem(DB_KEY, JSON.stringify(state)); // fallback
+            }
+        }
+
         async function fetchFromFirebase() {
             try {
                 // Bypass browser caching by appending a unique timestamp
@@ -2172,8 +2204,7 @@
                         data = rawData;
                     }
 
-                    const stored = localStorage.getItem(DB_KEY);
-                    const localData = stored ? JSON.parse(stored) : null;
+                    const localData = getLocalDB();
 
                     if (data && data.users && data.users.length > 0) {
                         // Decrypt individual submissions inside data
@@ -2205,7 +2236,7 @@
                             await saveFullDBToFirebase();
                         }
                     }
-                    localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+                    setLocalDB(dbState);
                     updateConnectionStatus(true);
                     return true;
                 }
@@ -2227,7 +2258,7 @@
                     body: JSON.stringify(encryptedPayload)
                 });
                 if (response.ok) {
-                    localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+                    setLocalDB(dbState);
                     updateConnectionStatus(true);
                     return true;
                 }
@@ -2302,9 +2333,9 @@
 
             if (!fetched) {
                 try {
-                    const stored = localStorage.getItem(DB_KEY);
+                    const stored = getLocalDB();
                     if (stored) {
-                        dbState = JSON.parse(stored);
+                        dbState = stored;
                     } else {
                         dbState = JSON.parse(JSON.stringify(defaultState));
                     }
@@ -2332,7 +2363,7 @@
 
         async function saveDB() {
             try {
-                localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+                setLocalDB(dbState);
                 showGlobalLoader(true);
                 const saved = await saveFullDBToFirebase();
                 showGlobalLoader(false);
@@ -2771,9 +2802,9 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = localStorage.getItem(DB_KEY);
+                const stored = getLocalDB();
                 if (stored) {
-                    dbState = JSON.parse(stored);
+                    dbState = stored;
                 }
             }
 
@@ -2914,9 +2945,9 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = localStorage.getItem(DB_KEY);
+                const stored = getLocalDB();
                 if (stored) {
-                    dbState = JSON.parse(stored);
+                    dbState = stored;
                 }
             }
 
@@ -3103,7 +3134,7 @@
 
             dbState.submissions[dateVal][currentUser.id] = submissionData;
 
-            localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+            setLocalDB(dbState);
 
             showGlobalLoader(true);
             const success = await saveSubmissionToFirebase(dateVal, currentUser.id, submissionData);
@@ -3111,7 +3142,7 @@
 
             if (success) {
                 dbState.submissions[dateVal][currentUser.id].synced = true;
-                localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+                setLocalDB(dbState);
             }
 
             loadUserFalavniEntry();
@@ -3128,9 +3159,9 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = localStorage.getItem(DB_KEY);
+                const stored = getLocalDB();
                 if (stored) {
-                    dbState = JSON.parse(stored);
+                    dbState = stored;
                 }
             }
 
@@ -3251,9 +3282,9 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = localStorage.getItem(DB_KEY);
+                const stored = getLocalDB();
                 if (stored) {
-                    dbState = JSON.parse(stored);
+                    dbState = stored;
                 }
             }
 
@@ -3529,7 +3560,7 @@
 
             dbState.submissions[dateVal][currentUser.id] = submissionData;
 
-            localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+            setLocalDB(dbState);
 
             showGlobalLoader(true);
             const success = await saveSubmissionToFirebase(dateVal, currentUser.id, submissionData);
@@ -3537,7 +3568,7 @@
 
             if (success) {
                 dbState.submissions[dateVal][currentUser.id].synced = true;
-                localStorage.setItem(DB_KEY, JSON.stringify(dbState));
+                setLocalDB(dbState);
             }
 
             loadUserDailyEntry();
@@ -3588,9 +3619,9 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = localStorage.getItem(DB_KEY);
+                const stored = getLocalDB();
                 if (stored) {
-                    dbState = JSON.parse(stored);
+                    dbState = stored;
                 }
             }
 
@@ -3858,9 +3889,9 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = localStorage.getItem(DB_KEY);
+                const stored = getLocalDB();
                 if (stored) {
-                    dbState = JSON.parse(stored);
+                    dbState = stored;
                 }
             }
 
@@ -4092,9 +4123,9 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = localStorage.getItem(DB_KEY);
+                const stored = getLocalDB();
                 if (stored) {
-                    dbState = JSON.parse(stored);
+                    dbState = stored;
                 }
             }
 
@@ -4319,9 +4350,9 @@
             showGlobalLoader(false);
 
             if (!fetched) {
-                const stored = localStorage.getItem(DB_KEY);
+                const stored = getLocalDB();
                 if (stored) {
-                    dbState = JSON.parse(stored);
+                    dbState = stored;
                 }
             }
 

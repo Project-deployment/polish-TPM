@@ -11,6 +11,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <!-- CryptoJS: Secure Encryption Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
         :root {
@@ -2101,23 +2103,88 @@
             return merged;
         }
 
+        // Helpers for obfuscating Firebase URL and Encrypting Database state
+        const CRYPTO_KEY = 'Diamond_Production_Secret_Passphrase_Key_2026';
+
+        function decryptXOR(hexStr, key) {
+            let result = '';
+            for (let i = 0; i < hexStr.length; i += 2) {
+                const hexChar = hexStr.substr(i, 2);
+                const charCode = parseInt(hexChar, 16);
+                const keyChar = key.charCodeAt((i / 2) % key.length);
+                result += String.fromCharCode(charCode ^ keyChar);
+            }
+            return result;
+        }
+
+        function encryptPayload(dataObj) {
+            try {
+                const str = JSON.stringify(dataObj);
+                const encrypted = CryptoJS.AES.encrypt(str, CRYPTO_KEY).toString();
+                return { encrypted: encrypted };
+            } catch (e) {
+                console.error("Encryption error:", e);
+                return dataObj;
+            }
+        }
+
+        function decryptPayload(payload) {
+            if (!payload) return payload;
+            if (typeof payload === 'object' && payload.encrypted) {
+                try {
+                    const bytes = CryptoJS.AES.decrypt(payload.encrypted, CRYPTO_KEY);
+                    const decryptedStr = bytes.toString(CryptoJS.enc.Utf8);
+                    return JSON.parse(decryptedStr);
+                } catch (e) {
+                    console.error("Decryption error:", e);
+                    return payload;
+                }
+            }
+            return payload;
+        }
+
         async function fetchFromFirebase() {
             try {
                 // Bypass browser caching by appending a unique timestamp
                 const response = await fetch(FIREBASE_URL + '/.json?t=' + new Date().getTime());
                 if (response.ok) {
-                    const data = await response.json();
+                    const rawData = await response.json();
+                    let data;
+                    if (rawData && rawData.encrypted) {
+                        // Decrypt the main DB state
+                        data = decryptPayload(rawData);
+                        // Merge the active offline submissions written concurrently
+                        if (rawData.submissions) {
+                            if (!data.submissions) {
+                                data.submissions = {};
+                            }
+                            Object.keys(rawData.submissions).forEach(dateKey => {
+                                if (!data.submissions[dateKey]) {
+                                    data.submissions[dateKey] = {};
+                                }
+                                Object.keys(rawData.submissions[dateKey]).forEach(userId => {
+                                    data.submissions[dateKey][userId] = rawData.submissions[dateKey][userId];
+                                });
+                            });
+                        }
+                    } else {
+                        // Legacy plain JSON data
+                        data = rawData;
+                    }
+
                     const stored = localStorage.getItem(DB_KEY);
                     const localData = stored ? JSON.parse(stored) : null;
 
                     if (data && data.users && data.users.length > 0) {
-                        // Mark all fetched server submissions as synced: true so they aren't treated as local offline submissions
+                        // Decrypt individual submissions inside data
                         if (data.submissions && typeof data.submissions === 'object') {
                             Object.keys(data.submissions).forEach(dateKey => {
                                 const dateSubs = data.submissions[dateKey];
                                 if (dateSubs && typeof dateSubs === 'object') {
                                     Object.keys(dateSubs).forEach(userId => {
                                         if (dateSubs[userId]) {
+                                            // Decrypt if wrapped in encrypted format
+                                            dateSubs[userId] = decryptPayload(dateSubs[userId]);
                                             dateSubs[userId].synced = true;
                                         }
                                     });
@@ -2151,12 +2218,13 @@
 
         async function saveFullDBToFirebase() {
             try {
+                const encryptedPayload = encryptPayload(dbState);
                 const response = await fetch(FIREBASE_URL + '/.json', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(dbState)
+                    body: JSON.stringify(encryptedPayload)
                 });
                 if (response.ok) {
                     localStorage.setItem(DB_KEY, JSON.stringify(dbState));
@@ -2172,12 +2240,13 @@
 
         async function saveSubmissionToFirebase(dateVal, userId, submissionData) {
             try {
+                const encryptedSubmission = encryptPayload(submissionData);
                 const response = await fetch(FIREBASE_URL + '/submissions/' + dateVal + '/' + userId + '.json', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(submissionData)
+                    body: JSON.stringify(encryptedSubmission)
                 });
                 if (response.ok) {
                     updateConnectionStatus(true);
@@ -2193,17 +2262,32 @@
         // Initialize Database
         async function initDB() {
             // Load custom URL if exists in localStorage, otherwise use default URL
-            const defaultUrl = atob('aHR0cHM6Ly90cG0tYmhhdmVzaGJoYWktZGVmYXVsdC1ydGRiLmZpcmViYXNlaW8uY29t');
+            const defaultUrl = decryptXOR('0c1d151d1c544b701f15147250585340011a090f070f0d720f001f3e475c461b161d050f41080d2d0e07182c57595d1807060c', 'diamond_key_2026');
             let savedUrl = localStorage.getItem('diamond_firebase_url');
             if (!savedUrl) {
                 savedUrl = defaultUrl;
-                localStorage.setItem('diamond_firebase_url', defaultUrl);
+                const encryptedDefault = CryptoJS.AES.encrypt(defaultUrl, CRYPTO_KEY).toString();
+                localStorage.setItem('diamond_firebase_url', encryptedDefault);
+            } else {
+                // Decrypt savedUrl from localStorage
+                try {
+                    if (savedUrl.startsWith('http')) {
+                        // Migrate legacy plain text URL in localStorage
+                        const encrypted = CryptoJS.AES.encrypt(savedUrl, CRYPTO_KEY).toString();
+                        localStorage.setItem('diamond_firebase_url', encrypted);
+                    } else {
+                        const bytes = CryptoJS.AES.decrypt(savedUrl, CRYPTO_KEY);
+                        savedUrl = bytes.toString(CryptoJS.enc.Utf8);
+                    }
+                } catch (e) {
+                    savedUrl = defaultUrl;
+                }
             }
             FIREBASE_URL = savedUrl;
 
             const fbInput = document.getElementById('firebase-url-input');
             if (fbInput) {
-                fbInput.value = FIREBASE_URL;
+                fbInput.value = '••••••••••••••••••••••••••••••••'; // Obfuscated by default
             }
 
             showGlobalLoader(true);
@@ -4910,9 +4994,11 @@
             if (input) {
                 if (input.type === 'password') {
                     input.type = 'text';
+                    input.value = FIREBASE_URL; // Show decrypted URL
                     if (btn) btn.textContent = '🙈';
                 } else {
                     input.type = 'password';
+                    input.value = '••••••••••••••••••••••••••••••••'; // Mask it back
                     if (btn) btn.textContent = '👁️';
                 }
             }
@@ -4920,14 +5006,16 @@
 
         async function updateFirebaseConfig() {
             let url = document.getElementById('firebase-url-input').value.trim();
-            if (!url) {
-                await customAlert("કૃપા કરીને સાચી URL દાખલ કરો. (Please enter a valid URL.)");
+            if (url === '••••••••••••••••••••••••••••••••' || !url) {
+                await customAlert("કૃપા કરીને નવી સાચી URL દાખલ કરો. (Please enter a new valid URL.)");
                 return;
             }
             if (url.endsWith('/')) {
                 url = url.substring(0, url.length - 1);
             }
-            localStorage.setItem('diamond_firebase_url', url);
+            // Encrypt and save Firebase URL
+            const encryptedUrl = CryptoJS.AES.encrypt(url, CRYPTO_KEY).toString();
+            localStorage.setItem('diamond_firebase_url', encryptedUrl);
             FIREBASE_URL = url;
 
             showGlobalLoader(true);

@@ -281,26 +281,32 @@
         .tab-nav {
             display: flex;
             gap: 8px;
-            border-bottom: 2px solid #e2e8f0;
-            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 6px;
             overflow-x: auto;
             white-space: nowrap;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .tab-nav::-webkit-scrollbar {
+            display: none;             /* Chrome, Safari, Opera */
         }
 
         .tab-btn {
             background: none;
             border: none;
-            border-bottom: 3px solid transparent;
-            padding: 10px 16px;
+            border-bottom: 2px solid transparent;
+            padding: 6px 12px;
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             font-weight: 700;
             color: var(--text-muted);
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            margin-bottom: -1px;
         }
 
         .tab-btn:hover {
@@ -310,6 +316,11 @@
         .tab-btn.active {
             color: var(--accent);
             border-bottom-color: var(--accent);
+        }
+
+        .tab-btn.btn-sm {
+            padding: 4px 8px;
+            font-size: 0.84rem;
         }
 
         /* User view specific layouts */
@@ -1410,9 +1421,9 @@
         <!-- ==============================================
              3. MASTER VIEW PANEL
              ============================================== -->
-        <div id="master-panel" class="glass-panel" style="display: none;">
+        <div id="master-panel" class="glass-panel" style="display: none; padding: 12px 16px;">
             <!-- Main navigation tabs (5 main tabs) -->
-            <div class="tab-nav non-printable" style="border-bottom: 2px solid var(--border-color); margin-bottom: 12px; gap: 8px;">
+            <div class="tab-nav non-printable" style="border-bottom: 1px solid var(--border-color); margin-bottom: 6px; gap: 8px;">
                 <button type="button" class="tab-btn active" id="main-tab-khata" onclick="switchMasterMainTab('khata')">📁 ખાતા (KHATA)</button>
                 <button type="button" class="tab-btn" id="main-tab-falavni" onclick="switchMasterMainTab('falavni')">💎 ફાળવણી</button>
                 <button type="button" class="tab-btn" id="main-tab-pdrt" onclick="switchMasterMainTab('pdrt')">📊 PD RT</button>
@@ -1421,21 +1432,21 @@
             </div>
 
             <!-- Sub-tabs for KHATA -->
-            <div id="sub-nav-khata" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 16px; border-bottom: none; gap: 4px;">
+            <div id="sub-nav-khata" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 8px; border-bottom: none; gap: 4px;">
                 <button type="button" class="tab-btn active btn-sm" onclick="switchMasterSubTab('khata', 'mtab-dashboard', this)">દેશબોર્ડ</button>
                 <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('khata', 'mtab-reports', this)">વીકલી રિપોર્ટ</button>
                 <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('khata', 'mtab-monthly-reports', this)">મંથલી રિપોર્ટ</button>
             </div>
 
             <!-- Sub-tabs for Falavni -->
-            <div id="sub-nav-falavni" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 16px; border-bottom: none; gap: 4px; display: none;">
+            <div id="sub-nav-falavni" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 8px; border-bottom: none; gap: 4px; display: none;">
                 <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('falavni', 'mtab-falavni-dashboard', this)">ફાળવણી ડેશબોર્ડ</button>
                 <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('falavni', 'mtab-falavni-reports', this)">વીકલી ફાળવણી</button>
                 <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('falavni', 'mtab-falavni-monthly-reports', this)">મંથલી ફાળવણી</button>
             </div>
 
             <!-- Sub-tabs for PD RT -->
-            <div id="sub-nav-pdrt" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 16px; border-bottom: none; gap: 4px; display: none;">
+            <div id="sub-nav-pdrt" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 8px; border-bottom: none; gap: 4px; display: none;">
                 <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-dashboard', this)">PD RT ડેશબોર્ડ</button>
                 <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-reports', this)">PD RT રિપોર્ટ</button>
                 <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-monthly-reports', this)">PD RT મંથલી રિપોર્ટ</button>
@@ -1443,13 +1454,13 @@
             </div>
 
             <!-- Sub-tabs for MASTER -->
-            <div id="sub-nav-master" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 16px; border-bottom: none; gap: 4px; display: none;">
+            <div id="sub-nav-master" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 8px; border-bottom: none; gap: 4px; display: none;">
                 <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('master', 'mtab-khata', this)">ખાતા માસ્ટર</button>
                 <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('master', 'mtab-users', this)">હેડ મેનેજમેન્ટ</button>
             </div>
 
             <!-- Sub-tabs for SETTING -->
-            <div id="sub-nav-setting" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 16px; border-bottom: none; gap: 4px; display: none;">
+            <div id="sub-nav-setting" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 8px; border-bottom: none; gap: 4px; display: none;">
                 <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('setting', 'mtab-backup', this)">ડેટા બેકઅપ અને ડેટાબેઝ સેટિંગ્સ</button>
             </div>
 

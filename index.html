@@ -2079,6 +2079,18 @@
                                     <td class="total-value" id="master-pdrt-report-total-russian" style="font-weight: 800;">0</td>
                                     <td class="total-value" id="master-pdrt-report-total-table" style="font-weight: 800;">0</td>
                                 </tr>
+                                <tr class="average-row">
+                                    <td colspan="2" style="text-align: left; font-weight: 700; color: var(--text-color);">
+                                        સરેરાશ દિવસો: <input type="number" id="master-pdrt-report-avg-days" value="6" min="1" class="form-control" style="width: 80px; display: inline-block; margin-left: 10px; padding: 4px 8px; height: auto; font-size: 0.9rem;" oninput="calculateMasterPDRTReportAverages()">
+                                    </td>
+                                    <td class="total-value" id="master-pdrt-report-avg-u1-russian" style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                    <td class="total-value" id="master-pdrt-report-avg-u1-table" style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                    <td class="total-value" id="master-pdrt-report-avg-u2-russian" style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                    <td class="total-value" id="master-pdrt-report-avg-u2-table" style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                    <td style="font-weight: 800; text-align: center; color: var(--accent);">=</td>
+                                    <td class="total-value" id="master-pdrt-report-avg-russian" style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                    <td class="total-value" id="master-pdrt-report-avg-table" style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                </tr>
                             </tfoot>
                         </table>
                     </div>
@@ -6588,6 +6600,47 @@
             document.getElementById('master-pdrt-report-total-u2-table').textContent = grandU2Table;
             document.getElementById('master-pdrt-report-total-russian').textContent = grandTotalRussian;
             document.getElementById('master-pdrt-report-total-table').textContent = grandTotalTable;
+            calculateMasterPDRTReportAverages();
+        }
+
+        function calculateMasterPDRTReportAverages() {
+            const daysInput = document.getElementById('master-pdrt-report-avg-days');
+            if (!daysInput) return;
+            const days = parseFloat(daysInput.value) || 0;
+
+            const ids = [
+                'master-pdrt-report-avg-u1-russian',
+                'master-pdrt-report-avg-u1-table',
+                'master-pdrt-report-avg-u2-russian',
+                'master-pdrt-report-avg-u2-table',
+                'master-pdrt-report-avg-russian',
+                'master-pdrt-report-avg-table'
+            ];
+            const totalIds = [
+                'master-pdrt-report-total-u1-russian',
+                'master-pdrt-report-total-u1-table',
+                'master-pdrt-report-total-u2-russian',
+                'master-pdrt-report-total-u2-table',
+                'master-pdrt-report-total-russian',
+                'master-pdrt-report-total-table'
+            ];
+
+            if (days <= 0) {
+                ids.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = '-';
+                });
+                return;
+            }
+
+            for (let i = 0; i < ids.length; i++) {
+                const totalEl = document.getElementById(totalIds[i]);
+                const avgEl = document.getElementById(ids[i]);
+                if (totalEl && avgEl) {
+                    const totalVal = parseFloat(totalEl.textContent) || 0;
+                    avgEl.textContent = (totalVal / days).toFixed(1);
+                }
+            }
         }
 
         function exportMasterPDRTReportToExcel() {

@@ -3231,17 +3231,25 @@
             }
 
             if (rememberUser && lastUserId) {
-                const select = document.getElementById('login-username');
                 const exists = dbState.users.find(u => u.id === lastUserId);
-                if (exists && select) {
-                    select.value = lastUserId;
-                    togglePasswordRequired(lastUserId);
+                if (exists) {
+                    const isPdrtUser = exists.role.startsWith('pd_rt_');
+                    const targetTab = isPdrtUser ? 'pdrt' : 'khata';
+                    
+                    // Switch login tab first so the dropdown contains the correct user list
+                    switchLoginTab(targetTab);
 
-                    // Auto-focus password input if required
-                    const passGrp = document.getElementById('password-group');
-                    const loginPassword = document.getElementById('login-password');
-                    if (passGrp && passGrp.style.display !== 'none' && loginPassword) {
-                        loginPassword.focus();
+                    const select = document.getElementById('login-username');
+                    if (select) {
+                        select.value = lastUserId;
+                        togglePasswordRequired(lastUserId);
+
+                        // Auto-focus password input if required
+                        const passGrp = document.getElementById('password-group');
+                        const loginPassword = document.getElementById('login-password');
+                        if (passGrp && passGrp.style.display !== 'none' && loginPassword) {
+                            loginPassword.focus();
+                        }
                     }
                 }
             } else {
@@ -3374,6 +3382,7 @@
         // Logout
         function logout() {
             sessionStorage.removeItem('diamond_active_user');
+            localStorage.removeItem('diamond_active_user');
             currentUser = null;
             document.getElementById('header-actions').style.display = 'none';
             document.getElementById('user-panel').style.display = 'none';

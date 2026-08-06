@@ -1027,6 +1027,10 @@
              1. LOGIN PANEL SCREEN
              ============================================== -->
         <div id="login-panel" class="login-wrapper glass-panel">
+            <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 16px;">
+                <button type="button" class="tab-btn active" id="login-tab-khata" onclick="switchLoginTab('khata')" style="flex: 1; border: none; background: none; font-family: inherit; font-size: 1rem; font-weight: 700; color: var(--text-main); cursor: pointer; padding: 6px; border-bottom: 3px solid var(--accent); transition: var(--transition);">ખાતા (KHATA)</button>
+                <button type="button" class="tab-btn" id="login-tab-pdrt" onclick="switchLoginTab('pdrt')" style="flex: 1; border: none; background: none; font-family: inherit; font-size: 1rem; font-weight: 700; color: var(--text-muted); cursor: pointer; padding: 6px; transition: var(--transition);">PD RT</button>
+            </div>
             <div class="login-header">
                 <h2>લૉગિન</h2>
                 <p>કૃપા કરીને તમારો રોલ અને પાસવર્ડ સેટ કરો</p>
@@ -1304,67 +1308,149 @@
         </div>
 
         <!-- ==============================================
+             2.8 PD RT USER VIEW PANEL
+             ============================================== -->
+        <div id="pd-rt-user-panel" class="glass-panel" style="display: none; max-width: 500px; margin: auto; padding: 24px; animation: fadeIn 0.4s ease-out;">
+            <div class="login-header" style="text-align: center; margin-bottom: 20px;">
+                <h2 id="pd-rt-user-title">રશિયન ટેબલ એન્ટ્રી</h2>
+                <p>દૈનિક નંગ રિપોર્ટ સબમિટ કરો</p>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="pd-rt-date">તારીખ</label>
+                <input type="date" id="pd-rt-date" class="form-control" onchange="loadPDRTUserEntry()">
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="pd-rt-russian-pcs">રશિયન નંગ (Russian Pcs)</label>
+                <input type="number" id="pd-rt-russian-pcs" class="form-control" min="0" value="0" onfocus="if(this.value === '0') this.value='';" onblur="if(this.value === '') this.value='0';" oninput="if(parseInt(this.value) < 0) this.value = 0;">
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="pd-rt-table-pcs">ટેબલ નંગ (Table Pcs)</label>
+                <input type="number" id="pd-rt-table-pcs" class="form-control" min="0" value="0" onfocus="if(this.value === '0') this.value='';" onblur="if(this.value === '') this.value='0';" oninput="if(parseInt(this.value) < 0) this.value = 0;">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
+                <span id="pd-rt-status-text" style="font-weight: 700; color: var(--danger);">એન્ટ્રી સબમિટ બાકી છે</span>
+                <button id="btn-submit-pd-rt" class="btn-primary" onclick="submitPDRTEntry()" style="width: auto; padding: 10px 24px;">સબમિટ કરો</button>
+            </div>
+            <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--border-color);">
+            <div style="text-align: center; margin-bottom: 16px;">
+                <h3 style="font-weight: 700; font-size: 1.1rem; color: var(--primary);">મારો અઠવાડિક રિપોર્ટ</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">આ અઠવાડિયાની એન્ટ્રીઓ અને સ્ટેટસ</p>
+            </div>
+            <div class="table-responsive">
+                <table class="custom-table" style="font-size: 0.85rem; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>તારીખ</th>
+                            <th>દિવસ</th>
+                            <th>રશિયન</th>
+                            <th>ટેબલ</th>
+                            <th>સ્ટેટસ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pd-rt-user-weekly-report-tbody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ==============================================
+             2.9 PD RT APPROVER VIEW PANEL
+             ============================================== -->
+        <div id="pd-rt-approver-panel" class="glass-panel" style="display: none; max-width: 650px; margin: auto; padding: 24px; animation: fadeIn 0.4s ease-out;">
+            <div class="login-header" style="text-align: center; margin-bottom: 20px;">
+                <h2>સુપરવાઇઝર અપ્રૂવલ ડેશબોર્ડ</h2>
+                <p>દૈનિક ડેટા રિવ્યુ અને અપ્રૂવલ</p>
+            </div>
+            <div class="form-group" style="margin-bottom: 20px; flex-direction: row; align-items: center; gap: 10px;">
+                <label for="pd-rt-approve-date">રિપોર્ટ તારીખ:</label>
+                <input type="date" id="pd-rt-approve-date" class="form-control" style="width: auto;" onchange="loadPDRTApprovalDashboard()">
+            </div>
+
+            <div class="table-responsive" style="margin-bottom: 20px;">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>વિભાગ (Department)</th>
+                            <th>સ્ટેટસ</th>
+                            <th style="width: 150px;">રશિયન નંગ</th>
+                            <th style="width: 150px;">ટેબલ નંગ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight: 700;" id="pd-rt-user1-display-name">રશિયન ટેબલ</td>
+                            <td id="pd-rt-user1-status">-</td>
+                            <td><input type="number" id="pd-rt-review-u1-russian" class="form-control" min="0" style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()"></td>
+                            <td><input type="number" id="pd-rt-review-u1-table" class="form-control" min="0" style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 700;" id="pd-rt-user2-display-name">વિભાગ ૨</td>
+                            <td id="pd-rt-user2-status">-</td>
+                            <td><input type="number" id="pd-rt-review-u2-russian" class="form-control" min="0" style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()"></td>
+                            <td><input type="number" id="pd-rt-review-u2-table" class="form-control" min="0" style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()"></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="totals-row">
+                            <td colspan="2">કુલ સરવાળો</td>
+                            <td id="pd-rt-total-russian" style="font-weight: 800;">0</td>
+                            <td id="pd-rt-total-table" style="font-weight: 800;">0</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
+                <span id="pd-rt-approval-status" style="font-weight: 700; color: var(--danger);">બાકી છે</span>
+                <button id="btn-approve-pd-rt" class="btn-primary" onclick="approvePDRTData()" style="width: auto; padding: 12px 30px;">અપ્રૂવ કરો (Approve & Send)</button>
+            </div>
+        </div>
+
+        <!-- ==============================================
              3. MASTER VIEW PANEL
              ============================================== -->
         <div id="master-panel" class="glass-panel" style="display: none;">
-            <div class="tab-nav non-printable">
-                <button class="tab-btn active" onclick="switchMasterTab('mtab-dashboard', this)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
-                        stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
-                    </svg>
-                    ડેેશબોર્ડ
-                </button>
-                <button class="tab-btn" id="btn-tab-falavni" onclick="switchMasterTab('mtab-falavni-dashboard', this)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
-                        stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-                    </svg>
-                    ફાળવણી ડેશબોર્ડ
-                </button>
-                <button class="tab-btn" id="btn-tab-report" onclick="switchMasterTab('mtab-reports', this)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
-                        stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                    </svg>
-                    વીકલી રિપોર્ટ
-                </button>
-                <button class="tab-btn" id="btn-tab-monthly-report"
-                    onclick="switchMasterTab('mtab-monthly-reports', this)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
-                        stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
-                    </svg>
-                    મંથલી રિપોર્ટ
-                </button>
-                <button class="tab-btn" onclick="switchMasterTab('mtab-khata', this)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
-                        stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5-1.5l-3-1m-5.01 4.73L9 11.02" />
-                    </svg>
-                    ખાતા માસ્ટર
-                </button>
-                <button class="tab-btn" onclick="switchMasterTab('mtab-users', this)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
-                        stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-                    </svg>
-                    હેડ મેનેજમેન્ટ
-                </button>
-                <button class="tab-btn" id="btn-tab-backup" onclick="switchMasterTab('mtab-backup', this)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
-                        stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                    </svg>
-                    બેકઅપ ડેટા
-                </button>
+            <!-- Main navigation tabs (5 main tabs) -->
+            <div class="tab-nav non-printable" style="border-bottom: 2px solid var(--border-color); margin-bottom: 12px; gap: 8px;">
+                <button type="button" class="tab-btn active" id="main-tab-khata" onclick="switchMasterMainTab('khata')">📁 ખાતા (KHATA)</button>
+                <button type="button" class="tab-btn" id="main-tab-falavni" onclick="switchMasterMainTab('falavni')">💎 ફાળવણી</button>
+                <button type="button" class="tab-btn" id="main-tab-pdrt" onclick="switchMasterMainTab('pdrt')">📊 PD RT</button>
+                <button type="button" class="tab-btn" id="main-tab-master" onclick="switchMasterMainTab('master')">⚙️ માસ્ટર</button>
+                <button type="button" class="tab-btn" id="main-tab-setting" onclick="switchMasterMainTab('setting')">🔧 સેટિંગ</button>
+            </div>
+
+            <!-- Sub-tabs for KHATA -->
+            <div id="sub-nav-khata" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 16px; border-bottom: none; gap: 4px;">
+                <button type="button" class="tab-btn active btn-sm" onclick="switchMasterSubTab('khata', 'mtab-dashboard', this)">દેશબોર્ડ</button>
+                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('khata', 'mtab-reports', this)">વીકલી રિપોર્ટ</button>
+                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('khata', 'mtab-monthly-reports', this)">મંથલી રિપોર્ટ</button>
+            </div>
+
+            <!-- Sub-tabs for Falavni -->
+            <div id="sub-nav-falavni" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 16px; border-bottom: none; gap: 4px; display: none;">
+                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('falavni', 'mtab-falavni-dashboard', this)">ફાળવણી ડેશબોર્ડ</button>
+                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('falavni', 'mtab-falavni-reports', this)">વીકલી ફાળવણી</button>
+                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('falavni', 'mtab-falavni-monthly-reports', this)">મંથલી ફાળવણી</button>
+            </div>
+
+            <!-- Sub-tabs for PD RT -->
+            <div id="sub-nav-pdrt" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 16px; border-bottom: none; gap: 4px; display: none;">
+                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-dashboard', this)">PD RT ડેશબોર્ડ</button>
+                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-reports', this)">PD RT રિપોર્ટ</button>
+                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-monthly-reports', this)">PD RT મંથલી રિપોર્ટ</button>
+                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-master', this)">PD RT માસ્ટર</button>
+            </div>
+
+            <!-- Sub-tabs for MASTER -->
+            <div id="sub-nav-master" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 16px; border-bottom: none; gap: 4px; display: none;">
+                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('master', 'mtab-khata', this)">ખાતા માસ્ટર</button>
+                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('master', 'mtab-users', this)">હેડ મેનેજમેન્ટ</button>
+            </div>
+
+            <!-- Sub-tabs for SETTING -->
+            <div id="sub-nav-setting" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 16px; border-bottom: none; gap: 4px; display: none;">
+                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('setting', 'mtab-backup', this)">ડેટા બેકઅપ અને ડેટાબેઝ સેટિંગ્સ</button>
             </div>
 
             <!-- TAB 1: DASHBOARD OVERVIEW -->
@@ -1767,6 +1853,336 @@
                     </button>
                 </div>
             </div>
+            <!-- TAB 2.2: FALAVNI WEEKLY REPORTS -->
+            <div id="mtab-falavni-reports" class="master-tab-pane" style="display: none;">
+                <div class="flex-between non-printable" style="margin-bottom: 16px;">
+                    <div class="date-picker-wrapper">
+                        <label for="master-falavni-report-date">અઠવાડિયું પસંદ કરો:</label>
+                        <input type="date" id="master-falavni-report-date" class="form-control" style="width: auto;"
+                            onchange="loadMasterFalavniReport()">
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button type="button" class="btn-primary" onclick="window.print()"
+                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Print PDF
+                        </button>
+                        <button type="button" class="btn-primary" onclick="exportMasterFalavniReportToExcel()"
+                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <div id="print-area-falavni-weekly">
+                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
+                        <h3 id="print-falavni-report-date-heading" style="color: var(--text-muted); margin-top: 4px;">અઠવાડિયું: -</h3>
+                    </div>
+
+                    <div class="flex-between">
+                        <h3>સાપ્તાહિક ફાળવણી અહેવાલ (નંગ)</h3>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table" id="master-falavni-reports-table">
+                            <thead>
+                                <tr>
+                                    <th>તારીખ</th>
+                                    <th>દિવસ</th>
+                                    <th>નંગ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="master-falavni-reports-tbody">
+                                <!-- Dynamic -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="totals-row">
+                                    <td colspan="2">મેન કુલ સરવાળો</td>
+                                    <td class="total-value" id="master-falavni-report-total-nang" style="font-weight: 800;">0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2.3: FALAVNI MONTHLY REPORTS -->
+            <div id="mtab-falavni-monthly-reports" class="master-tab-pane" style="display: none;">
+                <div class="flex-between non-printable" style="margin-bottom: 16px;">
+                    <div class="date-picker-wrapper">
+                        <label for="master-falavni-monthly-report-date">મહિનો પસંદ કરો:</label>
+                        <input type="month" id="master-falavni-monthly-report-date" class="form-control" style="width: auto;"
+                            onchange="loadMasterFalavniMonthlyReport()">
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button type="button" class="btn-primary" onclick="window.print()"
+                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Print PDF
+                        </button>
+                        <button type="button" class="btn-primary" onclick="exportMasterFalavniMonthlyReportToExcel()"
+                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <div id="print-area-falavni-monthly">
+                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
+                        <h3 id="print-falavni-monthly-report-heading" style="color: var(--text-muted); margin-top: 4px;">મહિનો: -</h3>
+                    </div>
+
+                    <div class="flex-between">
+                        <h3>માસિક ફાળવણી અહેવાલ (નંગ)</h3>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table" id="master-falavni-monthly-reports-table">
+                            <thead>
+                                <tr>
+                                    <th>અઠવાડિયું (રેન્જ)</th>
+                                    <th>નંગ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="master-falavni-monthly-reports-tbody">
+                                <!-- Dynamic -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="totals-row">
+                                    <td>મેન કુલ સરવાળો</td>
+                                    <td class="total-value" id="master-falavni-monthly-report-total-nang" style="font-weight: 800;">0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3.1: PD RT DASHBOARD -->
+            <div id="mtab-pdrt-dashboard" class="master-tab-pane" style="display: none;">
+                <div class="top-bar-controls flex-between" style="margin-bottom: 12px;">
+                    <div class="date-picker-wrapper">
+                        <label for="master-pdrt-dashboard-date">રિપોર્ટ તારીખ:</label>
+                        <input type="date" id="master-pdrt-dashboard-date" class="form-control" style="width: auto;"
+                            onchange="loadMasterPDRTDashboard()">
+                    </div>
+                </div>
+
+                <div class="flex-between">
+                    <h3>દૈનિક PD RT રિપોર્ટ સ્ટેટસ</h3>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th id="master-pdrt-dash-u1-title" colspan="2">વિભાગ ૧</th>
+                                <th id="master-pdrt-dash-u2-title" colspan="2">વિભાગ ૨</th>
+                                <th style="width: 50px; text-align: center;">=</th>
+                                <th colspan="2">PD</th>
+                            </tr>
+                            <tr>
+                                <th>રશિયન</th>
+                                <th>ટેબલ</th>
+                                <th>રશિયન</th>
+                                <th>ટેબલ</th>
+                                <th style="text-align: center;">=</th>
+                                <th>રશિયન</th>
+                                <th>ટેબલ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="master-pdrt-dashboard-tbody">
+                            <!-- Dynamic -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 16px; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+                    <span>અપ્રૂવલ સ્ટેટસ:</span>
+                    <span id="master-pdrt-dash-approval-badge" class="badge-status pending">PENDING</span>
+                    <span id="master-pdrt-dash-approval-details" style="color: var(--text-muted); font-size: 0.85rem;"></span>
+                </div>
+            </div>
+
+            <!-- TAB 3.2: PD RT REPORTS (Weekly) -->
+            <div id="mtab-pdrt-reports" class="master-tab-pane" style="display: none;">
+                <div class="flex-between non-printable" style="margin-bottom: 16px;">
+                    <div class="date-picker-wrapper">
+                        <label for="master-pdrt-report-date">અઠવાડિયું પસંદ કરો:</label>
+                        <input type="date" id="master-pdrt-report-date" class="form-control" style="width: auto;"
+                            onchange="loadMasterPDRTReport()">
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button type="button" class="btn-primary" onclick="window.print()"
+                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Print PDF
+                        </button>
+                        <button type="button" class="btn-primary" onclick="exportMasterPDRTReportToExcel()"
+                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <div id="print-area-pdrt-weekly">
+                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ - PD RT</h2>
+                        <h3 id="print-pdrt-report-date-heading" style="color: var(--text-muted); margin-top: 4px;">અઠવાડિયું: -</h3>
+                    </div>
+
+                    <div class="flex-between">
+                        <h3>સાપ્તાહિક PD RT રિપોર્ટ (રશિયન અને ટેબલ નંગ)</h3>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table" id="master-pdrt-reports-table">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" style="vertical-align: middle; text-align: center;">તારીખ</th>
+                                    <th rowspan="2" style="vertical-align: middle; text-align: center;">દિવસ</th>
+                                    <th id="master-pdrt-rep-u1-title" colspan="2">વિભાગ ૧</th>
+                                    <th id="master-pdrt-rep-u2-title" colspan="2">વિભાગ ૨</th>
+                                    <th rowspan="2" style="vertical-align: middle; text-align: center; width: 40px;">=</th>
+                                    <th colspan="2">PD</th>
+                                </tr>
+                                <tr>
+                                    <th>રશિયન</th>
+                                    <th>ટેબલ</th>
+                                    <th>રશિયન</th>
+                                    <th>ટેબલ</th>
+                                    <th>રશિયન</th>
+                                    <th>ટેબલ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="master-pdrt-reports-tbody">
+                                <!-- Dynamic -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="totals-row">
+                                    <td colspan="2">મેન કુલ સરવાળો</td>
+                                    <td class="total-value" id="master-pdrt-report-total-u1-russian" style="font-weight: 800;">0</td>
+                                    <td class="total-value" id="master-pdrt-report-total-u1-table" style="font-weight: 800;">0</td>
+                                    <td class="total-value" id="master-pdrt-report-total-u2-russian" style="font-weight: 800;">0</td>
+                                    <td class="total-value" id="master-pdrt-report-total-u2-table" style="font-weight: 800;">0</td>
+                                    <td style="font-weight: 800; text-align: center;">=</td>
+                                    <td class="total-value" id="master-pdrt-report-total-russian" style="font-weight: 800;">0</td>
+                                    <td class="total-value" id="master-pdrt-report-total-table" style="font-weight: 800;">0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3.4: PD RT MONTHLY REPORTS -->
+            <div id="mtab-pdrt-monthly-reports" class="master-tab-pane" style="display: none;">
+                <div class="flex-between non-printable" style="margin-bottom: 16px;">
+                    <div class="date-picker-wrapper">
+                        <label for="master-pdrt-monthly-report-date">મહિનો પસંદ કરો:</label>
+                        <input type="month" id="master-pdrt-monthly-report-date" class="form-control" style="width: auto;"
+                            onchange="loadMasterPDRTMonthlyReport()">
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button type="button" class="btn-primary" onclick="window.print()"
+                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Print PDF
+                        </button>
+                        <button type="button" class="btn-primary" onclick="exportMasterPDRTMonthlyReportToExcel()"
+                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
+                            Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <div id="print-area-pdrt-monthly">
+                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ - PD RT</h2>
+                        <h3 id="print-pdrt-monthly-report-heading" style="color: var(--text-muted); margin-top: 4px;">મહિનો: -</h3>
+                    </div>
+
+                    <div class="flex-between">
+                        <h3>માસિક PD RT રિપોર્ટ (રશિયન અને ટેબલ નંગ)</h3>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table" id="master-pdrt-monthly-reports-table">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" style="vertical-align: middle; text-align: center;">અઠવાડિયું (રેન્જ)</th>
+                                    <th id="master-pdrt-monthly-rep-u1-title" colspan="2">વિભાગ ૧</th>
+                                    <th id="master-pdrt-monthly-rep-u2-title" colspan="2">વિભાગ ૨</th>
+                                    <th rowspan="2" style="vertical-align: middle; text-align: center; width: 40px;">=</th>
+                                    <th colspan="2">PD</th>
+                                </tr>
+                                <tr>
+                                    <th>રશિયન</th>
+                                    <th>ટેબલ</th>
+                                    <th>રશિયન</th>
+                                    <th>ટેબલ</th>
+                                    <th>રશિયન</th>
+                                    <th>ટેબલ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="master-pdrt-monthly-reports-tbody">
+                                <!-- Dynamic -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="totals-row">
+                                    <td>મેન કુલ સરવાળો</td>
+                                    <td class="total-value" id="master-pdrt-monthly-report-total-u1-russian" style="font-weight: 800;">0</td>
+                                    <td class="total-value" id="master-pdrt-monthly-report-total-u1-table" style="font-weight: 800;">0</td>
+                                    <td class="total-value" id="master-pdrt-monthly-report-total-u2-russian" style="font-weight: 800;">0</td>
+                                    <td class="total-value" id="master-pdrt-monthly-report-total-u2-table" style="font-weight: 800;">0</td>
+                                    <td style="font-weight: 800; text-align: center;">=</td>
+                                    <td class="total-value" id="master-pdrt-monthly-report-total-russian" style="font-weight: 800;">0</td>
+                                    <td class="total-value" id="master-pdrt-monthly-report-total-table" style="font-weight: 800;">0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3.3: PD RT MASTER -->
+            <div id="mtab-pdrt-master" class="master-tab-pane" style="display: none;">
+                <div class="glass-panel" style="box-shadow: none; max-width: 700px; margin: 0 auto;">
+                    <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">PD RT યુઝર્સ સેટિંગ્સ (PD RT Master)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">અહીંથી તમે PD RT ના ૩ રોલના નામ અને લોગિન પાસવર્ડ બદલી શકો છો.</p>
+                    
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>રોલ (Role)</th>
+                                    <th>નામ (Username)</th>
+                                    <th>લોગિન પાસવર્ડ (Password)</th>
+                                    <th style="width: 100px;">એક્શન</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="font-weight: 700;">ડિપાર્ટમેન્ટ હેડ ૧ (User 1)</td>
+                                    <td><input type="text" id="pdrt-m-u1-username" class="form-control" style="font-weight: 700;"></td>
+                                    <td><input type="text" id="pdrt-m-u1-password" class="form-control" style="font-family: monospace;"></td>
+                                    <td><button type="button" class="btn-primary btn-sm" onclick="savePDRTMasterUser('pd_rt_user1')" style="margin:0;">સાચવો</button></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: 700;">ડિપાર્ટમેન્ટ હેડ ૨ (User 2)</td>
+                                    <td><input type="text" id="pdrt-m-u2-username" class="form-control" style="font-weight: 700;"></td>
+                                    <td><input type="text" id="pdrt-m-u2-password" class="form-control" style="font-family: monospace;"></td>
+                                    <td><button type="button" class="btn-primary btn-sm" onclick="savePDRTMasterUser('pd_rt_user2')" style="margin:0;">સાચવો</button></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: 700;">સુપરવાઇઝર (User 3)</td>
+                                    <td><input type="text" id="pdrt-m-u3-username" class="form-control" style="font-weight: 700;"></td>
+                                    <td><input type="text" id="pdrt-m-u3-password" class="form-control" style="font-family: monospace;"></td>
+                                    <td><button type="button" class="btn-primary btn-sm" onclick="savePDRTMasterUser('pd_rt_user3')" style="margin:0;">સાચવો</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -1991,6 +2407,20 @@
             } else {
                 subadmin.username = 'sub-admin';
             }
+
+            // Ensure PD RT Users exist
+            let pdRtUser1 = state.users.find(u => u.id === 'pd_rt_user1');
+            if (!pdRtUser1) {
+                state.users.push({ id: 'pd_rt_user1', username: 'રશિયન ટેબલ', password: '123', role: 'pd_rt_entry1' });
+            }
+            let pdRtUser2 = state.users.find(u => u.id === 'pd_rt_user2');
+            if (!pdRtUser2) {
+                state.users.push({ id: 'pd_rt_user2', username: 'વિભાગ ૨', password: '123', role: 'pd_rt_entry2' });
+            }
+            let pdRtUser3 = state.users.find(u => u.id === 'pd_rt_user3');
+            if (!pdRtUser3) {
+                state.users.push({ id: 'pd_rt_user3', username: 'સુપરવાઇઝર', password: '123', role: 'pd_rt_approver' });
+            }
         }
 
         function mergeDatabaseStates(local, server) {
@@ -2031,7 +2461,8 @@
             const merged = {
                 users: JSON.parse(JSON.stringify(server.users || [])),
                 khatas: JSON.parse(JSON.stringify(server.khatas || [])),
-                submissions: JSON.parse(JSON.stringify(server.submissions || {}))
+                submissions: JSON.parse(JSON.stringify(server.submissions || {})),
+                pd_rt_submissions: JSON.parse(JSON.stringify(server.pd_rt_submissions || {}))
             };
 
             // We no longer merge users and khatas from local storage back to Firebase to avoid duplicates and resurrection of deleted items. The Firebase server is the absolute source of truth.
@@ -2071,14 +2502,9 @@
                                 return;
                             }
 
-                            // 3. If it was already synced previously, it means the Admin deleted it on the server
-                            // So we should delete it locally too instead of merging it back
-                            if (localSub.synced) {
-                                delete localDateSubs[userId];
-                                delete serverDateSubs[userId];
-                            } else {
-                                serverDateSubs[userId] = localSub;
-                            }
+                            // If missing from server, restore it from local to prevent accidental database overrides/losses!
+                            serverDateSubs[userId] = localSub;
+                            localSub.synced = false;
                         } else {
                             // If both exist, keep the newer one based on submittedAt timestamp
                             const localTime = localSub.submittedAt ? new Date(localSub.submittedAt).getTime() : 0;
@@ -2095,6 +2521,56 @@
                     }
                     if (local.submissions[dateKey] && Object.keys(local.submissions[dateKey]).length === 0) {
                         delete local.submissions[dateKey];
+                    }
+                });
+            }
+
+            // Merge PD RT Submissions (date -> userId -> submissionData)
+            if (local.pd_rt_submissions && typeof local.pd_rt_submissions === 'object') {
+                Object.keys(local.pd_rt_submissions).forEach(dateKey => {
+                    const localDateSubs = local.pd_rt_submissions[dateKey];
+                    if (!localDateSubs || typeof localDateSubs !== 'object') return;
+
+                    if (!merged.pd_rt_submissions[dateKey]) {
+                        merged.pd_rt_submissions[dateKey] = {};
+                    }
+                    const serverDateSubs = merged.pd_rt_submissions[dateKey];
+                    if (!serverDateSubs || typeof serverDateSubs !== 'object') return;
+
+                    Object.keys(localDateSubs).forEach(userId => {
+                        const localSub = localDateSubs[userId];
+                        if (!localSub || typeof localSub !== 'object') return;
+
+                        const serverSub = serverDateSubs[userId];
+
+                        if (!serverSub) {
+                            // Restore only if it belongs to this device's user and hasn't been synced yet
+                            if (userId === deviceUserId && !localSub.synced) {
+                                serverDateSubs[userId] = localSub;
+                            }
+                        } else {
+                            const localTime = localSub.submittedAt ? new Date(localSub.submittedAt).getTime() : 0;
+                            const serverTime = serverSub.submittedAt ? new Date(serverSub.submittedAt).getTime() : 0;
+                            if (localTime > serverTime) {
+                                serverDateSubs[userId] = localSub;
+                            }
+                        }
+                    });
+
+                    // Preserve metadata properties during database merging
+                    const serverSubs = server.pd_rt_submissions[dateKey] || {};
+                    const localSubs = local.pd_rt_submissions[dateKey] || {};
+                    if (serverSubs.status === 'approved' || localSubs.status === 'approved') {
+                        merged.pd_rt_submissions[dateKey].status = 'approved';
+                        merged.pd_rt_submissions[dateKey].approvedBy = serverSubs.approvedBy || localSubs.approvedBy;
+                        merged.pd_rt_submissions[dateKey].approvedAt = serverSubs.approvedAt || localSubs.approvedAt;
+                    }
+
+                    if (merged.pd_rt_submissions[dateKey] && Object.keys(merged.pd_rt_submissions[dateKey]).length === 0) {
+                        delete merged.pd_rt_submissions[dateKey];
+                    }
+                    if (local.pd_rt_submissions[dateKey] && Object.keys(local.pd_rt_submissions[dateKey]).length === 0) {
+                        delete local.pd_rt_submissions[dateKey];
                     }
                 });
             }
@@ -2199,6 +2675,30 @@
                                 });
                             });
                         }
+                        // Merge pd_rt_submissions written concurrently
+                        if (rawData.pd_rt_submissions) {
+                            if (!data.pd_rt_submissions) {
+                                data.pd_rt_submissions = {};
+                            }
+                            Object.keys(rawData.pd_rt_submissions).forEach(dateKey => {
+                                if (!data.pd_rt_submissions[dateKey]) {
+                                    data.pd_rt_submissions[dateKey] = {};
+                                }
+                                Object.keys(rawData.pd_rt_submissions[dateKey]).forEach(userId => {
+                                    data.pd_rt_submissions[dateKey][userId] = rawData.pd_rt_submissions[dateKey][userId];
+                                });
+                                // Decrypt and merge metadata properties to the main dateSubs object
+                                const meta = rawData.pd_rt_submissions[dateKey]['meta'];
+                                if (meta) {
+                                    const decryptedMeta = decryptPayload(meta);
+                                    if (decryptedMeta) {
+                                        data.pd_rt_submissions[dateKey].status = decryptedMeta.status;
+                                        data.pd_rt_submissions[dateKey].approvedBy = decryptedMeta.approvedBy;
+                                        data.pd_rt_submissions[dateKey].approvedAt = decryptedMeta.approvedAt;
+                                    }
+                                }
+                            });
+                        }
                     } else {
                         // Legacy plain JSON data
                         data = rawData;
@@ -2222,10 +2722,43 @@
                                 }
                             });
                         }
+                        // Decrypt individual PD RT submissions inside data
+                        if (data.pd_rt_submissions && typeof data.pd_rt_submissions === 'object') {
+                            Object.keys(data.pd_rt_submissions).forEach(dateKey => {
+                                const dateSubs = data.pd_rt_submissions[dateKey];
+                                if (dateSubs && typeof dateSubs === 'object') {
+                                    Object.keys(dateSubs).forEach(userId => {
+                                        if (dateSubs[userId] && typeof dateSubs[userId] === 'object') {
+                                            dateSubs[userId] = decryptPayload(dateSubs[userId]);
+                                            dateSubs[userId].synced = true;
+                                        }
+                                    });
+                                }
+                            });
+                        }
 
                         dbState = mergeDatabaseStates(localData, data)
                         // Save the merged state back to Firebase so it is synchronized
                         await saveFullDBToFirebase();
+
+                        // Re-upload any restored unsynced submissions to their concurrent paths
+                        if (dbState.submissions) {
+                            Object.keys(dbState.submissions).forEach(dateKey => {
+                                const dateSubs = dbState.submissions[dateKey];
+                                if (dateSubs && typeof dateSubs === 'object') {
+                                    Object.keys(dateSubs).forEach(async userId => {
+                                        const sub = dateSubs[userId];
+                                        if (sub && sub.synced === false) {
+                                            const success = await saveSubmissionToFirebase(dateKey, userId, sub);
+                                            if (success) {
+                                                sub.synced = true;
+                                                setLocalDB(dbState);
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
                     } else {
                         // If Firebase database is empty, check if we have a locally stored imported backup configuration
                         if (localData && localData.users && localData.users.length > 1) {
@@ -2285,6 +2818,27 @@
                 }
             } catch (e) {
                 console.error("Firebase Submission Save Error: ", e);
+            }
+            updateConnectionStatus(false);
+            return false;
+        }
+
+        async function savePDRTSubmissionToFirebase(dateVal, userId, submissionData) {
+            try {
+                const encryptedSubmission = encryptPayload(submissionData);
+                const response = await fetch(FIREBASE_URL + '/pd_rt_submissions/' + dateVal + '/' + userId + '.json', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(encryptedSubmission)
+                });
+                if (response.ok) {
+                    updateConnectionStatus(true);
+                    return true;
+                }
+            } catch (e) {
+                console.error("Firebase PD RT Submission Save Error: ", e);
             }
             updateConnectionStatus(false);
             return false;
@@ -2356,6 +2910,9 @@
             if (!dbState.submissions) {
                 dbState.submissions = {};
             }
+            if (!dbState.pd_rt_submissions) {
+                dbState.pd_rt_submissions = {};
+            }
             dbState.khatas.forEach(k => {
                 if (k.userId === undefined) k.userId = '';
             });
@@ -2421,6 +2978,15 @@
             document.getElementById('master-falavni-date').value = todayStr;
             document.getElementById('master-report-date').value = todayStr;
             document.getElementById('master-monthly-report-date').value = todayStr.substring(0, 7);
+            
+            // PD RT & Falavni Date Inputs Initialization
+            document.getElementById('pd-rt-date').value = todayStr;
+            document.getElementById('pd-rt-approve-date').value = todayStr;
+            document.getElementById('master-falavni-report-date').value = todayStr;
+            document.getElementById('master-falavni-monthly-report-date').value = todayStr.substring(0, 7);
+            document.getElementById('master-pdrt-dashboard-date').value = todayStr;
+            document.getElementById('master-pdrt-report-date').value = todayStr;
+            document.getElementById('master-pdrt-monthly-report-date').value = todayStr.substring(0, 7);
 
             // Setup Form Enter Key Navigations
             setupKhataFormNavigations();
@@ -2600,13 +3166,47 @@
             }
         }
 
+        let activeLoginTab = 'khata';
+
+        function switchLoginTab(tab) {
+            activeLoginTab = tab;
+            const btnKhata = document.getElementById('login-tab-khata');
+            const btnPdrt = document.getElementById('login-tab-pdrt');
+            if (btnKhata && btnPdrt) {
+                if (tab === 'khata') {
+                    btnKhata.classList.add('active');
+                    btnKhata.style.borderBottom = '3px solid var(--accent)';
+                    btnPdrt.classList.remove('active');
+                    btnPdrt.style.borderBottom = 'none';
+                } else {
+                    btnPdrt.classList.add('active');
+                    btnPdrt.style.borderBottom = '3px solid var(--accent)';
+                    btnKhata.classList.remove('active');
+                    btnKhata.style.borderBottom = 'none';
+                }
+            }
+            populateLoginRoles();
+            const select = document.getElementById('login-username');
+            if (select) {
+                togglePasswordRequired(select.value);
+            }
+        }
+
         function populateLoginRoles() {
             const select = document.getElementById('login-username');
+            if (!select) return;
             select.innerHTML = '';
             
-            const masterUser = dbState.users.find(u => u.id === 'master');
-            const subadminUser = dbState.users.find(u => u.id === 'subadmin');
-            const otherUsers = dbState.users.filter(u => u.id !== 'master' && u.id !== 'subadmin');
+            let filteredUsers = [];
+            if (activeLoginTab === 'khata') {
+                filteredUsers = dbState.users.filter(u => !u.role.startsWith('pd_rt_'));
+            } else {
+                filteredUsers = dbState.users.filter(u => u.role.startsWith('pd_rt_'));
+            }
+
+            const masterUser = filteredUsers.find(u => u.id === 'master');
+            const subadminUser = filteredUsers.find(u => u.id === 'subadmin');
+            const otherUsers = filteredUsers.filter(u => u.id !== 'master' && u.id !== 'subadmin');
             
             const orderedUsers = [];
             if (masterUser) orderedUsers.push(masterUser);
@@ -2709,20 +3309,29 @@
             document.getElementById('header-actions').style.display = 'flex';
             document.getElementById('header-user-display').textContent = user.username;
 
-            if (user.role === 'master' || user.role === 'subadmin') {
+            if (user.role === 'pd_rt_entry1' || user.role === 'pd_rt_entry2') {
+                document.getElementById('master-panel').style.display = 'none';
                 document.getElementById('user-panel').style.display = 'none';
+                document.getElementById('pd-rt-approver-panel').style.display = 'none';
+                document.getElementById('pd-rt-user-panel').style.display = 'block';
+                
+                document.getElementById('pd-rt-user-title').textContent = user.username;
+                loadPDRTUserEntry();
+            } else if (user.role === 'pd_rt_approver') {
+                document.getElementById('master-panel').style.display = 'none';
+                document.getElementById('user-panel').style.display = 'none';
+                document.getElementById('pd-rt-user-panel').style.display = 'none';
+                document.getElementById('pd-rt-approver-panel').style.display = 'block';
+                
+                loadPDRTApprovalDashboard();
+            } else if (user.role === 'master' || user.role === 'subadmin') {
+                document.getElementById('user-panel').style.display = 'none';
+                document.getElementById('pd-rt-user-panel').style.display = 'none';
+                document.getElementById('pd-rt-approver-panel').style.display = 'none';
                 document.getElementById('master-panel').style.display = 'block';
                 
-                const backupBtn = document.getElementById('btn-tab-backup');
-                if (backupBtn) {
-                    if (user.role === 'subadmin') {
-                        backupBtn.style.display = 'none';
-                    } else {
-                        backupBtn.style.display = '';
-                    }
-                }
-
-                const falavniTabBtn = document.getElementById('btn-tab-falavni');
+                // Show/hide Falavni based on subadmin
+                const falavniTabBtn = document.getElementById('main-tab-falavni');
                 if (falavniTabBtn) {
                     if (user.role === 'subadmin') {
                         falavniTabBtn.style.display = 'none';
@@ -2730,15 +3339,21 @@
                         falavniTabBtn.style.display = '';
                     }
                 }
-
-                const dashboardBtn = document.querySelector('#master-panel .tab-btn');
-                if (dashboardBtn) {
-                    switchMasterTab('mtab-dashboard', dashboardBtn);
-                } else {
-                    loadMasterDashboard();
+                
+                const pdrtTabBtn = document.getElementById('main-tab-pdrt');
+                if (pdrtTabBtn) {
+                    if (user.role === 'subadmin') {
+                        pdrtTabBtn.style.display = 'none';
+                    } else {
+                        pdrtTabBtn.style.display = '';
+                    }
                 }
+
+                switchMasterMainTab('khata');
             } else {
                 document.getElementById('master-panel').style.display = 'none';
+                document.getElementById('pd-rt-user-panel').style.display = 'none';
+                document.getElementById('pd-rt-approver-panel').style.display = 'none';
                 document.getElementById('user-panel').style.display = 'block';
 
                 // Reset user tabs to default "Data Entry" tab
@@ -2763,6 +3378,8 @@
             document.getElementById('header-actions').style.display = 'none';
             document.getElementById('user-panel').style.display = 'none';
             document.getElementById('master-panel').style.display = 'none';
+            document.getElementById('pd-rt-user-panel').style.display = 'none';
+            document.getElementById('pd-rt-approver-panel').style.display = 'none';
             document.getElementById('login-panel').style.display = 'flex';
             populateLoginRoles();
             restoreRememberedUser();
@@ -5398,6 +6015,1136 @@
                 closeHolidayModal();
             }
         });
+        // ==============================================
+        // PD RT & FALAVNI CUSTOM IMPLEMENTATIONS
+        // ==============================================
+
+        let activeMasterMainTab = 'khata';
+
+        function switchMasterMainTab(mainTabId) {
+            activeMasterMainTab = mainTabId;
+            
+            // Manage main buttons active state
+            const mainButtons = document.querySelectorAll('#master-panel .tab-nav:first-child .tab-btn');
+            mainButtons.forEach(btn => {
+                if (btn.id === `main-tab-${mainTabId}`) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Show appropriate sub-tab bar
+            const subNavs = document.querySelectorAll('#master-panel .sub-tab-nav');
+            subNavs.forEach(nav => {
+                if (nav.id === `sub-nav-${mainTabId}`) {
+                    nav.style.display = 'flex';
+                } else {
+                    nav.style.display = 'none';
+                }
+            });
+
+            // Trigger default sub-tab click
+            const defaultSubTabBtn = document.querySelector(`#sub-nav-${mainTabId} button:first-child`);
+            if (defaultSubTabBtn) {
+                defaultSubTabBtn.click();
+            }
+        }
+
+        function switchMasterSubTab(mainTabId, paneId, btn) {
+            // Manage sub-tab buttons active state
+            const subButtons = document.querySelectorAll(`#sub-nav-${mainTabId} .tab-btn`);
+            subButtons.forEach(b => {
+                if (b === btn) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+
+            // Hide all master panes
+            const panes = document.querySelectorAll('#master-panel .master-tab-pane');
+            panes.forEach(pane => {
+                pane.style.display = 'none';
+            });
+
+            // Show selected pane
+            const targetPane = document.getElementById(paneId);
+            if (targetPane) {
+                targetPane.style.display = 'block';
+            }
+
+            // Load data for selected pane
+            if (paneId === 'mtab-dashboard') {
+                loadMasterDashboard();
+            } else if (paneId === 'mtab-reports') {
+                loadKhataWiseReport();
+            } else if (paneId === 'mtab-monthly-reports') {
+                loadMonthlyReport();
+            } else if (paneId === 'mtab-falavni-dashboard') {
+                loadMasterFalavniDashboard();
+            } else if (paneId === 'mtab-falavni-reports') {
+                loadMasterFalavniReport();
+            } else if (paneId === 'mtab-falavni-monthly-reports') {
+                loadMasterFalavniMonthlyReport();
+            } else if (paneId === 'mtab-pdrt-dashboard') {
+                loadMasterPDRTDashboard();
+            } else if (paneId === 'mtab-pdrt-reports') {
+                loadMasterPDRTReport();
+            } else if (paneId === 'mtab-pdrt-monthly-reports') {
+                loadMasterPDRTMonthlyReport();
+            } else if (paneId === 'mtab-pdrt-master') {
+                loadMasterPDRTMasterSettings();
+            } else if (paneId === 'mtab-khata') {
+                renderMasterKhataList();
+            } else if (paneId === 'mtab-users') {
+                renderMasterUserList();
+            }
+        }
+
+        // ==============================================
+        // PD RT USER ENTRY Logic (User 1 & 2)
+        // ==============================================
+        async function loadPDRTUserEntry() {
+            if (!currentUser) return;
+            const dateVal = document.getElementById('pd-rt-date').value;
+            if (!dateVal) return;
+
+            showGlobalLoader(true);
+            await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            if (!dbState.pd_rt_submissions) {
+                dbState.pd_rt_submissions = {};
+            }
+
+            const dateSubs = dbState.pd_rt_submissions[dateVal] || {};
+            const userSub = dateSubs[currentUser.id];
+
+            const russianInput = document.getElementById('pd-rt-russian-pcs');
+            const tableInput = document.getElementById('pd-rt-table-pcs');
+            const submitBtn = document.getElementById('btn-submit-pd-rt');
+            const statusText = document.getElementById('pd-rt-status-text');
+
+            if (userSub) {
+                russianInput.value = userSub.russian || 0;
+                tableInput.value = userSub.table || 0;
+
+                if (userSub.status === 'approved') {
+                    statusText.textContent = `ઓકે (Approved ✔️)`;
+                    statusText.style.color = 'var(--success)';
+                    
+                    russianInput.disabled = true;
+                    tableInput.disabled = true;
+                    submitBtn.disabled = true;
+                    submitBtn.style.opacity = '0.5';
+                } else {
+                    statusText.textContent = `સબમિટ કરેલ (Pending Review ⏳)`;
+                    statusText.style.color = 'var(--warning)';
+                    
+                    russianInput.disabled = false;
+                    tableInput.disabled = false;
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                }
+            } else {
+                russianInput.value = 0;
+                tableInput.value = 0;
+                statusText.textContent = `એન્ટ્રી સબમિટ બાકી છે (Not Submitted)`;
+                statusText.style.color = 'var(--danger)';
+                
+                russianInput.disabled = false;
+                tableInput.disabled = false;
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }
+
+            // Load weekly report for the PD RT user
+            loadPDRTUserWeeklyReport(dateVal);
+        }
+
+        function loadPDRTUserWeeklyReport(dateVal) {
+            if (!currentUser) return;
+            const weekDates = getMonToSatDates(dateVal);
+            const tbody = document.getElementById('pd-rt-user-weekly-report-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            weekDates.forEach(wd => {
+                if (!dbState.pd_rt_submissions) {
+                    dbState.pd_rt_submissions = {};
+                }
+                const dateSubs = dbState.pd_rt_submissions[wd.dateKey] || {};
+                const userSub = dateSubs[currentUser.id];
+
+                let russian = '-';
+                let table = '-';
+                let statusHtml = '<span style="color: var(--text-muted); font-size: 0.85rem;">-</span>';
+
+                if (userSub) {
+                    russian = userSub.russian || 0;
+                    table = userSub.table || 0;
+                    if (userSub.status === 'approved') {
+                        statusHtml = '<span class="badge-status submitted" style="font-size:0.75rem; padding: 2px 8px; line-height: 1;">ઓકે ✔️</span>';
+                    } else {
+                        statusHtml = '<span class="badge-status pending" style="font-size:0.75rem; padding: 2px 8px; line-height: 1; background: var(--warning-glow); color: var(--warning);">પેન્ડિંગ ⏳</span>';
+                    }
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary);">${wd.displayDate}</td>
+                    <td><span class="location-badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size:0.75rem; padding: 2px 8px;">${wd.dayName}</span></td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${russian}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${table}</td>
+                    <td>${statusHtml}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function submitPDRTEntry() {
+            const dateVal = document.getElementById('pd-rt-date').value;
+            if (!dateVal) return;
+
+            const russian = parseInt(document.getElementById('pd-rt-russian-pcs').value) || 0;
+            const table = parseInt(document.getElementById('pd-rt-table-pcs').value) || 0;
+
+            if (russian < 0 || table < 0) {
+                await customAlert("કૃપા કરીને સાચી કિંમત દાખલ કરો.");
+                return;
+            }
+
+            const subData = {
+                russian: russian,
+                table: table,
+                submittedAt: new Date().toISOString(),
+                status: 'pending',
+                username: currentUser.username,
+                synced: false
+            };
+
+            if (!dbState.pd_rt_submissions) dbState.pd_rt_submissions = {};
+            if (!dbState.pd_rt_submissions[dateVal]) dbState.pd_rt_submissions[dateVal] = {};
+            dbState.pd_rt_submissions[dateVal][currentUser.id] = subData;
+
+            setLocalDB(dbState);
+
+            showGlobalLoader(true);
+            const success = await savePDRTSubmissionToFirebase(dateVal, currentUser.id, subData);
+            showGlobalLoader(false);
+
+            if (success) {
+                dbState.pd_rt_submissions[dateVal][currentUser.id].synced = true;
+                setLocalDB(dbState);
+                await customAlert("એન્ટ્રી સફળતાપૂર્વક સબમિટ થઈ ગઈ છે!");
+                loadPDRTUserEntry();
+            } else {
+                await customAlert("સબમિટ કરવા માટે ઇન્ટરનેટ જોડાણ તપાસો. લૉકલ ડેટા સાચવેલ છે.");
+            }
+        }
+
+        // ==============================================
+        // PD RT SUPERVISOR Logic (User 3)
+        // ==============================================
+        async function loadPDRTApprovalDashboard() {
+            const dateVal = document.getElementById('pd-rt-approve-date').value;
+            if (!dateVal) return;
+
+            showGlobalLoader(true);
+            await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            if (!dbState.pd_rt_submissions) {
+                dbState.pd_rt_submissions = {};
+            }
+
+            const dateSubs = dbState.pd_rt_submissions[dateVal] || {};
+            
+            // Load Usernames dynamically from dbState.users
+            const u1Name = dbState.users.find(u => u.id === 'pd_rt_user1')?.username || 'રશિયન ટેબલ';
+            const u2Name = dbState.users.find(u => u.id === 'pd_rt_user2')?.username || 'વિભાગ ૨';
+            
+            document.getElementById('pd-rt-user1-display-name').textContent = u1Name;
+            document.getElementById('pd-rt-user2-display-name').textContent = u2Name;
+
+            const u1Sub = dateSubs['pd_rt_user1'];
+            const u2Sub = dateSubs['pd_rt_user2'];
+
+            const u1StatusEl = document.getElementById('pd-rt-user1-status');
+            const u2StatusEl = document.getElementById('pd-rt-user2-status');
+
+            const u1RussianInput = document.getElementById('pd-rt-review-u1-russian');
+            const u1TableInput = document.getElementById('pd-rt-review-u1-table');
+            const u2RussianInput = document.getElementById('pd-rt-review-u2-russian');
+            const u2TableInput = document.getElementById('pd-rt-review-u2-table');
+
+            // Populate User 1 details
+            if (u1Sub) {
+                u1StatusEl.innerHTML = u1Sub.status === 'approved' ? '<span class="badge-status submitted">OK (Approved)</span>' : '<span class="badge-status warning">Pending Approval</span>';
+                u1RussianInput.value = u1Sub.russian || 0;
+                u1TableInput.value = u1Sub.table || 0;
+            } else {
+                u1StatusEl.innerHTML = '<span class="badge-status pending">Missing Entry</span>';
+                u1RussianInput.value = 0;
+                u1TableInput.value = 0;
+            }
+
+            // Populate User 2 details
+            if (u2Sub) {
+                u2StatusEl.innerHTML = u2Sub.status === 'approved' ? '<span class="badge-status submitted">OK (Approved)</span>' : '<span class="badge-status warning">Pending Approval</span>';
+                u2RussianInput.value = u2Sub.russian || 0;
+                u2TableInput.value = u2Sub.table || 0;
+            } else {
+                u2StatusEl.innerHTML = '<span class="badge-status pending">Missing Entry</span>';
+                u2RussianInput.value = 0;
+                u2TableInput.value = 0;
+            }
+
+            const statusText = document.getElementById('pd-rt-approval-status');
+            const approveBtn = document.getElementById('btn-approve-pd-rt');
+
+            // Overall date status
+            const isApproved = dateSubs.status === 'approved';
+
+            if (isApproved) {
+                statusText.textContent = `મંજૂર કરેલ છે ✔️ (Approved by ${dateSubs.approvedBy || 'Supervisor'})`;
+                statusText.style.color = 'var(--success)';
+                
+                u1RussianInput.disabled = true;
+                u1TableInput.disabled = true;
+                u2RussianInput.disabled = true;
+                u2TableInput.disabled = true;
+                
+                approveBtn.disabled = true;
+                approveBtn.style.opacity = '0.5';
+            } else {
+                statusText.textContent = `અપ્રૂવલ બાકી ⏳`;
+                statusText.style.color = 'var(--danger)';
+                
+                u1RussianInput.disabled = false;
+                u1TableInput.disabled = false;
+                u2RussianInput.disabled = false;
+                u2TableInput.disabled = false;
+                
+                approveBtn.disabled = false;
+                approveBtn.style.opacity = '1';
+            }
+
+            calculatePDRTApprovalTotals();
+        }
+
+        function calculatePDRTApprovalTotals() {
+            const u1Russian = parseInt(document.getElementById('pd-rt-review-u1-russian').value) || 0;
+            const u1Table = parseInt(document.getElementById('pd-rt-review-u1-table').value) || 0;
+            const u2Russian = parseInt(document.getElementById('pd-rt-review-u2-russian').value) || 0;
+            const u2Table = parseInt(document.getElementById('pd-rt-review-u2-table').value) || 0;
+
+            document.getElementById('pd-rt-total-russian').textContent = u1Russian + u2Russian;
+            document.getElementById('pd-rt-total-table').textContent = u1Table + u2Table;
+        }
+
+        async function approvePDRTData() {
+            const dateVal = document.getElementById('pd-rt-approve-date').value;
+            if (!dateVal) return;
+
+            const u1Russian = parseInt(document.getElementById('pd-rt-review-u1-russian').value) || 0;
+            const u1Table = parseInt(document.getElementById('pd-rt-review-u1-table').value) || 0;
+            const u2Russian = parseInt(document.getElementById('pd-rt-review-u2-russian').value) || 0;
+            const u2Table = parseInt(document.getElementById('pd-rt-review-u2-table').value) || 0;
+
+            if (u1Russian < 0 || u1Table < 0 || u2Russian < 0 || u2Table < 0) {
+                await customAlert("Negative કિંમતો માન્ય નથી.");
+                return;
+            }
+
+            if (!dbState.pd_rt_submissions) dbState.pd_rt_submissions = {};
+            if (!dbState.pd_rt_submissions[dateVal]) dbState.pd_rt_submissions[dateVal] = {};
+
+            const u1Sub = dbState.pd_rt_submissions[dateVal]['pd_rt_user1'] || { username: 'રશિયન ટેબલ' };
+            u1Sub.russian = u1Russian;
+            u1Sub.table = u1Table;
+            u1Sub.status = 'approved';
+            u1Sub.submittedAt = u1Sub.submittedAt || new Date().toISOString();
+            u1Sub.synced = false;
+
+            const u2Sub = dbState.pd_rt_submissions[dateVal]['pd_rt_user2'] || { username: 'વિભાગ ૨' };
+            u2Sub.russian = u2Russian;
+            u2Sub.table = u2Table;
+            u2Sub.status = 'approved';
+            u2Sub.submittedAt = u2Sub.submittedAt || new Date().toISOString();
+            u2Sub.synced = false;
+
+            dbState.pd_rt_submissions[dateVal]['pd_rt_user1'] = u1Sub;
+            dbState.pd_rt_submissions[dateVal]['pd_rt_user2'] = u2Sub;
+
+            dbState.pd_rt_submissions[dateVal].status = 'approved';
+            dbState.pd_rt_submissions[dateVal].approvedBy = currentUser.username;
+            dbState.pd_rt_submissions[dateVal].approvedAt = new Date().toISOString();
+
+            setLocalDB(dbState);
+
+            showGlobalLoader(true);
+            const success1 = await savePDRTSubmissionToFirebase(dateVal, 'pd_rt_user1', u1Sub);
+            const success2 = await savePDRTSubmissionToFirebase(dateVal, 'pd_rt_user2', u2Sub);
+            const successMeta = await savePDRTSubmissionToFirebase(dateVal, 'meta', {
+                status: 'approved',
+                approvedBy: currentUser.username,
+                approvedAt: new Date().toISOString()
+            });
+            showGlobalLoader(false);
+
+            if (success1 && success2 && successMeta) {
+                dbState.pd_rt_submissions[dateVal]['pd_rt_user1'].synced = true;
+                dbState.pd_rt_submissions[dateVal]['pd_rt_user2'].synced = true;
+                setLocalDB(dbState);
+                await customAlert("અપ્રૂવલ સફળ અને ડેટા સેવ થઈ ગયેલ છે!");
+                loadPDRTApprovalDashboard();
+            } else {
+                await customAlert("સર્વર જોડાણ નિષ્ફળ, પરંતુ લૉકલ ડેટા અપ્રૂવ કરવામાં આવ્યો છે.");
+            }
+        }
+
+        // ==============================================
+        // MASTER: PD RT DASHBOARD & REPORTS (Admin Views)
+        // ==============================================
+        async function loadMasterPDRTDashboard() {
+            const dateVal = document.getElementById('master-pdrt-dashboard-date').value;
+            if (!dateVal) return;
+
+            showGlobalLoader(true);
+            await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            if (!dbState.pd_rt_submissions) {
+                dbState.pd_rt_submissions = {};
+            }
+
+            const dateSubs = dbState.pd_rt_submissions[dateVal] || {};
+            const u1Sub = dateSubs['pd_rt_user1'];
+            const u2Sub = dateSubs['pd_rt_user2'];
+
+            const u1Name = dbState.users.find(u => u.id === 'pd_rt_user1')?.username || 'રશિયન ટેબલ';
+            const u2Name = dbState.users.find(u => u.id === 'pd_rt_user2')?.username || 'વિભાગ ૨';
+
+            // Set column group titles in HTML dynamically
+            document.getElementById('master-pdrt-dash-u1-title').textContent = u1Name;
+            document.getElementById('master-pdrt-dash-u2-title').textContent = u2Name;
+
+            let u1Russian = 0, u1Table = 0;
+            let u2Russian = 0, u2Table = 0;
+            const isApproved = dateSubs.status === 'approved';
+
+            if (isApproved) {
+                if (u1Sub) {
+                    u1Russian = u1Sub.russian || 0;
+                    u1Table = u1Sub.table || 0;
+                }
+                if (u2Sub) {
+                    u2Russian = u2Sub.russian || 0;
+                    u2Table = u2Sub.table || 0;
+                }
+            }
+
+            const tbody = document.getElementById('master-pdrt-dashboard-tbody');
+            tbody.innerHTML = '';
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-weight: 700; font-variant-numeric: tabular-nums;">${isApproved && u1Sub ? u1Russian : '-'}</td>
+                <td style="font-weight: 700; font-variant-numeric: tabular-nums;">${isApproved && u1Sub ? u1Table : '-'}</td>
+                <td style="font-weight: 700; font-variant-numeric: tabular-nums;">${isApproved && u2Sub ? u2Russian : '-'}</td>
+                <td style="font-weight: 700; font-variant-numeric: tabular-nums;">${isApproved && u2Sub ? u2Table : '-'}</td>
+                <td style="font-weight: 800; text-align: center; color: var(--accent); font-size: 1.1rem;">=</td>
+                <td style="font-weight: 800; font-variant-numeric: tabular-nums; color: var(--primary);">${isApproved ? (u1Russian + u2Russian) : '-'}</td>
+                <td style="font-weight: 800; font-variant-numeric: tabular-nums; color: var(--primary);">${isApproved ? (u1Table + u2Table) : '-'}</td>
+            `;
+            tbody.appendChild(tr);
+
+            const badge = document.getElementById('master-pdrt-dash-approval-badge');
+            const details = document.getElementById('master-pdrt-dash-approval-details');
+
+            if (dateSubs.status === 'approved') {
+                badge.textContent = 'APPROVED';
+                badge.className = 'badge-status submitted';
+                details.textContent = `Approved by ${dateSubs.approvedBy || 'Supervisor'} at ${new Date(dateSubs.approvedAt).toLocaleString()}`;
+            } else {
+                badge.textContent = 'PENDING APPROVAL';
+                badge.className = 'badge-status pending';
+                
+                // Show submission status details of each department
+                const u1Status = u1Sub ? 'Submitted ✔️' : 'Pending ❌';
+                const u2Status = u2Sub ? 'Submitted ✔️' : 'Pending ❌';
+                details.textContent = `${u1Name}: ${u1Status} | ${u2Name}: ${u2Status}`;
+            }
+        }
+
+        async function loadMasterPDRTReport() {
+            const dateVal = document.getElementById('master-pdrt-report-date').value;
+            if (!dateVal) return;
+
+            showGlobalLoader(true);
+            await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            const weekDates = getMonToSatDates(dateVal);
+            document.getElementById('print-pdrt-report-date-heading').textContent = `અઠવાડિયું: ${weekDates[0].displayDate} થી ${weekDates[6].displayDate}`;
+
+            const u1Name = dbState.users.find(u => u.id === 'pd_rt_user1')?.username || 'રશિયન ટેબલ';
+            const u2Name = dbState.users.find(u => u.id === 'pd_rt_user2')?.username || 'વિભાગ ૨';
+
+            document.getElementById('master-pdrt-rep-u1-title').textContent = u1Name;
+            document.getElementById('master-pdrt-rep-u2-title').textContent = u2Name;
+
+            const tbody = document.getElementById('master-pdrt-reports-tbody');
+            tbody.innerHTML = '';
+
+            let grandU1Russian = 0;
+            let grandU1Table = 0;
+            let grandU2Russian = 0;
+            let grandU2Table = 0;
+            let grandTotalRussian = 0;
+            let grandTotalTable = 0;
+
+            if (!dbState.pd_rt_submissions) {
+                dbState.pd_rt_submissions = {};
+            }
+
+            weekDates.forEach(wd => {
+                const dateSubs = dbState.pd_rt_submissions[wd.dateKey] || {};
+                
+                let u1Russian = 0, u1Table = 0, u1Has = false;
+                let u2Russian = 0, u2Table = 0, u2Has = false;
+                let isApproved = dateSubs.status === 'approved';
+
+                if (isApproved) {
+                    if (dateSubs['pd_rt_user1']) {
+                        u1Russian = dateSubs['pd_rt_user1'].russian || 0;
+                        u1Table = dateSubs['pd_rt_user1'].table || 0;
+                        u1Has = true;
+                    }
+                    if (dateSubs['pd_rt_user2']) {
+                        u2Russian = dateSubs['pd_rt_user2'].russian || 0;
+                        u2Table = dateSubs['pd_rt_user2'].table || 0;
+                        u2Has = true;
+                    }
+                }
+
+                const displayU1Russian = isApproved && u1Has ? u1Russian : '-';
+                const displayU1Table = isApproved && u1Has ? u1Table : '-';
+                const displayU2Russian = isApproved && u2Has ? u2Russian : '-';
+                const displayU2Table = isApproved && u2Has ? u2Table : '-';
+                
+                const displayTotalRussian = isApproved ? (u1Russian + u2Russian) : '-';
+                const displayTotalTable = isApproved ? (u1Table + u2Table) : '-';
+
+                if (isApproved) {
+                    grandU1Russian += u1Russian;
+                    grandU1Table += u1Table;
+                    grandU2Russian += u2Russian;
+                    grandU2Table += u2Table;
+                    grandTotalRussian += (u1Russian + u2Russian);
+                    grandTotalTable += (u1Table + u2Table);
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary);">${wd.displayDate}</td>
+                    <td><span class="location-badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700;">${wd.dayName}</span></td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU1Russian}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU1Table}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU2Russian}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU2Table}</td>
+                    <td style="font-weight: 800; text-align: center; color: var(--accent);">=</td>
+                    <td style="font-weight: 700; font-variant-numeric: tabular-nums; color: var(--danger);">${displayTotalRussian}</td>
+                    <td style="font-weight: 700; font-variant-numeric: tabular-nums; color: var(--danger);">${displayTotalTable}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('master-pdrt-report-total-u1-russian').textContent = grandU1Russian;
+            document.getElementById('master-pdrt-report-total-u1-table').textContent = grandU1Table;
+            document.getElementById('master-pdrt-report-total-u2-russian').textContent = grandU2Russian;
+            document.getElementById('master-pdrt-report-total-u2-table').textContent = grandU2Table;
+            document.getElementById('master-pdrt-report-total-russian').textContent = grandTotalRussian;
+            document.getElementById('master-pdrt-report-total-table').textContent = grandTotalTable;
+        }
+
+        function exportMasterPDRTReportToExcel() {
+            const dateVal = document.getElementById('master-pdrt-report-date').value;
+            if (!dateVal) return;
+
+            const weekDates = getMonToSatDates(dateVal);
+            const u1Name = dbState.users.find(u => u.id === 'pd_rt_user1')?.username || 'રશિયન ટેબલ';
+            const u2Name = dbState.users.find(u => u.id === 'pd_rt_user2')?.username || 'વિભાગ ૨';
+
+            let csvContent = `PD RT Weekly Production Report\n`;
+            csvContent += `Week: ${weekDates[0].displayDate} to ${weekDates[6].displayDate}\n\n`;
+            
+            // CSV double row header to support colspan layout
+            csvContent += `,,${u1Name},,${u2Name},,,PD,\n`;
+            csvContent += "Date,Day,Russian Pcs,Table Pcs,Russian Pcs,Table Pcs,,Russian Pcs,Table Pcs\n";
+
+            let grandU1Russian = 0;
+            let grandU1Table = 0;
+            let grandU2Russian = 0;
+            let grandU2Table = 0;
+            let grandTotalRussian = 0;
+            let grandTotalTable = 0;
+
+            weekDates.forEach(wd => {
+                const dateSubs = dbState.pd_rt_submissions[wd.dateKey] || {};
+                let u1Russian = 0, u1Table = 0, u1Has = false;
+                let u2Russian = 0, u2Table = 0, u2Has = false;
+                let isApproved = dateSubs.status === 'approved';
+
+                if (isApproved) {
+                    if (dateSubs['pd_rt_user1']) {
+                        u1Russian = dateSubs['pd_rt_user1'].russian || 0;
+                        u1Table = dateSubs['pd_rt_user1'].table || 0;
+                        u1Has = true;
+                    }
+                    if (dateSubs['pd_rt_user2']) {
+                        u2Russian = dateSubs['pd_rt_user2'].russian || 0;
+                        u2Table = dateSubs['pd_rt_user2'].table || 0;
+                        u2Has = true;
+                    }
+                }
+
+                const displayU1Russian = isApproved && u1Has ? u1Russian : '-';
+                const displayU1Table = isApproved && u1Has ? u1Table : '-';
+                const displayU2Russian = isApproved && u2Has ? u2Russian : '-';
+                const displayU2Table = isApproved && u2Has ? u2Table : '-';
+                const displayTotalRussian = isApproved ? (u1Russian + u2Russian) : '-';
+                const displayTotalTable = isApproved ? (u1Table + u2Table) : '-';
+
+                if (isApproved) {
+                    grandU1Russian += u1Russian;
+                    grandU1Table += u1Table;
+                    grandU2Russian += u2Russian;
+                    grandU2Table += u2Table;
+                    grandTotalRussian += (u1Russian + u2Russian);
+                    grandTotalTable += (u1Table + u2Table);
+                }
+
+                csvContent += `"${wd.displayDate}","${wd.dayName}",${displayU1Russian},${displayU1Table},${displayU2Russian},${displayU2Table},=,${displayTotalRussian},${displayTotalTable}\n`;
+            });
+
+            csvContent += `Grand Total,,${grandU1Russian},${grandU1Table},${grandU2Russian},${grandU2Table},=,${grandTotalRussian},${grandTotalTable}\n`;
+
+            const csvData = "\uFEFF" + csvContent;
+            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `pd_rt_weekly_report_${weekDates[0].displayDate}_to_${weekDates[6].displayDate}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function loadMasterPDRTMonthlyReport() {
+            const monthVal = document.getElementById('master-pdrt-monthly-report-date').value;
+            if (!monthVal) return;
+
+            const parts = monthVal.split('-');
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1;
+
+            showGlobalLoader(true);
+            await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            const gujMonthNames = [
+                'જાન્યુઆરી', 'ફેબ્રુઆરી', 'માર્ચ', 'એપ્રિલ', 'મે', 'જૂન',
+                'જુલાઈ', 'ઑગસ્ટ', 'સપ્ટેમ્બર', 'ઑક્ટોબર', 'નવેમ્બર', 'ડિસેમ્બર'
+            ];
+            const displayMonth = `${gujMonthNames[month]} - ${year}`;
+            document.getElementById('print-pdrt-monthly-report-heading').textContent = `મહિનો: ${displayMonth}`;
+
+            const u1Name = dbState.users.find(u => u.id === 'pd_rt_user1')?.username || 'રશિયન ટેબલ';
+            const u2Name = dbState.users.find(u => u.id === 'pd_rt_user2')?.username || 'વિભાગ ૨';
+
+            document.getElementById('master-pdrt-monthly-rep-u1-title').textContent = u1Name;
+            document.getElementById('master-pdrt-monthly-rep-u2-title').textContent = u2Name;
+
+            const weeks = getWeeksOfMonth(year, month);
+            const tbody = document.getElementById('master-pdrt-monthly-reports-tbody');
+            tbody.innerHTML = '';
+
+            let grandU1Russian = 0;
+            let grandU1Table = 0;
+            let grandU2Russian = 0;
+            let grandU2Table = 0;
+            let grandTotalRussian = 0;
+            let grandTotalTable = 0;
+
+            if (!dbState.pd_rt_submissions) {
+                dbState.pd_rt_submissions = {};
+            }
+
+            weeks.forEach((week, index) => {
+                let weekU1Russian = 0;
+                let weekU1Table = 0;
+                let weekU2Russian = 0;
+                let weekU2Table = 0;
+                let hasData = false;
+
+                for (let i = 0; i < 7; i++) {
+                    const d = new Date(week.monday);
+                    d.setDate(week.monday.getDate() + i);
+
+                    const dy = d.getFullYear();
+                    const dm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    const dateKey = `${dy}-${dm}-${dd}`;
+
+                    const dateSubs = dbState.pd_rt_submissions[dateKey] || {};
+                    const isApproved = dateSubs.status === 'approved';
+
+                    if (isApproved) {
+                        if (dateSubs['pd_rt_user1']) {
+                            weekU1Russian += dateSubs['pd_rt_user1'].russian || 0;
+                            weekU1Table += dateSubs['pd_rt_user1'].table || 0;
+                            hasData = true;
+                        }
+                        if (dateSubs['pd_rt_user2']) {
+                            weekU2Russian += dateSubs['pd_rt_user2'].russian || 0;
+                            weekU2Table += dateSubs['pd_rt_user2'].table || 0;
+                            hasData = true;
+                        }
+                    }
+                }
+
+                const displayU1Russian = hasData ? weekU1Russian : '-';
+                const displayU1Table = hasData ? weekU1Table : '-';
+                const displayU2Russian = hasData ? weekU2Russian : '-';
+                const displayU2Table = hasData ? weekU2Table : '-';
+                const displayTotalRussian = hasData ? (weekU1Russian + weekU2Russian) : '-';
+                const displayTotalTable = hasData ? (weekU1Table + weekU2Table) : '-';
+
+                if (hasData) {
+                    grandU1Russian += weekU1Russian;
+                    grandU1Table += weekU1Table;
+                    grandU2Russian += weekU2Russian;
+                    grandU2Table += weekU2Table;
+                    grandTotalRussian += (weekU1Russian + weekU2Russian);
+                    grandTotalTable += (weekU1Table + weekU2Table);
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary);">અઠવાડિયું ${index + 1} (${week.displayRange})</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU1Russian}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU1Table}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU2Russian}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU2Table}</td>
+                    <td style="font-weight: 800; text-align: center; color: var(--accent);">=</td>
+                    <td style="font-weight: 700; font-variant-numeric: tabular-nums; color: var(--danger);">${displayTotalRussian}</td>
+                    <td style="font-weight: 700; font-variant-numeric: tabular-nums; color: var(--danger);">${displayTotalTable}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('master-pdrt-monthly-report-total-u1-russian').textContent = grandU1Russian;
+            document.getElementById('master-pdrt-monthly-report-total-u1-table').textContent = grandU1Table;
+            document.getElementById('master-pdrt-monthly-report-total-u2-russian').textContent = grandU2Russian;
+            document.getElementById('master-pdrt-monthly-report-total-u2-table').textContent = grandU2Table;
+            document.getElementById('master-pdrt-monthly-report-total-russian').textContent = grandTotalRussian;
+            document.getElementById('master-pdrt-monthly-report-total-table').textContent = grandTotalTable;
+        }
+
+        function exportMasterPDRTMonthlyReportToExcel() {
+            const monthVal = document.getElementById('master-pdrt-monthly-report-date').value;
+            if (!monthVal) return;
+
+            const parts = monthVal.split('-');
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1;
+
+            const gujMonthNames = [
+                'જાન્યુઆરી', 'ફેબ્રુઆરી', 'માર્ચ', 'એપ્રિલ', 'મે', 'જૂન',
+                'જુલાઈ', 'ઑગસ્ટ', 'સપ્ટેમ્બર', 'ઑક્ટોબર', 'નવેમ્બર', 'ડિસેમ્બર'
+            ];
+            const displayMonth = `${gujMonthNames[month]} - ${year}`;
+            const weeks = getWeeksOfMonth(year, month);
+
+            const u1Name = dbState.users.find(u => u.id === 'pd_rt_user1')?.username || 'રશિયન ટેબલ';
+            const u2Name = dbState.users.find(u => u.id === 'pd_rt_user2')?.username || 'વિભાગ ૨';
+
+            let csvContent = `PD RT Monthly Production Report - Month: ${displayMonth}\n\n`;
+            csvContent += `,,${u1Name},,${u2Name},,,PD,\n`;
+            csvContent += "Week,Range,Russian Pcs,Table Pcs,Russian Pcs,Table Pcs,,Russian Pcs,Table Pcs\n";
+
+            let grandU1Russian = 0;
+            let grandU1Table = 0;
+            let grandU2Russian = 0;
+            let grandU2Table = 0;
+            let grandTotalRussian = 0;
+            let grandTotalTable = 0;
+
+            weeks.forEach((week, index) => {
+                let weekU1Russian = 0;
+                let weekU1Table = 0;
+                let weekU2Russian = 0;
+                let weekU2Table = 0;
+                let hasData = false;
+
+                for (let i = 0; i < 7; i++) {
+                    const d = new Date(week.monday);
+                    d.setDate(week.monday.getDate() + i);
+
+                    const dy = d.getFullYear();
+                    const dm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    const dateKey = `${dy}-${dm}-${dd}`;
+
+                    const dateSubs = dbState.pd_rt_submissions[dateKey] || {};
+                    const isApproved = dateSubs.status === 'approved';
+
+                    if (isApproved) {
+                        if (dateSubs['pd_rt_user1']) {
+                            weekU1Russian += dateSubs['pd_rt_user1'].russian || 0;
+                            weekU1Table += dateSubs['pd_rt_user1'].table || 0;
+                            hasData = true;
+                        }
+                        if (dateSubs['pd_rt_user2']) {
+                            weekU2Russian += dateSubs['pd_rt_user2'].russian || 0;
+                            weekU2Table += dateSubs['pd_rt_user2'].table || 0;
+                            hasData = true;
+                        }
+                    }
+                }
+
+                const displayU1Russian = hasData ? weekU1Russian : '-';
+                const displayU1Table = hasData ? weekU1Table : '-';
+                const displayU2Russian = hasData ? weekU2Russian : '-';
+                const displayU2Table = hasData ? weekU2Table : '-';
+                const displayTotalRussian = hasData ? (weekU1Russian + weekU2Russian) : '-';
+                const displayTotalTable = hasData ? (weekU1Table + weekU2Table) : '-';
+
+                if (hasData) {
+                    grandU1Russian += weekU1Russian;
+                    grandU1Table += weekU1Table;
+                    grandU2Russian += weekU2Russian;
+                    grandU2Table += weekU2Table;
+                    grandTotalRussian += (weekU1Russian + weekU2Russian);
+                    grandTotalTable += (weekU1Table + weekU2Table);
+                }
+
+                csvContent += `"અઠવાડિયું ${index + 1}","${week.displayRange}",${displayU1Russian},${displayU1Table},${displayU2Russian},${displayU2Table},=,${displayTotalRussian},${displayTotalTable}\n`;
+            });
+
+            csvContent += `Grand Total,,${grandU1Russian},${grandU1Table},${grandU2Russian},${grandU2Table},=,${grandTotalRussian},${grandTotalTable}\n`;
+
+            const csvData = "\uFEFF" + csvContent;
+            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `diamond_pdrt_monthly_report_${monthVal}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // ==============================================
+        // MASTER: PD RT USER SETTINGS (PD RT Master)
+        // ==============================================
+        function loadMasterPDRTMasterSettings() {
+            const u1 = dbState.users.find(u => u.id === 'pd_rt_user1') || { username: 'રશિયન ટેબલ', password: '123' };
+            const u2 = dbState.users.find(u => u.id === 'pd_rt_user2') || { username: 'વિભાગ ૨', password: '123' };
+            const u3 = dbState.users.find(u => u.id === 'pd_rt_user3') || { username: 'સુપરવાઇઝર', password: '123' };
+
+            document.getElementById('pdrt-m-u1-username').value = u1.username;
+            document.getElementById('pdrt-m-u1-password').value = u1.password;
+            
+            document.getElementById('pdrt-m-u2-username').value = u2.username;
+            document.getElementById('pdrt-m-u2-password').value = u2.password;
+            
+            document.getElementById('pdrt-m-u3-username').value = u3.username;
+            document.getElementById('pdrt-m-u3-password').value = u3.password;
+        }
+
+        async function savePDRTMasterUser(userId) {
+            let user = dbState.users.find(u => u.id === userId);
+            let fieldSuffix = 'u1';
+            if (userId === 'pd_rt_user2') fieldSuffix = 'u2';
+            if (userId === 'pd_rt_user3') fieldSuffix = 'u3';
+
+            const username = document.getElementById(`pdrt-m-${fieldSuffix}-username`).value.trim();
+            const password = document.getElementById(`pdrt-m-${fieldSuffix}-password`).value.trim();
+
+            if (!username || !password) {
+                await customAlert("નામ અને પાસવર્ડ ખાલી હોઈ શકે નહીં.");
+                return;
+            }
+
+            if (!user) {
+                user = { id: userId, role: userId === 'pd_rt_user3' ? 'pd_rt_approver' : (userId === 'pd_rt_user1' ? 'pd_rt_entry1' : 'pd_rt_entry2') };
+                dbState.users.push(user);
+            }
+
+            user.username = username;
+            user.password = password;
+
+            showGlobalLoader(true);
+            await saveDB();
+            showGlobalLoader(false);
+
+            await customAlert("યુઝર સેવ સફળ!");
+            loadMasterPDRTMasterSettings();
+        }
+
+        // ==============================================
+        // MASTER: FALAVNI REPORTS & MONTHLY (Admin Views)
+        // ==============================================
+        async function loadMasterFalavniReport() {
+            const dateVal = document.getElementById('master-falavni-report-date').value;
+            if (!dateVal) return;
+
+            showGlobalLoader(true);
+            await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            const weekDates = getMonToSatDates(dateVal);
+            document.getElementById('print-falavni-report-date-heading').textContent = `અઠવાડિયું: ${weekDates[0].displayDate} થી ${weekDates[6].displayDate}`;
+
+            const tbody = document.getElementById('master-falavni-reports-tbody');
+            tbody.innerHTML = '';
+
+            let totalNang = 0;
+
+            weekDates.forEach(wd => {
+                let dateNang = 0;
+                let hasSubmissions = false;
+
+                const dateSubmissions = dbState.submissions[wd.dateKey] || {};
+
+                Object.values(dateSubmissions).forEach(userSub => {
+                    if (userSub && userSub.entries) {
+                        const hasAnyNang = Object.values(userSub.entries).some(e => e.nang !== undefined);
+                        if (hasAnyNang) {
+                            hasSubmissions = true;
+                            Object.values(userSub.entries).forEach(ent => {
+                                if (ent && !ent.isHolidayFalavni) {
+                                    dateNang += ent.nang || 0;
+                                }
+                            });
+                        }
+                    }
+                });
+
+                let nangDisplay = dateNang;
+                if (!hasSubmissions) {
+                    nangDisplay = '-';
+                } else {
+                    totalNang += dateNang;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary);">${wd.displayDate}</td>
+                    <td><span class="location-badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700;">${wd.dayName}</span></td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${nangDisplay}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('master-falavni-report-total-nang').textContent = totalNang;
+        }
+
+        function exportMasterFalavniReportToExcel() {
+            const dateVal = document.getElementById('master-falavni-report-date').value;
+            if (!dateVal) return;
+
+            const weekDates = getMonToSatDates(dateVal);
+
+            let csvContent = `Falavni Weekly Allocation Report\n`;
+            csvContent += `Week: ${weekDates[0].displayDate} to ${weekDates[6].displayDate}\n\n`;
+            csvContent += "Date,Day,Nang\n";
+
+            let totalNang = 0;
+
+            weekDates.forEach(wd => {
+                let dateNang = 0;
+                let hasSubmissions = false;
+
+                const dateSubmissions = dbState.submissions[wd.dateKey] || {};
+
+                Object.values(dateSubmissions).forEach(userSub => {
+                    if (userSub && userSub.entries) {
+                        const hasAnyNang = Object.values(userSub.entries).some(e => e.nang !== undefined);
+                        if (hasAnyNang) {
+                            hasSubmissions = true;
+                            Object.values(userSub.entries).forEach(ent => {
+                                if (ent && !ent.isHolidayFalavni) {
+                                    dateNang += ent.nang || 0;
+                                }
+                            });
+                        }
+                    }
+                });
+
+                if (hasSubmissions) {
+                    totalNang += dateNang;
+                    csvContent += `"${wd.displayDate}","${wd.dayName}",${dateNang}\n`;
+                } else {
+                    csvContent += `"${wd.displayDate}","${wd.dayName}",-\n`;
+                }
+            });
+
+            csvContent += `Grand Total,,${totalNang}\n`;
+
+            const csvData = "\uFEFF" + csvContent;
+            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `falavni_weekly_report_${weekDates[0].displayDate}_to_${weekDates[6].displayDate}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function loadMasterFalavniMonthlyReport() {
+            const monthVal = document.getElementById('master-falavni-monthly-report-date').value;
+            if (!monthVal) return;
+
+            showGlobalLoader(true);
+            await fetchFromFirebase();
+            showGlobalLoader(false);
+
+            const parts = monthVal.split('-');
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1;
+
+            const gujMonthNames = [
+                'જાન્યુઆરી', 'ફેબ્રુઆરી', 'માર્ચ', 'એપ્રિલ', 'મે', 'જૂન',
+                'જુલાઈ', 'ઑગસ્ટ', 'સપ્ટેમ્બર', 'ઑક્ટોબર', 'નવેમ્બર', 'ડિસેમ્બર'
+            ];
+            const displayMonth = `${gujMonthNames[month]} - ${year}`;
+            document.getElementById('print-falavni-monthly-report-heading').textContent = `મહિનો: ${displayMonth}`;
+
+            const tbody = document.getElementById('master-falavni-monthly-reports-tbody');
+            tbody.innerHTML = '';
+
+            const weeks = getWeeksOfMonth(year, month);
+            let totalNang = 0;
+
+            weeks.forEach((week, index) => {
+                let weekNang = 0;
+                let hasData = false;
+
+                for (let i = 0; i < 7; i++) {
+                    const d = new Date(week.monday);
+                    d.setDate(week.monday.getDate() + i);
+
+                    const dy = d.getFullYear();
+                    const dm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    const dateKey = `${dy}-${dm}-${dd}`;
+
+                    const dateSubmissions = dbState.submissions[dateKey] || {};
+                    Object.values(dateSubmissions).forEach(userSub => {
+                        if (userSub && userSub.entries) {
+                            const hasAnyNang = Object.values(userSub.entries).some(e => e.nang !== undefined);
+                            if (hasAnyNang) {
+                                hasData = true;
+                                Object.values(userSub.entries).forEach(ent => {
+                                    if (ent && !ent.isHolidayFalavni) {
+                                        weekNang += ent.nang || 0;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+
+                let nangDisplay = weekNang;
+                if (!hasData) {
+                    nangDisplay = '-';
+                } else {
+                    totalNang += weekNang;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary);">અઠવાડિયું ${index + 1} (${week.displayRange})</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${nangDisplay}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('master-falavni-monthly-report-total-nang').textContent = totalNang;
+        }
+
+        function exportMasterFalavniMonthlyReportToExcel() {
+            const monthVal = document.getElementById('master-falavni-monthly-report-date').value;
+            if (!monthVal) return;
+
+            const parts = monthVal.split('-');
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1;
+
+            const weeks = getWeeksOfMonth(year, month);
+
+            let csvContent = `Falavni Monthly Allocation Report\n`;
+            csvContent += `Month: ${monthVal}\n\n`;
+            csvContent += "Week Range,Nang\n";
+
+            let totalNang = 0;
+
+            weeks.forEach((week, index) => {
+                let weekNang = 0;
+                let hasData = false;
+
+                for (let i = 0; i < 7; i++) {
+                    const d = new Date(week.monday);
+                    d.setDate(week.monday.getDate() + i);
+
+                    const dy = d.getFullYear();
+                    const dm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    const dateKey = `${dy}-${dm}-${dd}`;
+
+                    const dateSubmissions = dbState.submissions[dateKey] || {};
+                    Object.values(dateSubmissions).forEach(userSub => {
+                        if (userSub && userSub.entries) {
+                            const hasAnyNang = Object.values(userSub.entries).some(e => e.nang !== undefined);
+                            if (hasAnyNang) {
+                                hasData = true;
+                                Object.values(userSub.entries).forEach(ent => {
+                                    if (ent && !ent.isHolidayFalavni) {
+                                        weekNang += ent.nang || 0;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+
+                if (hasData) {
+                    totalNang += weekNang;
+                    csvContent += `"અઠવાડિયું ${index + 1} (${week.displayRange})",${weekNang}\n`;
+                } else {
+                    csvContent += `"અઠવાડિયું ${index + 1} (${week.displayRange})",-\n`;
+                }
+            });
+
+            csvContent += `Grand Total,${totalNang}\n`;
+
+            const csvData = "\uFEFF" + csvContent;
+            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `falavni_monthly_report_${monthVal}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
     </script>
 </body>
 

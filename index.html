@@ -6897,6 +6897,11 @@
                 return;
             }
 
+            if (u1Russian === 0 && u1Table === 0 && u2Russian === 0 && u2Table === 0) {
+                await customAlert("બધા વિભાગોની કિંમત ૦ (શૂન્ય) હોય ત્યારે અપ્રૂવલ શક્ય નથી. કૃપા કરીને સાચી કિંમત દાખલ કરો.");
+                return;
+            }
+
             if (!dbState.pd_rt_submissions) dbState.pd_rt_submissions = {};
             if (!dbState.pd_rt_submissions[dateVal]) dbState.pd_rt_submissions[dateVal] = {};
 

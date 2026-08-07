@@ -1070,7 +1070,7 @@
                 <div class="error-message" id="login-error">ખોટો પાસવર્ડ! કૃપા કરીને ફરીથી પ્રયાસ કરો.</div>
             </form>
             <div style="text-align: center; margin-top: 16px; font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">
-                વર્ઝન: 5.2 (Cloud Wiped)
+                વર્ઝન: 5.3 (Cloud Protected)
             </div>
         </div>
 
@@ -2481,14 +2481,30 @@
                 }
             }
 
+            // PROTECTED MERGE: If server data is empty/wiped but local has real data, preserve local data
+            const serverHasUsers = server.users && server.users.length > 2; // More than just default master+subadmin
+            const serverHasKhatas = server.khatas && server.khatas.length > 0;
+            const localHasUsers = local.users && local.users.length > 2;
+            const localHasKhatas = local.khatas && local.khatas.length > 0;
+
             const merged = {
-                users: JSON.parse(JSON.stringify(server.users || [])),
-                khatas: JSON.parse(JSON.stringify(server.khatas || [])),
+                users: JSON.parse(JSON.stringify(
+                    (serverHasUsers ? server.users : (localHasUsers ? local.users : server.users)) || []
+                )),
+                khatas: JSON.parse(JSON.stringify(
+                    (serverHasKhatas ? server.khatas : (localHasKhatas ? local.khatas : server.khatas)) || []
+                )),
                 submissions: JSON.parse(JSON.stringify(server.submissions || {})),
                 pd_rt_submissions: JSON.parse(JSON.stringify(server.pd_rt_submissions || {}))
             };
 
-            // We no longer merge users and khatas from local storage back to Firebase to avoid duplicates and resurrection of deleted items. The Firebase server is the absolute source of truth.
+            // If server was wiped (empty khatas/users) but local has data, log a warning
+            if (!serverHasKhatas && localHasKhatas) {
+                console.warn('⚠️ SERVER WIPE DETECTED: Server khatas empty, restoring from local backup!');
+            }
+            if (!serverHasUsers && localHasUsers) {
+                console.warn('⚠️ SERVER WIPE DETECTED: Server users empty, restoring from local backup!');
+            }
 
             // Merge Submissions (date -> userId -> submissionData)
             if (local.submissions && typeof local.submissions === 'object') {
@@ -2511,21 +2527,19 @@
                         if (!serverSub) {
                             // If the server doesn't have this submission:
                             
-                            // 1. If this device belongs to the Admin, never restore any local submissions
-                            if (deviceUserRole === 'master') {
-                                delete localDateSubs[userId];
-                                delete serverDateSubs[userId];
-                                return;
-                            }
+                            // PROTECTED: Always restore local submissions to server if server is missing them.
+                            // This prevents data loss when Firebase gets wiped or corrupted.
+                            // Only skip if a DIFFERENT user's device is trying to restore someone else's data
+                            // AND the server clearly has other data (not wiped).
+                            const serverLooksWiped = !serverHasKhatas && localHasKhatas;
                             
-                            // 2. If it belongs to a different user, this device has no right to restore it
-                            if (deviceUserId && userId !== deviceUserId) {
-                                delete localDateSubs[userId];
-                                delete serverDateSubs[userId];
+                            if (!serverLooksWiped && deviceUserId && userId !== deviceUserId) {
+                                // Server is healthy and this isn't our submission - skip it
                                 return;
                             }
 
-                            // If missing from server, restore it from local to prevent accidental database overrides/losses!
+                            // Restore from local to prevent accidental database overrides/losses!
+                            console.log(`🔄 Restoring submission: date=${dateKey}, user=${userId}`);
                             serverDateSubs[userId] = localSub;
                             localSub.synced = false;
                         } else {
@@ -2783,13 +2797,36 @@
                             });
                         }
                     } else {
-                        // If Firebase database is empty, check if we have a locally stored imported backup configuration
-                        if (localData && localData.users && localData.users.length > 1) {
+                        // PROTECTED: Firebase database is empty/wiped - try to restore from local data
+                        // Check local data first, then backup, then default state
+                        if (localData && localData.khatas && localData.khatas.length > 0) {
+                            console.warn('⚠️ Firebase empty! Restoring FULL local data (has khatas).');
+                            dbState = localData;
+                            await saveFullDBToFirebase();
+                        } else if (localData && localData.users && localData.users.length > 1) {
+                            console.warn('⚠️ Firebase empty! Restoring local data (has users).');
                             dbState = localData;
                             await saveFullDBToFirebase();
                         } else {
-                            dbState = JSON.parse(JSON.stringify(defaultState));
-                            await saveFullDBToFirebase();
+                            // Try backup key as last resort
+                            let backupData = null;
+                            try {
+                                const backupStored = localStorage.getItem('diamond_production_db_backup');
+                                if (backupStored) {
+                                    const bytes = CryptoJS.AES.decrypt(backupStored, CRYPTO_KEY);
+                                    const decStr = bytes.toString(CryptoJS.enc.Utf8);
+                                    backupData = JSON.parse(decStr);
+                                }
+                            } catch (bErr) { console.warn('Backup restore error:', bErr); }
+
+                            if (backupData && backupData.khatas && backupData.khatas.length > 0) {
+                                console.warn('⚠️ Firebase empty! Restoring from BACKUP data.');
+                                dbState = backupData;
+                                await saveFullDBToFirebase();
+                            } else {
+                                dbState = JSON.parse(JSON.stringify(defaultState));
+                                await saveFullDBToFirebase();
+                            }
                         }
                     }
                     setLocalDB(dbState);
@@ -2805,6 +2842,15 @@
 
         async function saveFullDBToFirebase() {
             try {
+                // AUTO-BACKUP: Save current state as backup before overwriting Firebase
+                // This ensures we can always recover data even if Firebase write goes wrong
+                try {
+                    const backupStr = JSON.stringify(dbState);
+                    const backupEncrypted = CryptoJS.AES.encrypt(backupStr, CRYPTO_KEY).toString();
+                    localStorage.setItem('diamond_production_db_backup', backupEncrypted);
+                } catch (backupErr) {
+                    console.warn('Backup save warning:', backupErr);
+                }
                 const encryptedPayload = encryptPayload(dbState);
                 const response = await fetch(FIREBASE_URL + '/.json', {
                     method: 'PUT',

@@ -812,23 +812,62 @@
         }
 
         /* Scoped Classic Corporate ERP Theme Styles for Admin Panel */
-        #master-panel {
-            background: #eef2f6 !important;
-            /* warm gray background for whole workspace */
-            padding: 16px !important;
+        #master-panel.master-layout-grid {
+            background: #eef2f6 !important; /* warm gray background for whole workspace */
+            padding: 12px !important;
             border-radius: var(--radius-lg);
             border: 1px solid #cbd5e1 !important;
+            height: calc(100vh - 84px) !important; /* Lock height to viewport minus header and margin */
+            align-items: stretch !important;
+            overflow: hidden !important;
+            margin-top: 6px !important;
+        }
+
+        #master-panel .sidebar-wrapper {
+            height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 12px !important;
+            overflow-y: auto !important; /* allow sidebar scrolling if options exceed height */
         }
 
         #master-panel .content-wrapper.glass-panel {
-            background: #f8fafc !important;
-            /* solid clean white/gray background */
+            background: #f8fafc !important; /* solid clean white/gray background */
             backdrop-filter: none !important;
             -webkit-backdrop-filter: none !important;
             border: 1px solid #cbd5e1 !important;
             border-radius: var(--radius-md) !important;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-            padding: 20px !important;
+            padding: 16px !important;
+            height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important; /* contain all internal tabs and grids */
+            min-height: 0 !important;
+        }
+
+        #master-panel .master-tab-pane {
+            flex: 1 !important;
+            flex-direction: column !important;
+            min-height: 0 !important;
+            height: 100% !important;
+            overflow: hidden !important;
+        }
+
+        #master-panel .master-tab-pane .table-responsive {
+            flex: 1 !important;
+            overflow-y: auto !important;
+            min-height: 0 !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 4px !important;
+            background: #ffffff !important;
+            margin-top: 6px !important;
+        }
+
+        #master-panel .custom-table thead th {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 10 !important;
         }
 
         #master-panel .top-sub-nav-bar {
@@ -6610,7 +6649,7 @@
             // Show selected pane
             const targetPane = document.getElementById(paneId);
             if (targetPane) {
-                targetPane.style.display = 'block';
+                targetPane.style.display = 'flex';
             }
 
             // Load data for selected pane

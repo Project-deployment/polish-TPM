@@ -6936,9 +6936,11 @@
                 approvedBy: currentUser.username,
                 approvedAt: new Date().toISOString()
             });
+            // Synchronize the main database state to Firebase
+            const successFull = await saveFullDBToFirebase();
             showGlobalLoader(false);
 
-            if (success1 && success2 && successMeta) {
+            if (successFull) {
                 dbState.pd_rt_submissions[dateVal]['pd_rt_user1'].synced = true;
                 dbState.pd_rt_submissions[dateVal]['pd_rt_user2'].synced = true;
                 setLocalDB(dbState);

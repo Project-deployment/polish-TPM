@@ -80,7 +80,7 @@
             background: rgba(30, 41, 59, 0.95);
             backdrop-filter: blur(10px);
             color: #ffffff;
-            padding: 8px 20px;
+            padding: 4px 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -165,12 +165,12 @@
         .app-container {
             max-width: 1400px;
             width: 100%;
-            margin: 12px auto;
-            padding: 0 20px 20px 20px;
+            margin: 4px auto;
+            padding: 0 10px 10px 10px;
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 8px;
             overflow-y: auto;
         }
 
@@ -812,62 +812,23 @@
         }
 
         /* Scoped Classic Corporate ERP Theme Styles for Admin Panel */
-        #master-panel.master-layout-grid {
-            background: #eef2f6 !important; /* warm gray background for whole workspace */
-            padding: 12px !important;
+        #master-panel {
+            background: #eef2f6 !important;
+            /* warm gray background for whole workspace */
+            padding: 6px !important;
             border-radius: var(--radius-lg);
             border: 1px solid #cbd5e1 !important;
-            height: calc(100vh - 84px) !important; /* Lock height to viewport minus header and margin */
-            align-items: stretch !important;
-            overflow: hidden !important;
-            margin-top: 6px !important;
-        }
-
-        #master-panel .sidebar-wrapper {
-            height: 100% !important;
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 12px !important;
-            overflow-y: auto !important; /* allow sidebar scrolling if options exceed height */
         }
 
         #master-panel .content-wrapper.glass-panel {
-            background: #f8fafc !important; /* solid clean white/gray background */
+            background: #f8fafc !important;
+            /* solid clean white/gray background */
             backdrop-filter: none !important;
             -webkit-backdrop-filter: none !important;
             border: 1px solid #cbd5e1 !important;
             border-radius: var(--radius-md) !important;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-            padding: 16px !important;
-            height: 100% !important;
-            display: flex !important;
-            flex-direction: column !important;
-            overflow: hidden !important; /* contain all internal tabs and grids */
-            min-height: 0 !important;
-        }
-
-        #master-panel .master-tab-pane {
-            flex: 1 !important;
-            flex-direction: column !important;
-            min-height: 0 !important;
-            height: 100% !important;
-            overflow: hidden !important;
-        }
-
-        #master-panel .master-tab-pane .table-responsive {
-            flex: 1 !important;
-            overflow-y: auto !important;
-            min-height: 0 !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 4px !important;
-            background: #ffffff !important;
-            margin-top: 6px !important;
-        }
-
-        #master-panel .custom-table thead th {
-            position: sticky !important;
-            top: 0 !important;
-            z-index: 10 !important;
+            padding: 10px !important;
         }
 
         #master-panel .top-sub-nav-bar {
@@ -6649,7 +6610,7 @@
             // Show selected pane
             const targetPane = document.getElementById(paneId);
             if (targetPane) {
-                targetPane.style.display = 'flex';
+                targetPane.style.display = 'block';
             }
 
             // Load data for selected pane

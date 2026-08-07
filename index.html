@@ -285,11 +285,15 @@
             margin-bottom: 6px;
             overflow-x: auto;
             white-space: nowrap;
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
         }
+
         .tab-nav::-webkit-scrollbar {
-            display: none;             /* Chrome, Safari, Opera */
+            display: none;
+            /* Chrome, Safari, Opera */
         }
 
         .tab-btn {
@@ -709,6 +713,306 @@
             }
         }
 
+        /* Restructured Master View Sidebar & Layout Styles */
+        .master-layout-grid {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            align-items: flex-start;
+            margin-top: 6px;
+        }
+
+        .sidebar-wrapper {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #ffffff;
+            padding: 14px 16px;
+            border-radius: var(--radius-lg);
+            font-weight: 800;
+            text-align: center;
+            box-shadow: var(--shadow-subtle);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .main-tab-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar-main-btn {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: left;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .sidebar-main-btn:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            transform: translateX(4px);
+        }
+
+        .sidebar-main-btn.active {
+            background: var(--accent);
+            color: #ffffff;
+            border-color: var(--accent);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .content-wrapper {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .top-sub-nav-bar {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        @media print {
+            .master-layout-grid {
+                display: block !important;
+            }
+
+            .content-wrapper {
+                padding: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
+                background: none !important;
+                backdrop-filter: none !important;
+            }
+        }
+
+        /* Scoped Classic Corporate ERP Theme Styles for Admin Panel */
+        #master-panel {
+            background: #eef2f6 !important;
+            /* warm gray background for whole workspace */
+            padding: 16px !important;
+            border-radius: var(--radius-lg);
+            border: 1px solid #cbd5e1 !important;
+        }
+
+        #master-panel .content-wrapper.glass-panel {
+            background: #f8fafc !important;
+            /* solid clean white/gray background */
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: var(--radius-md) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+            padding: 20px !important;
+        }
+
+        #master-panel .top-sub-nav-bar {
+            background: #e2e8f0 !important;
+            /* desktop tab-strip background */
+            border: 1px solid #cbd5e1 !important;
+            border-bottom: none !important;
+            border-radius: 6px 6px 0 0 !important;
+            padding: 6px 12px 0 12px !important;
+            margin-bottom: 0 !important;
+            display: flex;
+            gap: 2px !important;
+        }
+
+        #master-panel .top-sub-nav-bar .tab-btn {
+            background: #f1f5f9 !important;
+            /* inactive tab */
+            border: 1px solid #cbd5e1 !important;
+            border-bottom: none !important;
+            border-radius: 6px 6px 0 0 !important;
+            color: #475569 !important;
+            padding: 8px 16px !important;
+            margin-bottom: -1px !important;
+            font-size: 0.82rem !important;
+            font-weight: 700 !important;
+            transition: none !important;
+            box-shadow: none !important;
+            border-collapse: collapse;
+        }
+
+        #master-panel .top-sub-nav-bar .tab-btn:hover {
+            background: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+
+        #master-panel .top-sub-nav-bar .tab-btn.active {
+            background: #f8fafc !important;
+            /* active tab merges with panel body */
+            border-color: #cbd5e1 !important;
+            border-bottom: 2px solid #f8fafc !important;
+            /* overlay bottom border */
+            color: #0f2a54 !important;
+            z-index: 2;
+        }
+
+        #master-panel .top-sub-nav-bar .date-picker-wrapper {
+            display: none !important;
+            align-items: center !important;
+            gap: 6px !important;
+            margin-bottom: 0 !important;
+        }
+
+        #master-panel .top-sub-nav-bar .date-picker-wrapper.active {
+            display: flex !important;
+        }
+
+        #master-panel .top-sub-nav-bar .date-picker-wrapper label {
+            font-size: 0.8rem !important;
+            font-weight: 700 !important;
+            color: #475569 !important;
+            margin-bottom: 0 !important;
+            white-space: nowrap !important;
+        }
+
+        #master-panel .top-sub-nav-bar .date-picker-wrapper input {
+            height: 28px !important;
+            padding: 2px 6px !important;
+            font-size: 0.8rem !important;
+            font-weight: 700 !important;
+            border-radius: 4px !important;
+            border: 1px solid #cbd5e1 !important;
+            background: #ffffff !important;
+        }
+
+        #master-panel .sidebar-main-btn {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 4px !important;
+            font-size: 0.82rem !important;
+            padding: 10px 12px !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+            color: #1e293b !important;
+            transition: none !important;
+        }
+
+        #master-panel .sidebar-main-btn:hover {
+            background: #f1f5f9 !important;
+            border-color: #94a3b8 !important;
+            transform: none !important;
+        }
+
+        #master-panel .sidebar-main-btn.active {
+            background: #0f2a54 !important;
+            /* dark corporate blue */
+            color: #ffffff !important;
+            border-color: #0f2a54 !important;
+            box-shadow: 0 2px 4px rgba(15, 42, 84, 0.1) !important;
+        }
+
+        #master-panel .custom-table {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-collapse: collapse !important;
+            width: 100% !important;
+        }
+
+        #master-panel .custom-table th {
+            background: #0f2a54 !important;
+            /* classic blue spreadsheet header */
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            font-size: 0.85rem !important;
+            padding: 5px 6px !important;
+            border: 1px solid #cbd5e1 !important;
+            text-align: center !important;
+            text-transform: none !important;
+            letter-spacing: 0.3px;
+        }
+
+        #master-panel .custom-table td {
+            background: #ffffff !important;
+            color: #1e293b !important;
+            font-size: 0.85rem !important;
+            padding: 4px 6px !important;
+            border: 1px solid #cbd5e1 !important;
+            font-weight: 600 !important;
+            line-height: 1.15 !important;
+        }
+
+        #master-panel .custom-table tbody tr:nth-child(even) td {
+            background: #f8fafc !important;
+            /* light zebra row striping */
+        }
+
+        #master-panel .custom-table tfoot tr.totals-row td {
+            background: #cbd5e1 !important;
+            /* slate footer totals bar */
+            color: #0f2a54 !important;
+            font-weight: 800 !important;
+            font-size: 0.9rem !important;
+            border: 1px solid #94a3b8 !important;
+        }
+
+        #master-panel .custom-table tr.average-row td,
+        #master-panel .custom-table tr.average-row td input {
+            color: #dc2626 !important; /* prominent crimson red */
+            font-size: 0.95rem !important; /* one size larger than normal 0.85rem cells */
+            font-weight: 500 !important;
+        }
+
+        #master-panel .custom-table tr.average-row td input {
+            border-color: #fca5a5 !important; /* light red border for the input */
+            background: #fff5f5 !important; /* very soft red tint for input bg */
+            text-align: center;
+        }
+
+        #master-panel .form-control {
+            border-radius: 4px !important;
+            border: 1px solid #cbd5e1 !important;
+            padding: 6px 10px !important;
+            font-size: 0.85rem !important;
+            background: #ffffff !important;
+        }
+
+        #master-panel .form-control:focus {
+            border-color: #0f2a54 !important;
+            box-shadow: 0 0 0 2px rgba(15, 42, 84, 0.15) !important;
+        }
+
+        #master-panel .btn-primary {
+            background: #0f2a54 !important;
+            border-color: #0f2a54 !important;
+            border-radius: 4px !important;
+            padding: 8px 16px !important;
+            font-size: 0.85rem !important;
+            font-weight: 700 !important;
+            box-shadow: none !important;
+        }
+
+        #master-panel .btn-primary:hover {
+            background: #1e3a8a !important;
+            border-color: #1e3a8a !important;
+        }
+
         /* Modal styling */
         .modal-overlay {
             position: fixed;
@@ -1038,9 +1342,14 @@
              1. LOGIN PANEL SCREEN
              ============================================== -->
         <div id="login-panel" class="login-wrapper glass-panel">
-            <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 16px;">
-                <button type="button" class="tab-btn active" id="login-tab-khata" onclick="switchLoginTab('khata')" style="flex: 1; border: none; background: none; font-family: inherit; font-size: 1rem; font-weight: 700; color: var(--text-main); cursor: pointer; padding: 6px; border-bottom: 3px solid var(--accent); transition: var(--transition);">ખાતા (KHATA)</button>
-                <button type="button" class="tab-btn" id="login-tab-pdrt" onclick="switchLoginTab('pdrt')" style="flex: 1; border: none; background: none; font-family: inherit; font-size: 1rem; font-weight: 700; color: var(--text-muted); cursor: pointer; padding: 6px; transition: var(--transition);">PD RT</button>
+            <div
+                style="display: flex; gap: 8px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 16px;">
+                <button type="button" class="tab-btn active" id="login-tab-khata" onclick="switchLoginTab('khata')"
+                    style="flex: 1; border: none; background: none; font-family: inherit; font-size: 1rem; font-weight: 700; color: var(--text-main); cursor: pointer; padding: 6px; border-bottom: 3px solid var(--accent); transition: var(--transition);">ખાતા
+                    (KHATA)</button>
+                <button type="button" class="tab-btn" id="login-tab-pdrt" onclick="switchLoginTab('pdrt')"
+                    style="flex: 1; border: none; background: none; font-family: inherit; font-size: 1rem; font-weight: 700; color: var(--text-muted); cursor: pointer; padding: 6px; transition: var(--transition);">PD
+                    RT</button>
             </div>
             <div class="login-header">
                 <h2>લૉગિન</h2>
@@ -1055,7 +1364,8 @@
                 </div>
                 <div class="form-group" id="password-group">
                     <label for="login-password">પાસવર્ડ</label>
-                    <input type="password" id="login-password" class="form-control" placeholder="••••" autocomplete="new-password">
+                    <input type="password" id="login-password" class="form-control" placeholder="••••"
+                        autocomplete="new-password">
                 </div>
                 <div class="form-group"
                     style="flex-direction: row; align-items: center; gap: 8px; margin-bottom: 20px;">
@@ -1069,7 +1379,8 @@
                 </button>
                 <div class="error-message" id="login-error">ખોટો પાસવર્ડ! કૃપા કરીને ફરીથી પ્રયાસ કરો.</div>
             </form>
-            <div style="text-align: center; margin-top: 16px; font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">
+            <div
+                style="text-align: center; margin-top: 16px; font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">
                 વર્ઝન: 5.3 (Cloud Protected)
             </div>
         </div>
@@ -1141,9 +1452,12 @@
                         </tbody>
                         <tfoot>
                             <tr class="totals-row">
-                                <td id="user-entry-khata-count" style="font-weight: 800; color: var(--accent); text-align: left;" data-label="કુલ ખાતા">કુલ ખાતા: 0</td>
+                                <td id="user-entry-khata-count"
+                                    style="font-weight: 800; color: var(--accent); text-align: left;"
+                                    data-label="કુલ ખાતા">કુલ ખાતા: 0</td>
                                 <td class="hide-on-mobile"></td>
-                                <td class="hide-on-mobile" style="text-align: right; color: var(--primary); font-weight: 800;">કુલ સરવાળો:</td>
+                                <td class="hide-on-mobile"
+                                    style="text-align: right; color: var(--primary); font-weight: 800;">કુલ સરવાળો:</td>
                                 <td class="total-value" data-label="તળિયા કુલ" id="user-total-taliya">0</td>
                                 <td class="total-value" data-label="પેલ કુલ" id="user-total-pel">0</td>
                                 <td class="total-value" data-label="મથાળા કુલ" id="user-total-mathala">0</td>
@@ -1245,9 +1559,12 @@
                         </tbody>
                         <tfoot>
                             <tr class="totals-row">
-                                <td id="user-falavni-khata-count" style="font-weight: 800; color: var(--accent); text-align: left;" data-label="કુલ ખાતા">કુલ ખાતા: 0</td>
+                                <td id="user-falavni-khata-count"
+                                    style="font-weight: 800; color: var(--accent); text-align: left;"
+                                    data-label="કુલ ખાતા">કુલ ખાતા: 0</td>
                                 <td class="hide-on-mobile"></td>
-                                <td class="hide-on-mobile" style="text-align: right; color: var(--primary); font-weight: 800;">કુલ સરવાળો:</td>
+                                <td class="hide-on-mobile"
+                                    style="text-align: right; color: var(--primary); font-weight: 800;">કુલ સરવાળો:</td>
                                 <td class="total-value" data-label="નંગ કુલ" id="user-total-nang">0</td>
                             </tr>
                         </tfoot>
@@ -1290,7 +1607,8 @@
                 <div id="print-area-user-weekly-falavni">
                     <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
                         <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
-                        <h3 id="print-user-weekly-falavni-heading" style="color: var(--text-muted); margin-top: 4px;">વીકલી
+                        <h3 id="print-user-weekly-falavni-heading" style="color: var(--text-muted); margin-top: 4px;">
+                            વીકલી
                             ફાળવણી રિપોર્ટ: -</h3>
                     </div>
 
@@ -1321,7 +1639,8 @@
         <!-- ==============================================
              2.8 PD RT USER VIEW PANEL
              ============================================== -->
-        <div id="pd-rt-user-panel" class="glass-panel" style="display: none; max-width: 500px; margin: auto; padding: 24px; animation: fadeIn 0.4s ease-out;">
+        <div id="pd-rt-user-panel" class="glass-panel"
+            style="display: none; max-width: 500px; margin: auto; padding: 24px; animation: fadeIn 0.4s ease-out;">
             <div class="login-header" style="text-align: center; margin-bottom: 20px;">
                 <h2 id="pd-rt-user-title">રશિયન ટેબલ એન્ટ્રી</h2>
                 <p>દૈનિક નંગ રિપોર્ટ સબમિટ કરો</p>
@@ -1332,15 +1651,21 @@
             </div>
             <div class="form-group" style="margin-bottom: 16px;">
                 <label for="pd-rt-russian-pcs">રશિયન નંગ (Russian Pcs)</label>
-                <input type="number" id="pd-rt-russian-pcs" class="form-control" min="0" value="0" onfocus="if(this.value === '0') this.value='';" onblur="if(this.value === '') this.value='0';" oninput="if(parseInt(this.value) < 0) this.value = 0;">
+                <input type="number" id="pd-rt-russian-pcs" class="form-control" min="0" value="0"
+                    onfocus="if(this.value === '0') this.value='';" onblur="if(this.value === '') this.value='0';"
+                    oninput="if(parseInt(this.value) < 0) this.value = 0;">
             </div>
             <div class="form-group" style="margin-bottom: 16px;">
                 <label for="pd-rt-table-pcs">ટેબલ નંગ (Table Pcs)</label>
-                <input type="number" id="pd-rt-table-pcs" class="form-control" min="0" value="0" onfocus="if(this.value === '0') this.value='';" onblur="if(this.value === '') this.value='0';" oninput="if(parseInt(this.value) < 0) this.value = 0;">
+                <input type="number" id="pd-rt-table-pcs" class="form-control" min="0" value="0"
+                    onfocus="if(this.value === '0') this.value='';" onblur="if(this.value === '') this.value='0';"
+                    oninput="if(parseInt(this.value) < 0) this.value = 0;">
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
-                <span id="pd-rt-status-text" style="font-weight: 700; color: var(--danger);">એન્ટ્રી સબમિટ બાકી છે</span>
-                <button id="btn-submit-pd-rt" class="btn-primary" onclick="submitPDRTEntry()" style="width: auto; padding: 10px 24px;">સબમિટ કરો</button>
+                <span id="pd-rt-status-text" style="font-weight: 700; color: var(--danger);">એન્ટ્રી સબમિટ બાકી
+                    છે</span>
+                <button id="btn-submit-pd-rt" class="btn-primary" onclick="submitPDRTEntry()"
+                    style="width: auto; padding: 10px 24px;">સબમિટ કરો</button>
             </div>
             <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--border-color);">
             <div style="text-align: center; margin-bottom: 16px;">
@@ -1368,14 +1693,16 @@
         <!-- ==============================================
              2.9 PD RT APPROVER VIEW PANEL
              ============================================== -->
-        <div id="pd-rt-approver-panel" class="glass-panel" style="display: none; max-width: 650px; margin: auto; padding: 24px; animation: fadeIn 0.4s ease-out;">
+        <div id="pd-rt-approver-panel" class="glass-panel"
+            style="display: none; max-width: 650px; margin: auto; padding: 24px; animation: fadeIn 0.4s ease-out;">
             <div class="login-header" style="text-align: center; margin-bottom: 20px;">
                 <h2>સુપરવાઇઝર અપ્રૂવલ ડેશબોર્ડ</h2>
                 <p>દૈનિક ડેટા રિવ્યુ અને અપ્રૂવલ</p>
             </div>
             <div class="form-group" style="margin-bottom: 20px; flex-direction: row; align-items: center; gap: 10px;">
                 <label for="pd-rt-approve-date">રિપોર્ટ તારીખ:</label>
-                <input type="date" id="pd-rt-approve-date" class="form-control" style="width: auto;" onchange="loadPDRTApprovalDashboard()">
+                <input type="date" id="pd-rt-approve-date" class="form-control" style="width: auto;"
+                    onchange="loadPDRTApprovalDashboard()">
             </div>
 
             <div class="table-responsive" style="margin-bottom: 20px;">
@@ -1392,14 +1719,22 @@
                         <tr>
                             <td style="font-weight: 700;" id="pd-rt-user1-display-name">રશિયન ટેબલ</td>
                             <td id="pd-rt-user1-status">-</td>
-                            <td><input type="number" id="pd-rt-review-u1-russian" class="form-control" min="0" style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()"></td>
-                            <td><input type="number" id="pd-rt-review-u1-table" class="form-control" min="0" style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()"></td>
+                            <td><input type="number" id="pd-rt-review-u1-russian" class="form-control" min="0"
+                                    style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()">
+                            </td>
+                            <td><input type="number" id="pd-rt-review-u1-table" class="form-control" min="0"
+                                    style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()">
+                            </td>
                         </tr>
                         <tr>
                             <td style="font-weight: 700;" id="pd-rt-user2-display-name">વિભાગ ૨</td>
                             <td id="pd-rt-user2-status">-</td>
-                            <td><input type="number" id="pd-rt-review-u2-russian" class="form-control" min="0" style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()"></td>
-                            <td><input type="number" id="pd-rt-review-u2-table" class="form-control" min="0" style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()"></td>
+                            <td><input type="number" id="pd-rt-review-u2-russian" class="form-control" min="0"
+                                    style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()">
+                            </td>
+                            <td><input type="number" id="pd-rt-review-u2-table" class="form-control" min="0"
+                                    style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()">
+                            </td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -1414,798 +1749,886 @@
 
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
                 <span id="pd-rt-approval-status" style="font-weight: 700; color: var(--danger);">બાકી છે</span>
-                <button id="btn-approve-pd-rt" class="btn-primary" onclick="approvePDRTData()" style="width: auto; padding: 12px 30px;">અપ્રૂવ કરો (Approve & Send)</button>
+                <button id="btn-approve-pd-rt" class="btn-primary" onclick="approvePDRTData()"
+                    style="width: auto; padding: 12px 30px;">અપ્રૂવ કરો (Approve & Send)</button>
             </div>
         </div>
 
         <!-- ==============================================
              3. MASTER VIEW PANEL
              ============================================== -->
-        <div id="master-panel" class="glass-panel" style="display: none; padding: 12px 16px;">
-            <!-- Main navigation tabs (5 main tabs) -->
-            <div class="tab-nav non-printable" style="border-bottom: 1px solid var(--border-color); margin-bottom: 6px; gap: 8px;">
-                <button type="button" class="tab-btn active" id="main-tab-khata" onclick="switchMasterMainTab('khata')">📁 ખાતા (KHATA)</button>
-                <button type="button" class="tab-btn" id="main-tab-falavni" onclick="switchMasterMainTab('falavni')">💎 ફાળવણી</button>
-                <button type="button" class="tab-btn" id="main-tab-pdrt" onclick="switchMasterMainTab('pdrt')">📊 PD RT</button>
-                <button type="button" class="tab-btn" id="main-tab-master" onclick="switchMasterMainTab('master')">⚙️ માસ્ટર</button>
-                <button type="button" class="tab-btn" id="main-tab-setting" onclick="switchMasterMainTab('setting')">🔧 સેટિંગ</button>
+        <div id="master-panel" class="master-layout-grid" style="display: none;">
+            <!-- Left Sidebar for Main Categories -->
+            <div class="sidebar-wrapper non-printable">
+                <div class="main-tab-list">
+                    <button type="button" class="sidebar-main-btn active" id="main-tab-khata"
+                        onclick="switchMasterMainTab('khata')">📁 ખાતા (KHATA)</button>
+                    <button type="button" class="sidebar-main-btn" id="main-tab-falavni"
+                        onclick="switchMasterMainTab('falavni')">💎 ફાળવણી</button>
+                    <button type="button" class="sidebar-main-btn" id="main-tab-pdrt"
+                        onclick="switchMasterMainTab('pdrt')">📊 PD RT</button>
+                    <button type="button" class="sidebar-main-btn" id="main-tab-master"
+                        onclick="switchMasterMainTab('master')">⚙️ માસ્ટર</button>
+                    <button type="button" class="sidebar-main-btn" id="main-tab-setting"
+                        onclick="switchMasterMainTab('setting')">🔧 સેટિંગ</button>
+                </div>
             </div>
 
-            <!-- Sub-tabs for KHATA -->
-            <div id="sub-nav-khata" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 8px; border-bottom: none; gap: 4px;">
-                <button type="button" class="tab-btn active btn-sm" onclick="switchMasterSubTab('khata', 'mtab-dashboard', this)">દેશબોર્ડ</button>
-                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('khata', 'mtab-reports', this)">વીકલી રિપોર્ટ</button>
-                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('khata', 'mtab-monthly-reports', this)">મંથલી રિપોર્ટ</button>
-            </div>
+            <!-- Right Content Area + Top Horizontal Sub-Tabs -->
+            <div class="content-wrapper glass-panel" style="padding: 20px;">
+                <!-- Top sub-tabs container -->
+                <div class="top-sub-nav-bar non-printable"
+                    style="margin-bottom: 12px; padding: 4px 10px; border-radius: var(--radius-md); border-bottom: 2px solid var(--border-color); display: flex; align-items: center;">
+                    <!-- Sub-tabs for KHATA -->
+                    <div id="sub-nav-khata" class="sub-tab-nav tab-nav"
+                        style="margin-bottom: 0; border-bottom: none; gap: 8px; display: flex; width: 100%; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 4px;">
+                            <button type="button" class="tab-btn active btn-sm"
+                                onclick="switchMasterSubTab('khata', 'mtab-dashboard', this)">ડેશબોર્ડ</button>
+                            <button type="button" class="tab-btn btn-sm"
+                                onclick="switchMasterSubTab('khata', 'mtab-reports', this)">વીકલી રિપોર્ટ</button>
+                            <button type="button" class="tab-btn btn-sm"
+                                onclick="switchMasterSubTab('khata', 'mtab-monthly-reports', this)">મંથલી રિપોર્ટ</button>
+                        </div>
+                        <div class="top-bar-date-controls" style="display: flex; align-items: center; gap: 8px;">
+                            <div id="wrapper-master-dashboard-date" class="date-picker-wrapper active"
+                                style="display: flex; align-items: center; gap: 6px;">
+                                <label for="master-dashboard-date"
+                                    style="font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0;">રિપોર્ટ તારીખ:</label>
+                                <input type="date" id="master-dashboard-date" class="form-control"
+                                    style="width: auto; height: 28px; padding: 2px 6px; font-size: 0.8rem;"
+                                    onchange="loadMasterDashboard()">
+                            </div>
+                            <div id="wrapper-master-report-date" class="date-picker-wrapper"
+                                style="display: none; align-items: center; gap: 6px;">
+                                <label for="master-report-date"
+                                    style="font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0;">અઠવાડિયું પસંદ કરો:</label>
+                                <input type="date" id="master-report-date" class="form-control"
+                                    style="width: auto; height: 28px; padding: 2px 6px; font-size: 0.8rem; margin-right: 4px;"
+                                    onchange="loadKhataWiseReport()">
+                                <button type="button" class="btn-primary" onclick="window.print()"
+                                    style="background: var(--primary-light); box-shadow: none; width: auto; padding: 4px 10px; font-size: 0.75rem; white-space: nowrap; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">Print PDF</button>
+                                <button type="button" class="btn-primary" onclick="exportReportToExcel()"
+                                    style="width: auto; padding: 4px 10px; font-size: 0.75rem; white-space: nowrap; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">Export Excel</button>
+                            </div>
+                            <div id="wrapper-master-monthly-report-date" class="date-picker-wrapper"
+                                style="display: none; align-items: center; gap: 6px;">
+                                <label for="master-monthly-report-date"
+                                    style="font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0;">મહિનો પસંદ કરો:</label>
+                                <input type="month" id="master-monthly-report-date" class="form-control"
+                                    style="width: auto; height: 28px; padding: 2px 6px; font-size: 0.8rem; margin-right: 4px;"
+                                    onchange="loadMonthlyReport()">
+                                <button type="button" class="btn-primary" onclick="window.print()"
+                                    style="background: var(--primary-light); box-shadow: none; width: auto; padding: 4px 10px; font-size: 0.75rem; white-space: nowrap; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">Print PDF</button>
+                                <button type="button" class="btn-primary" onclick="exportMonthlyReportToExcel()"
+                                    style="width: auto; padding: 4px 10px; font-size: 0.75rem; white-space: nowrap; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">Export Excel</button>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Sub-tabs for Falavni -->
-            <div id="sub-nav-falavni" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 8px; border-bottom: none; gap: 4px; display: none;">
-                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('falavni', 'mtab-falavni-dashboard', this)">ફાળવણી ડેશબોર્ડ</button>
-                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('falavni', 'mtab-falavni-reports', this)">વીકલી ફાળવણી</button>
-                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('falavni', 'mtab-falavni-monthly-reports', this)">મંથલી ફાળવણી</button>
-            </div>
+                    <!-- Sub-tabs for Falavni -->
+                    <div id="sub-nav-falavni" class="sub-tab-nav tab-nav"
+                        style="margin-bottom: 0; border-bottom: none; gap: 8px; display: none; width: 100%; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 4px;">
+                            <button type="button" class="tab-btn btn-sm"
+                                onclick="switchMasterSubTab('falavni', 'mtab-falavni-dashboard', this)">ફાળવણી ડેશબોર્ડ</button>
+                            <button type="button" class="tab-btn btn-sm"
+                                onclick="switchMasterSubTab('falavni', 'mtab-falavni-reports', this)">વીકલી ફાળવણી</button>
+                            <button type="button" class="tab-btn btn-sm"
+                                onclick="switchMasterSubTab('falavni', 'mtab-falavni-monthly-reports', this)">મંથલી ફાળવણી</button>
+                        </div>
+                        <div class="top-bar-date-controls" style="display: flex; align-items: center; gap: 8px;">
+                            <div id="wrapper-master-falavni-date" class="date-picker-wrapper active"
+                                style="display: flex; align-items: center; gap: 6px;">
+                                <label for="master-falavni-date"
+                                    style="font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0;">રિપોર્ટ તારીખ:</label>
+                                <input type="date" id="master-falavni-date" class="form-control"
+                                    style="width: auto; height: 28px; padding: 2px 6px; font-size: 0.8rem;"
+                                    onchange="loadMasterFalavniDashboard()">
+                            </div>
+                            <div id="wrapper-master-falavni-report-date" class="date-picker-wrapper"
+                                style="display: none; align-items: center; gap: 6px;">
+                                <label for="master-falavni-report-date"
+                                    style="font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0;">અઠવાડિયું પસંદ કરો:</label>
+                                <input type="date" id="master-falavni-report-date" class="form-control"
+                                    style="width: auto; height: 28px; padding: 2px 6px; font-size: 0.8rem; margin-right: 4px;"
+                                    onchange="loadMasterFalavniReport()">
+                                <button type="button" class="btn-primary" onclick="window.print()"
+                                    style="background: var(--primary-light); box-shadow: none; width: auto; padding: 4px 10px; font-size: 0.75rem; white-space: nowrap; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">Print PDF</button>
+                                <button type="button" class="btn-primary" onclick="exportMasterFalavniReportToExcel()"
+                                    style="width: auto; padding: 4px 10px; font-size: 0.75rem; white-space: nowrap; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">Export Excel</button>
+                            </div>
+                            <div id="wrapper-master-falavni-monthly-report-date" class="date-picker-wrapper"
+                                style="display: none; align-items: center; gap: 6px;">
+                                <label for="master-falavni-monthly-report-date"
+                                    style="font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0;">મહિનો પસંદ કરો:</label>
+                                <input type="month" id="master-falavni-monthly-report-date" class="form-control"
+                                    style="width: auto; height: 28px; padding: 2px 6px; font-size: 0.8rem; margin-right: 4px;"
+                                    onchange="loadMasterFalavniMonthlyReport()">
+                                <button type="button" class="btn-primary" onclick="window.print()"
+                                    style="background: var(--primary-light); box-shadow: none; width: auto; padding: 4px 10px; font-size: 0.75rem; white-space: nowrap; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">Print PDF</button>
+                                <button type="button" class="btn-primary" onclick="exportMasterFalavniMonthlyReportToExcel()"
+                                    style="width: auto; padding: 4px 10px; font-size: 0.75rem; white-space: nowrap; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">Export Excel</button>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Sub-tabs for PD RT -->
-            <div id="sub-nav-pdrt" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 8px; border-bottom: none; gap: 4px; display: none;">
-                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-dashboard', this)">PD RT ડેશબોર્ડ</button>
-                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-reports', this)">PD RT રિપોર્ટ</button>
-                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-monthly-reports', this)">PD RT મંથલી રિપોર્ટ</button>
-                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-master', this)">PD RT માસ્ટર</button>
-            </div>
+                    <!-- Sub-tabs for PD RT -->
+                    <div id="sub-nav-pdrt" class="sub-tab-nav tab-nav"
+                        style="margin-bottom: 0; border-bottom: none; gap: 8px; display: none; width: 100%; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 4px;">
+                            <button type="button" class="tab-btn btn-sm"
+                                onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-dashboard', this)">PD RT ડેશબોર્ડ</button>
+                            <button type="button" class="tab-btn btn-sm"
+                                onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-reports', this)">PD RT રિપોર્ટ</button>
+                            <button type="button" class="tab-btn btn-sm"
+                                onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-monthly-reports', this)">PD RT મંથલી રિપોર્ટ</button>
+                            <button type="button" class="tab-btn btn-sm"
+                                onclick="switchMasterSubTab('pdrt', 'mtab-pdrt-master', this)">PD RT માસ્ટર</button>
+                        </div>
+                        <div class="top-bar-date-controls" style="display: flex; align-items: center; gap: 8px;">
+                            <div id="wrapper-master-pdrt-dashboard-date" class="date-picker-wrapper active"
+                                style="display: flex; align-items: center; gap: 6px;">
+                                <label for="master-pdrt-dashboard-date"
+                                    style="font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0;">રિપોર્ટ તારીખ:</label>
+                                <input type="date" id="master-pdrt-dashboard-date" class="form-control"
+                                    style="width: auto; height: 28px; padding: 2px 6px; font-size: 0.8rem;"
+                                    onchange="loadMasterPDRTDashboard()">
+                            </div>
+                            <div id="wrapper-master-pdrt-report-date" class="date-picker-wrapper"
+                                style="display: none; align-items: center; gap: 6px;">
+                                <label for="master-pdrt-report-date"
+                                    style="font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0;">અઠવાડિયું પસંદ કરો:</label>
+                                <input type="date" id="master-pdrt-report-date" class="form-control"
+                                    style="width: auto; height: 28px; padding: 2px 6px; font-size: 0.8rem; margin-right: 4px;"
+                                    onchange="loadMasterPDRTReport()">
+                                <button type="button" class="btn-primary" onclick="window.print()"
+                                    style="background: var(--primary-light); box-shadow: none; width: auto; padding: 4px 10px; font-size: 0.75rem; white-space: nowrap; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">Print PDF</button>
+                                <button type="button" class="btn-primary" onclick="exportMasterPDRTReportToExcel()"
+                                    style="width: auto; padding: 4px 10px; font-size: 0.75rem; white-space: nowrap; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">Export Excel</button>
+                            </div>
+                            <div id="wrapper-master-pdrt-monthly-report-date" class="date-picker-wrapper"
+                                style="display: none; align-items: center; gap: 6px;">
+                                <label for="master-pdrt-monthly-report-date"
+                                    style="font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0;">મહિનો પસંદ કરો:</label>
+                                <input type="month" id="master-pdrt-monthly-report-date" class="form-control"
+                                    style="width: auto; height: 28px; padding: 2px 6px; font-size: 0.8rem; margin-right: 4px;"
+                                    onchange="loadMasterPDRTMonthlyReport()">
+                                <button type="button" class="btn-primary" onclick="window.print()"
+                                    style="background: var(--primary-light); box-shadow: none; width: auto; padding: 4px 10px; font-size: 0.75rem; white-space: nowrap; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">Print PDF</button>
+                                <button type="button" class="btn-primary" onclick="exportMasterPDRTMonthlyReportToExcel()"
+                                    style="width: auto; padding: 4px 10px; font-size: 0.75rem; white-space: nowrap; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">Export Excel</button>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Sub-tabs for MASTER -->
-            <div id="sub-nav-master" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 8px; border-bottom: none; gap: 4px; display: none;">
-                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('master', 'mtab-khata', this)">ખાતા માસ્ટર</button>
-                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('master', 'mtab-users', this)">હેડ મેનેજમેન્ટ</button>
-            </div>
+                    <!-- Sub-tabs for MASTER -->
+                    <div id="sub-nav-master" class="sub-tab-nav tab-nav"
+                        style="margin-bottom: 0; border-bottom: none; gap: 8px; display: none; width: 100%; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 4px;">
+                            <button type="button" class="tab-btn btn-sm"
+                                onclick="switchMasterSubTab('master', 'mtab-khata', this)">ખાતા માસ્ટર</button>
+                            <button type="button" class="tab-btn btn-sm"
+                                onclick="switchMasterSubTab('master', 'mtab-users', this)">Helડ મેનેજમેન્ટ</button>
+                        </div>
+                    </div>
 
-            <!-- Sub-tabs for SETTING -->
-            <div id="sub-nav-setting" class="sub-tab-nav tab-nav non-printable" style="margin-bottom: 8px; border-bottom: none; gap: 4px; display: none;">
-                <button type="button" class="tab-btn btn-sm" onclick="switchMasterSubTab('setting', 'mtab-backup', this)">ડેટા બેકઅપ અને ડેટાબેઝ સેટિંગ્સ</button>
-            </div>
-
-            <!-- TAB 1: DASHBOARD OVERVIEW -->
-            <div id="mtab-dashboard" class="master-tab-pane">
-                <div class="top-bar-controls flex-between">
-                    <div class="date-picker-wrapper">
-                        <label for="master-dashboard-date">રિપોર્ટ તારીખ:</label>
-                        <input type="date" id="master-dashboard-date" class="form-control" style="width: auto;"
-                            onchange="loadMasterDashboard()">
+                    <!-- Sub-tabs for SETTING -->
+                    <div id="sub-nav-setting" class="sub-tab-nav tab-nav"
+                        style="margin-bottom: 0; border-bottom: none; gap: 8px; display: none; width: 100%; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 4px;">
+                            <button type="button" class="tab-btn btn-sm"
+                                onclick="switchMasterSubTab('setting', 'mtab-backup', this)">ડેટા બેકઅપ અને ડેટાબેઝ
+                                સેટિંગ્સ</button>
+                        </div>
                     </div>
                 </div>
 
+                <!-- TAB 1: DASHBOARD OVERVIEW -->
+                <div id="mtab-dashboard" class="master-tab-pane">
 
-                <!-- Grand Summary Main Totals Section -->
-                <div class="flex-between">
-                    <h3>ડેઇલી ખાતા હેડ રિપોર્ટ</h3>
-                </div>
 
-                <div class="table-responsive non-printable">
-                    <table class="custom-table" id="master-submissions-table">
-                        <thead>
-                            <tr>
-                                <th>હેડ નામ</th>
-                                <th>ખાતા નં.</th>
-                                <th>સ્ટેટસ</th>
-                                <th>સબમિટ સમય</th>
-                                <th>રજા</th>
-                                <th>ચાલુ</th>
-                                <th>તળિયા</th>
-                                <th>પેલ</th>
-                                <th>મથાળા</th>
-                                <th class="non-printable" style="width: 80px;">એક્શન</th>
-                            </tr>
-                        </thead>
-                        <tbody id="master-submissions-tbody">
-                            <!-- Dynamic -->
-                        </tbody>
-                        <tfoot>
-                            <tr class="totals-row">
-                                <td style="color: var(--accent);">કુલ સરવાળો</td>
-                                <td id="master-submissions-total-allocated-khatas" style="font-weight: 700;">0</td>
-                                <td></td>
-                                <td></td>
-                                <td id="master-submissions-total-holiday" style="font-weight: 700;">0</td>
-                                <td id="master-submissions-total-work-khatas" style="font-weight: 700;">0</td>
-                                <td class="total-value" id="master-submissions-total-taliya">0</td>
-                                <td class="total-value" id="master-submissions-total-pel">0</td>
-                                <td class="total-value" id="master-submissions-total-mathala">0</td>
-                                <td class="non-printable"></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-
-            <!-- TAB 1.5: MASTER FALAVNI DASHBOARD (For Admin to view sub-admin style dashboard) -->
-            <div id="mtab-falavni-dashboard" class="master-tab-pane" style="display: none;">
-                <div class="top-bar-controls flex-between" style="margin-bottom: 20px;">
-                    <div class="date-picker-wrapper">
-                        <label for="master-falavni-date">રિપોર્ટ તારીખ:</label>
-                        <input type="date" id="master-falavni-date" class="form-control" style="width: auto;"
-                            onchange="loadMasterFalavniDashboard()">
-                    </div>
-                </div>
-
-                <div class="flex-between">
-                    <h3>ડેઇલી હીરા ફાળવણી અહેવાલ</h3>
-                </div>
-
-                <div class="table-responsive non-printable">
-                    <table class="custom-table" id="master-falavni-table-view">
-                        <thead>
-                            <tr>
-                                <th>હેડ નામ</th>
-                                <th>ખાતા નં.</th>
-                                <th>સ્ટેટસ</th>
-                                <th>સબમિટ સમય</th>
-                                <th>રજા</th>
-                                <th>ચાલુ</th>
-                                <th>નંગ</th>
-                                <th class="non-printable" style="width: 80px;">એક્શન</th>
-                            </tr>
-                        </thead>
-                        <tbody id="master-falavni-tbody-view">
-                            <!-- Dynamic -->
-                        </tbody>
-                        <tfoot>
-                            <tr class="totals-row">
-                                <td style="color: var(--accent);">કુલ સરવાળો</td>
-                                <td id="master-falavni-total-allocated" style="font-weight: 700;">0</td>
-                                <td></td>
-                                <td></td>
-                                <td id="master-falavni-total-holiday" style="font-weight: 700;">0</td>
-                                <td id="master-falavni-total-work" style="font-weight: 700;">0</td>
-                                <td class="total-value" id="master-falavni-total-nang">0</td>
-                                <td class="non-printable"></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-
-            <!-- TAB 2: REPORTS SECTION -->
-            <div id="mtab-reports" class="master-tab-pane" style="display: none;">
-                <div class="flex-between non-printable">
-                    <div class="date-picker-wrapper">
-                        <label for="master-report-date">અઠવાડિયું પસંદ કરો:</label>
-                        <input type="date" id="master-report-date" class="form-control" style="width: auto;"
-                            onchange="loadKhataWiseReport()">
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <button class="btn-primary" onclick="window.print()"
-                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
-                            Print PDF
-                        </button>
-                        <button class="btn-primary" onclick="exportReportToExcel()"
-                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
-                            Export Excel
-                        </button>
-                    </div>
-                </div>
-
-                <div id="print-area">
-                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
-                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
-                        <h3 id="print-report-date-heading" style="color: var(--text-muted); margin-top: 4px;">અઠવાડિયું:
-                            -</h3>
-                    </div>
-
+                    <!-- Grand Summary Main Totals Section -->
                     <div class="flex-between">
-                        <h3>વીકલી રિપોર્ટ (સોમવાર થી રવિવાર)</h3>
+                        <h3>ડેઇલી ખાતા હેડ રિપોર્ટ</h3>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="custom-table" id="master-reports-table">
+                    <div class="table-responsive non-printable">
+                        <table class="custom-table" id="master-submissions-table">
                             <thead>
                                 <tr>
-                                    <th>તારીખ</th>
-                                    <th>દિવસ</th>
-                                    <th>ચાલુ</th>
+                                    <th>હેડ નામ</th>
+                                    <th>ખાતા નં.</th>
+                                    <th>સ્ટેટસ</th>
+                                    <th>સબમિટ સમય</th>
                                     <th>રજા</th>
+                                    <th>ચાલુ</th>
                                     <th>તળિયા</th>
                                     <th>પેલ</th>
                                     <th>મથાળા</th>
+                                    <th class="non-printable" style="width: 80px;">એક્શન</th>
                                 </tr>
                             </thead>
-                            <tbody id="master-reports-tbody">
+                            <tbody id="master-submissions-tbody">
                                 <!-- Dynamic -->
                             </tbody>
                             <tfoot>
                                 <tr class="totals-row">
-                                    <td colspan="2">મેન કુલ સરવાળો</td>
-                                    <td class="total-value" id="master-report-total-chalu">-</td>
-                                    <td class="total-value" id="master-report-total-raja">-</td>
-                                    <td class="total-value" id="master-report-total-taliya">0</td>
-                                    <td class="total-value" id="master-report-total-pel">0</td>
-                                    <td class="total-value" id="master-report-total-mathala">0</td>
+                                    <td style="color: var(--accent);">કુલ સરવાળો</td>
+                                    <td id="master-submissions-total-allocated-khatas" style="font-weight: 700;">0</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td id="master-submissions-total-holiday" style="font-weight: 700;">0</td>
+                                    <td id="master-submissions-total-work-khatas" style="font-weight: 700;">0</td>
+                                    <td class="total-value" id="master-submissions-total-taliya">0</td>
+                                    <td class="total-value" id="master-submissions-total-pel">0</td>
+                                    <td class="total-value" id="master-submissions-total-mathala">0</td>
+                                    <td class="non-printable"></td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
                 </div>
-            </div>
 
-            <!-- TAB 2.5: MONTHLY REPORTS SECTION -->
-            <div id="mtab-monthly-reports" class="master-tab-pane" style="display: none;">
-                <div class="flex-between non-printable">
-                    <div class="date-picker-wrapper">
-                        <label for="master-monthly-report-date">મહિનો પસંદ કરો:</label>
-                        <input type="month" id="master-monthly-report-date" class="form-control" style="width: auto;"
-                            onchange="loadMonthlyReport()">
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <button class="btn-primary" onclick="window.print()"
-                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
-                            Print PDF
-                        </button>
-                        <button class="btn-primary" onclick="exportMonthlyReportToExcel()"
-                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
-                            Export Excel
-                        </button>
-                    </div>
-                </div>
+                <!-- TAB 1.5: MASTER FALAVNI DASHBOARD (For Admin to view sub-admin style dashboard) -->
+                <div id="mtab-falavni-dashboard" class="master-tab-pane" style="display: none;">
 
-                <div id="print-area-monthly">
-                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
-                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
-                        <h3 id="print-monthly-report-heading" style="color: var(--text-muted); margin-top: 4px;">મહિનો:
-                            -</h3>
-                    </div>
 
                     <div class="flex-between">
-                        <h3>મંથલી રિપોર્ટ (વીકલી સરવાળો)</h3>
+                        <h3>ડેઇલી હીરા ફાળવણી અહેવાલ</h3>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="custom-table" id="master-monthly-reports-table">
+                    <div class="table-responsive non-printable">
+                        <table class="custom-table" id="master-falavni-table-view">
                             <thead>
                                 <tr>
-                                    <th>અઠવાડિયું (રેન્જ)</th>
-                                    <th>તળિયા</th>
-                                    <th>પેલ</th>
-                                    <th>મથાળા</th>
+                                    <th>હેડ નામ</th>
+                                    <th>ખાતા નં.</th>
+                                    <th>સ્ટેટસ</th>
+                                    <th>સબમિટ સમય</th>
+                                    <th>રજા</th>
+                                    <th>ચાલુ</th>
+                                    <th>નંગ</th>
+                                    <th class="non-printable" style="width: 80px;">એક્શન</th>
                                 </tr>
                             </thead>
-                            <tbody id="master-monthly-reports-tbody">
+                            <tbody id="master-falavni-tbody-view">
                                 <!-- Dynamic -->
                             </tbody>
                             <tfoot>
                                 <tr class="totals-row">
-                                    <td>મેન કુલ સરવાળો</td>
-                                    <td class="total-value" id="master-monthly-report-total-taliya">0</td>
-                                    <td class="total-value" id="master-monthly-report-total-pel">0</td>
-                                    <td class="total-value" id="master-monthly-report-total-mathala">0</td>
+                                    <td style="color: var(--accent);">કુલ સરવાળો</td>
+                                    <td id="master-falavni-total-allocated" style="font-weight: 700;">0</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td id="master-falavni-total-holiday" style="font-weight: 700;">0</td>
+                                    <td id="master-falavni-total-work" style="font-weight: 700;">0</td>
+                                    <td class="total-value" id="master-falavni-total-nang">0</td>
+                                    <td class="non-printable"></td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
                 </div>
-            </div>
 
-            <!-- TAB 3: KHATA CONFIGURATION -->
-            <div id="mtab-khata" class="master-tab-pane" style="display: none;">
-                <div class="management-layout">
-                    <!-- Left: Create/Edit Khata Form -->
-                    <div class="glass-panel" style="box-shadow: none;">
-                        <h3 style="margin-bottom: 16px;" id="khata-form-title">નવું ખાતું ઉમેરો</h3>
-                        <form id="khata-config-form" onsubmit="handleSaveKhata(event)">
-                            <input type="hidden" id="khata-id-edit">
-                            <div class="form-group">
-                                <label for="khata-name-input">ખાતાનું નામ</label>
-                                <input type="text" id="khata-name-input" class="form-control" placeholder="DEPT-A"
-                                    required pattern="[A-Z0-9\\s\\-_]+"
-                                    title="Please enter in English uppercase letters, numbers, hyphens, or spaces only"
-                                    style="text-transform: uppercase;" oninput="handleKhataNameInput(this)" autocomplete="off">
-                                <div id="khata-name-feedback"
-                                    style="color: var(--danger); font-size: 0.8rem; font-weight: 600; margin-top: 4px; display: none;">
-                                    ⚠️ આ નામનું ખાતું અગાઉથી બનાવેલ છે!
+                <!-- TAB 2: REPORTS SECTION -->
+                <div id="mtab-reports" class="master-tab-pane" style="display: none;">
+
+                    <div id="print-area">
+                        <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                            <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
+                            <h3 id="print-report-date-heading" style="color: var(--text-muted); margin-top: 4px;">
+                                અઠવાડિયું:
+                                -</h3>
+                        </div>
+
+                        <div class="flex-between">
+                            <h3>વીકલી રિપોર્ટ (સોમવાર થી રવિવાર)</h3>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="custom-table" id="master-reports-table">
+                                <thead>
+                                    <tr>
+                                        <th>તારીખ</th>
+                                        <th>દિવસ</th>
+                                        <th>ચાલુ</th>
+                                        <th>રજા</th>
+                                        <th>તળિયા</th>
+                                        <th>પેલ</th>
+                                        <th>મથાળા</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="master-reports-tbody">
+                                    <!-- Dynamic -->
+                                </tbody>
+                                <tfoot>
+                                    <tr class="totals-row">
+                                        <td colspan="2">મેન કુલ સરવાળો</td>
+                                        <td class="total-value" id="master-report-total-chalu">-</td>
+                                        <td class="total-value" id="master-report-total-raja">-</td>
+                                        <td class="total-value" id="master-report-total-taliya">0</td>
+                                        <td class="total-value" id="master-report-total-pel">0</td>
+                                        <td class="total-value" id="master-report-total-mathala">0</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2.5: MONTHLY REPORTS SECTION -->
+                <div id="mtab-monthly-reports" class="master-tab-pane" style="display: none;">
+
+                    <div id="print-area-monthly">
+                        <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                            <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
+                            <h3 id="print-monthly-report-heading" style="color: var(--text-muted); margin-top: 4px;">
+                                મહિનો:
+                                -</h3>
+                        </div>
+
+                        <div class="flex-between">
+                            <h3>મંથલી રિપોર્ટ (વીકલી સરવાળો)</h3>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="custom-table" id="master-monthly-reports-table">
+                                <thead>
+                                    <tr>
+                                        <th>અઠવાડિયું (રેન્જ)</th>
+                                        <th>તળિયા</th>
+                                        <th>પેલ</th>
+                                        <th>મથાળા</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="master-monthly-reports-tbody">
+                                    <!-- Dynamic -->
+                                </tbody>
+                                <tfoot>
+                                    <tr class="totals-row">
+                                        <td>મેન કુલ સરવાળો</td>
+                                        <td class="total-value" id="master-monthly-report-total-taliya">0</td>
+                                        <td class="total-value" id="master-monthly-report-total-pel">0</td>
+                                        <td class="total-value" id="master-monthly-report-total-mathala">0</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: KHATA CONFIGURATION -->
+                <div id="mtab-khata" class="master-tab-pane" style="display: none;">
+                    <div class="management-layout">
+                        <!-- Left: Create/Edit Khata Form -->
+                        <div class="glass-panel" style="box-shadow: none;">
+                            <h3 style="margin-bottom: 16px;" id="khata-form-title">નવું ખાતું ઉમેરો</h3>
+                            <form id="khata-config-form" onsubmit="handleSaveKhata(event)">
+                                <input type="hidden" id="khata-id-edit">
+                                <div class="form-group">
+                                    <label for="khata-name-input">ખાતાનું નામ</label>
+                                    <input type="text" id="khata-name-input" class="form-control" placeholder="DEPT-A"
+                                        required pattern="[A-Z0-9\\s\\-_]+"
+                                        title="Please enter in English uppercase letters, numbers, hyphens, or spaces only"
+                                        style="text-transform: uppercase;" oninput="handleKhataNameInput(this)"
+                                        autocomplete="off">
+                                    <div id="khata-name-feedback"
+                                        style="color: var(--danger); font-size: 0.8rem; font-weight: 600; margin-top: 4px; display: none;">
+                                        ⚠️ આ નામનું ખાતું અગાઉથી બનાવેલ છે!
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="khata-location-input">લોકેશન</label>
-                                <input type="text" id="khata-location-input" class="form-control"
-                                    placeholder="Ground Floor, Room 3" required list="location-suggestions">
-                                <datalist id="location-suggestions"></datalist>
-                            </div>
-                            <div class="form-group">
-                                <label for="khata-user-input">હેડ ફાળવો (ઓપ્શનલ)</label>
-                                <select id="khata-user-input" class="form-control">
-                                    <!-- Populated dynamically -->
-                                </select>
-                            </div>
-                            <div style="display: flex; gap: 10px;">
-                                <button type="submit" class="btn-primary" style="flex: 1;">
-                                    સાચવો
-                                </button>
-                                <button type="button" class="btn-logout" id="btn-cancel-khata-edit"
-                                    onclick="resetKhataForm()" style="display: none; border-radius: var(--radius-md);">
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Right: Khata Register list -->
-                    <div class="glass-panel" style="box-shadow: none;">
-                        <h3 style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                            <span>રજિસ્ટર્ડ ખાતાઓની યાદી</span>
-                            <span id="master-khata-count" style="font-size: 0.85rem; color: var(--accent); background: var(--accent-glow); padding: 4px 12px; border-radius: 20px; font-weight: 700;">કુલ: 0</span>
-                        </h3>
-                        <div class="form-group" style="margin-bottom: 16px;">
-                            <input type="text" id="khata-search-input" class="form-control" placeholder="🔍 ખાતું, લોકેશન અથવા હેડ શોધો..." oninput="renderMasterKhataList()" style="text-align: left;">
+                                <div class="form-group">
+                                    <label for="khata-location-input">લોકેશન</label>
+                                    <input type="text" id="khata-location-input" class="form-control"
+                                        placeholder="Ground Floor, Room 3" required list="location-suggestions">
+                                    <datalist id="location-suggestions"></datalist>
+                                </div>
+                                <div class="form-group">
+                                    <label for="khata-user-input">હેડ ફાળવો (ઓપ્શનલ)</label>
+                                    <select id="khata-user-input" class="form-control">
+                                        <!-- Populated dynamically -->
+                                    </select>
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <button type="submit" class="btn-primary" style="flex: 1;">
+                                        સાચવો
+                                    </button>
+                                    <button type="button" class="btn-logout" id="btn-cancel-khata-edit"
+                                        onclick="resetKhataForm()"
+                                        style="display: none; border-radius: var(--radius-md);">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
                         </div>
+
+                        <!-- Right: Khata Register list -->
+                        <div class="glass-panel" style="box-shadow: none;">
+                            <h3
+                                style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                                <span>રજિસ્ટર્ડ ખાતાઓની યાદી</span>
+                                <span id="master-khata-count"
+                                    style="font-size: 0.85rem; color: var(--accent); background: var(--accent-glow); padding: 4px 12px; border-radius: 20px; font-weight: 700;">કુલ:
+                                    0</span>
+                            </h3>
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <input type="text" id="khata-search-input" class="form-control"
+                                    placeholder="🔍 ખાતું, લોકેશન અથવા હેડ શોધો..." oninput="renderMasterKhataList()"
+                                    style="text-align: left;">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="custom-table" id="master-khata-list-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ખાતું</th>
+                                            <th>લોકેશન</th>
+                                            <th>ફાળવેલ હેડ</th>
+                                            <th style="width: 100px;">એક્શન</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="master-khata-tbody">
+                                        <!-- Dynamic -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: USERS PANEL -->
+                <div id="mtab-users" class="master-tab-pane" style="display: none;">
+                    <div class="management-layout">
+                        <!-- Left: Create User Form -->
+                        <div class="glass-panel" style="box-shadow: none;">
+                            <h3 style="margin-bottom: 16px;" id="user-form-title">નવો હેડ બનાવો</h3>
+                            <form id="user-config-form" onsubmit="handleSaveUser(event)">
+                                <input type="hidden" id="user-id-edit">
+                                <div class="form-group">
+                                    <label for="user-name-input">હેડ નામ</label>
+                                    <input type="text" id="user-name-input" class="form-control" placeholder="Ramesh"
+                                        required autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <label for="user-password-input">પાસવર્ડ</label>
+                                    <input type="text" id="user-password-input" class="form-control"
+                                        placeholder="Enter Password" required autocomplete="new-password">
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <button type="submit" class="btn-primary" style="flex: 1;">
+                                        હેડ સાચવો
+                                    </button>
+                                    <button type="button" class="btn-logout" id="btn-cancel-user-edit"
+                                        onclick="resetUserForm()"
+                                        style="display: none; border-radius: var(--radius-md);">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Right: Users list -->
+                        <div class="glass-panel" style="box-shadow: none;">
+                            <h3 style="margin-bottom: 16px;">યુઝર્સની યાદી (User List)</h3>
+                            <div class="table-responsive">
+                                <table class="custom-table" id="master-users-list-table">
+                                    <thead>
+                                        <tr>
+                                            <th>યુઝર નામ</th>
+                                            <th>પાસવર્ડ</th>
+                                            <th>એક્શન</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="master-users-tbody">
+                                        <!-- Dynamic -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 5: BACKUP & DATA RESET -->
+                <div id="mtab-backup" class="master-tab-pane" style="display: none;">
+                    <div class="glass-panel"
+                        style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+                        <h3
+                            style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--accent);">
+                            ડેટા મેનેજમેન્ટ (Backup & Restore Operations)</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                            આ સુવિધા તમને આખી એપ્લિકેશનનો તમામ ડેટા (બધા યુઝર્સ, ખાતાઓ અને સબમિશન એન્ટ્રીઓ) એક સિંગલ
+                            બેકઅપ
+                            ફાઇલમાં સાચવવા માટે પરવાનગી આપે છે. તમે ક્યારેય પણ તે ફાઇલ દ્વારા બધો ડેટા પુનઃપ્રાપ્ત
+                            (Restore)
+                            કરી શકો છો.
+                        </p>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button class="btn-primary" onclick="downloadBackup()" style="width: auto;">
+                                બેકઅપ ફાઇલ ડાઉનલોડ કરો (Download Backup)
+                            </button>
+                            <button class="btn-primary"
+                                onclick="document.getElementById('import-file-selector').click()"
+                                style="background: var(--primary-light); width: auto; box-shadow: none;">
+                                રિસ્ટોર બેકઅપ (Restore Backup File)
+                            </button>
+                            <input type="file" id="import-file-selector" style="display: none;" accept=".json"
+                                onchange="importBackupData(event)">
+                        </div>
+
+                        <h3
+                            style="border-top: 1px solid var(--border-color); padding-top: 20px; color: var(--accent); margin-top: 10px;">
+                            ક્લાઉડ ડેટાબેઝ સેટિંગ્સ (Cloud Database Settings)</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                            બધા હેડના ફોનમાંથી ડેટા એક જગ્યાએ મેળવવા માટે અહીં તમારા Firebase Realtime Database ની URL
+                            દાખલ
+                            કરો.
+                        </p>
+                        <div class="form-group" style="margin-bottom: 0; position: relative;">
+                            <input type="password" id="firebase-url-input" class="form-control"
+                                placeholder="https://your-project-default-rtdb.firebaseio.com"
+                                style="text-align: left; padding-right: 45px;">
+                            <button type="button" id="toggle-firebase-url-btn" onclick="toggleFirebaseUrlVisibility()"
+                                style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1.1rem; padding: 4px; line-height: 1; outline: none; z-index: 5;">
+                                👁️
+                            </button>
+                        </div>
+                        <button class="btn-primary" onclick="updateFirebaseConfig()"
+                            style="width: auto; align-self: flex-start; margin-top: 4px; box-shadow: none; background: var(--accent);">
+                            સેવ અને લિંક કરો (Save & Connect)
+                        </button>
+
+
+
+                        <h3
+                            style="border-top: 1px solid var(--border-color); padding-top: 20px; color: var(--danger); margin-top: 10px;">
+                            ડેટા રીસેટ (Factory Reset)</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">
+                            ચેતવણી: ફેક્ટરી રીસેટ કરવાથી તમામ ડેટા કાયમી ધોરણે ડિલીટ થઈ જશે અને ડિફોલ્ટ સેટિંગ્સ ફરીથી
+                            સેટ
+                            થઈ જશે.
+                        </p>
+                        <button class="btn-primary" onclick="factoryResetDatabase()"
+                            style="background: var(--danger); box-shadow: none; width: auto; align-self: flex-start;">
+                            ફેક્ટરી રીસેટ કરો (Factory Reset)
+                        </button>
+                    </div>
+                </div>
+                <!-- TAB 2.2: FALAVNI WEEKLY REPORTS -->
+                <div id="mtab-falavni-reports" class="master-tab-pane" style="display: none;">
+
+                    <div id="print-area-falavni-weekly">
+                        <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                            <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
+                            <h3 id="print-falavni-report-date-heading"
+                                style="color: var(--text-muted); margin-top: 4px;">અઠવાડિયું: -</h3>
+                        </div>
+
+                        <div class="flex-between">
+                            <h3>સાપ્તાહિક ફાળવણી અહેવાલ (નંગ)</h3>
+                        </div>
+
                         <div class="table-responsive">
-                            <table class="custom-table" id="master-khata-list-table">
+                            <table class="custom-table" id="master-falavni-reports-table">
                                 <thead>
                                     <tr>
-                                        <th>ખાતું</th>
-                                        <th>લોકેશન</th>
-                                        <th>ફાળવેલ હેડ</th>
-                                        <th style="width: 100px;">એક્શન</th>
+                                        <th>તારીખ</th>
+                                        <th>દિવસ</th>
+                                        <th>નંગ</th>
                                     </tr>
                                 </thead>
-                                <tbody id="master-khata-tbody">
+                                <tbody id="master-falavni-reports-tbody">
                                     <!-- Dynamic -->
                                 </tbody>
+                                <tfoot>
+                                    <tr class="totals-row">
+                                        <td colspan="2">મેન કુલ સરવાળો</td>
+                                        <td class="total-value" id="master-falavni-report-total-nang"
+                                            style="font-weight: 800;">0</td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- TAB 4: USERS PANEL -->
-            <div id="mtab-users" class="master-tab-pane" style="display: none;">
-                <div class="management-layout">
-                    <!-- Left: Create User Form -->
-                    <div class="glass-panel" style="box-shadow: none;">
-                        <h3 style="margin-bottom: 16px;" id="user-form-title">નવો હેડ બનાવો</h3>
-                        <form id="user-config-form" onsubmit="handleSaveUser(event)">
-                            <input type="hidden" id="user-id-edit">
-                            <div class="form-group">
-                                <label for="user-name-input">હેડ નામ</label>
-                                <input type="text" id="user-name-input" class="form-control" placeholder="Ramesh"
-                                    required autocomplete="off">
-                            </div>
-                            <div class="form-group">
-                                <label for="user-password-input">પાસવર્ડ</label>
-                                <input type="text" id="user-password-input" class="form-control"
-                                    placeholder="Enter Password" required autocomplete="new-password">
-                            </div>
-                            <div style="display: flex; gap: 10px;">
-                                <button type="submit" class="btn-primary" style="flex: 1;">
-                                    હેડ સાચવો
-                                </button>
-                                <button type="button" class="btn-logout" id="btn-cancel-user-edit"
-                                    onclick="resetUserForm()" style="display: none; border-radius: var(--radius-md);">
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                <!-- TAB 2.3: FALAVNI MONTHLY REPORTS -->
+                <div id="mtab-falavni-monthly-reports" class="master-tab-pane" style="display: none;">
 
-                    <!-- Right: Users list -->
-                    <div class="glass-panel" style="box-shadow: none;">
-                        <h3 style="margin-bottom: 16px;">યુઝર્સની યાદી (User List)</h3>
+                    <div id="print-area-falavni-monthly">
+                        <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                            <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
+                            <h3 id="print-falavni-monthly-report-heading"
+                                style="color: var(--text-muted); margin-top: 4px;">મહિનો: -</h3>
+                        </div>
+
+                        <div class="flex-between">
+                            <h3>માસિક ફાળવણી અહેવાલ (નંગ)</h3>
+                        </div>
+
                         <div class="table-responsive">
-                            <table class="custom-table" id="master-users-list-table">
+                            <table class="custom-table" id="master-falavni-monthly-reports-table">
                                 <thead>
                                     <tr>
-                                        <th>યુઝર નામ</th>
-                                        <th>પાસવર્ડ</th>
-                                        <th>એક્શન</th>
+                                        <th>અઠવાડિયું (રેન્જ)</th>
+                                        <th>નંગ</th>
                                     </tr>
                                 </thead>
-                                <tbody id="master-users-tbody">
+                                <tbody id="master-falavni-monthly-reports-tbody">
                                     <!-- Dynamic -->
                                 </tbody>
+                                <tfoot>
+                                    <tr class="totals-row">
+                                        <td>મેન કુલ સરવાળો</td>
+                                        <td class="total-value" id="master-falavni-monthly-report-total-nang"
+                                            style="font-weight: 800;">0</td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- TAB 5: BACKUP & DATA RESET -->
-            <div id="mtab-backup" class="master-tab-pane" style="display: none;">
-                <div class="glass-panel"
-                    style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
-                    <h3
-                        style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--accent);">
-                        ડેટા મેનેજમેન્ટ (Backup & Restore Operations)</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
-                        આ સુવિધા તમને આખી એપ્લિકેશનનો તમામ ડેટા (બધા યુઝર્સ, ખાતાઓ અને સબમિશન એન્ટ્રીઓ) એક સિંગલ બેકઅપ
-                        ફાઇલમાં સાચવવા માટે પરવાનગી આપે છે. તમે ક્યારેય પણ તે ફાઇલ દ્વારા બધો ડેટા પુનઃપ્રાપ્ત (Restore)
-                        કરી શકો છો.
-                    </p>
-                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                        <button class="btn-primary" onclick="downloadBackup()" style="width: auto;">
-                            બેકઅપ ફાઇલ ડાઉનલોડ કરો (Download Backup)
-                        </button>
-                        <button class="btn-primary" onclick="document.getElementById('import-file-selector').click()"
-                            style="background: var(--primary-light); width: auto; box-shadow: none;">
-                            રિસ્ટોર બેકઅપ (Restore Backup File)
-                        </button>
-                        <input type="file" id="import-file-selector" style="display: none;" accept=".json"
-                            onchange="importBackupData(event)">
-                    </div>
-
-                    <h3
-                        style="border-top: 1px solid var(--border-color); padding-top: 20px; color: var(--accent); margin-top: 10px;">
-                        ક્લાઉડ ડેટાબેઝ સેટિંગ્સ (Cloud Database Settings)</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
-                        બધા હેડના ફોનમાંથી ડેટા એક જગ્યાએ મેળવવા માટે અહીં તમારા Firebase Realtime Database ની URL દાખલ
-                        કરો.
-                    </p>
-                    <div class="form-group" style="margin-bottom: 0; position: relative;">
-                        <input type="password" id="firebase-url-input" class="form-control"
-                            placeholder="https://your-project-default-rtdb.firebaseio.com" style="text-align: left; padding-right: 45px;">
-                        <button type="button" id="toggle-firebase-url-btn" onclick="toggleFirebaseUrlVisibility()" 
-                            style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1.1rem; padding: 4px; line-height: 1; outline: none; z-index: 5;">
-                            👁️
-                        </button>
-                    </div>
-                    <button class="btn-primary" onclick="updateFirebaseConfig()"
-                        style="width: auto; align-self: flex-start; margin-top: 4px; box-shadow: none; background: var(--accent);">
-                        સેવ અને લિંક કરો (Save & Connect)
-                    </button>
-
-
-
-                    <h3
-                        style="border-top: 1px solid var(--border-color); padding-top: 20px; color: var(--danger); margin-top: 10px;">
-                        ડેટા રીસેટ (Factory Reset)</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">
-                        ચેતવણી: ફેક્ટરી રીસેટ કરવાથી તમામ ડેટા કાયમી ધોરણે ડિલીટ થઈ જશે અને ડિફોલ્ટ સેટિંગ્સ ફરીથી સેટ
-                        થઈ જશે.
-                    </p>
-                    <button class="btn-primary" onclick="factoryResetDatabase()"
-                        style="background: var(--danger); box-shadow: none; width: auto; align-self: flex-start;">
-                        ફેક્ટરી રીસેટ કરો (Factory Reset)
-                    </button>
-                </div>
-            </div>
-            <!-- TAB 2.2: FALAVNI WEEKLY REPORTS -->
-            <div id="mtab-falavni-reports" class="master-tab-pane" style="display: none;">
-                <div class="flex-between non-printable" style="margin-bottom: 16px;">
-                    <div class="date-picker-wrapper">
-                        <label for="master-falavni-report-date">અઠવાડિયું પસંદ કરો:</label>
-                        <input type="date" id="master-falavni-report-date" class="form-control" style="width: auto;"
-                            onchange="loadMasterFalavniReport()">
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <button type="button" class="btn-primary" onclick="window.print()"
-                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
-                            Print PDF
-                        </button>
-                        <button type="button" class="btn-primary" onclick="exportMasterFalavniReportToExcel()"
-                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
-                            Export Excel
-                        </button>
-                    </div>
-                </div>
-
-                <div id="print-area-falavni-weekly">
-                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
-                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
-                        <h3 id="print-falavni-report-date-heading" style="color: var(--text-muted); margin-top: 4px;">અઠવાડિયું: -</h3>
-                    </div>
+                <!-- TAB 3.1: PD RT DASHBOARD -->
+                <div id="mtab-pdrt-dashboard" class="master-tab-pane" style="display: none;">
 
                     <div class="flex-between">
-                        <h3>સાપ્તાહિક ફાળવણી અહેવાલ (નંગ)</h3>
+                        <h3>દૈનિક PD RT રિપોર્ટ સ્ટેટસ</h3>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="custom-table" id="master-falavni-reports-table">
-                            <thead>
-                                <tr>
-                                    <th>તારીખ</th>
-                                    <th>દિવસ</th>
-                                    <th>નંગ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="master-falavni-reports-tbody">
-                                <!-- Dynamic -->
-                            </tbody>
-                            <tfoot>
-                                <tr class="totals-row">
-                                    <td colspan="2">મેન કુલ સરવાળો</td>
-                                    <td class="total-value" id="master-falavni-report-total-nang" style="font-weight: 800;">0</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 2.3: FALAVNI MONTHLY REPORTS -->
-            <div id="mtab-falavni-monthly-reports" class="master-tab-pane" style="display: none;">
-                <div class="flex-between non-printable" style="margin-bottom: 16px;">
-                    <div class="date-picker-wrapper">
-                        <label for="master-falavni-monthly-report-date">મહિનો પસંદ કરો:</label>
-                        <input type="month" id="master-falavni-monthly-report-date" class="form-control" style="width: auto;"
-                            onchange="loadMasterFalavniMonthlyReport()">
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <button type="button" class="btn-primary" onclick="window.print()"
-                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
-                            Print PDF
-                        </button>
-                        <button type="button" class="btn-primary" onclick="exportMasterFalavniMonthlyReportToExcel()"
-                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
-                            Export Excel
-                        </button>
-                    </div>
-                </div>
-
-                <div id="print-area-falavni-monthly">
-                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
-                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ</h2>
-                        <h3 id="print-falavni-monthly-report-heading" style="color: var(--text-muted); margin-top: 4px;">મહિનો: -</h3>
-                    </div>
-
-                    <div class="flex-between">
-                        <h3>માસિક ફાળવણી અહેવાલ (નંગ)</h3>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="custom-table" id="master-falavni-monthly-reports-table">
-                            <thead>
-                                <tr>
-                                    <th>અઠવાડિયું (રેન્જ)</th>
-                                    <th>નંગ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="master-falavni-monthly-reports-tbody">
-                                <!-- Dynamic -->
-                            </tbody>
-                            <tfoot>
-                                <tr class="totals-row">
-                                    <td>મેન કુલ સરવાળો</td>
-                                    <td class="total-value" id="master-falavni-monthly-report-total-nang" style="font-weight: 800;">0</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3.1: PD RT DASHBOARD -->
-            <div id="mtab-pdrt-dashboard" class="master-tab-pane" style="display: none;">
-                <div class="top-bar-controls flex-between" style="margin-bottom: 12px;">
-                    <div class="date-picker-wrapper">
-                        <label for="master-pdrt-dashboard-date">રિપોર્ટ તારીખ:</label>
-                        <input type="date" id="master-pdrt-dashboard-date" class="form-control" style="width: auto;"
-                            onchange="loadMasterPDRTDashboard()">
-                    </div>
-                </div>
-
-                <div class="flex-between">
-                    <h3>દૈનિક PD RT રિપોર્ટ સ્ટેટસ</h3>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="custom-table">
-                        <thead>
-                            <tr>
-                                <th id="master-pdrt-dash-u1-title" colspan="2">વિભાગ ૧</th>
-                                <th id="master-pdrt-dash-u2-title" colspan="2">વિભાગ ૨</th>
-                                <th style="width: 50px; text-align: center;">=</th>
-                                <th colspan="2">PD</th>
-                            </tr>
-                            <tr>
-                                <th>રશિયન</th>
-                                <th>ટેબલ</th>
-                                <th>રશિયન</th>
-                                <th>ટેબલ</th>
-                                <th style="text-align: center;">=</th>
-                                <th>રશિયન</th>
-                                <th>ટેબલ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="master-pdrt-dashboard-tbody">
-                            <!-- Dynamic -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div style="margin-top: 16px; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
-                    <span>અપ્રૂવલ સ્ટેટસ:</span>
-                    <span id="master-pdrt-dash-approval-badge" class="badge-status pending">PENDING</span>
-                    <span id="master-pdrt-dash-approval-details" style="color: var(--text-muted); font-size: 0.85rem;"></span>
-                </div>
-            </div>
-
-            <!-- TAB 3.2: PD RT REPORTS (Weekly) -->
-            <div id="mtab-pdrt-reports" class="master-tab-pane" style="display: none;">
-                <div class="flex-between non-printable" style="margin-bottom: 16px;">
-                    <div class="date-picker-wrapper">
-                        <label for="master-pdrt-report-date">અઠવાડિયું પસંદ કરો:</label>
-                        <input type="date" id="master-pdrt-report-date" class="form-control" style="width: auto;"
-                            onchange="loadMasterPDRTReport()">
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <button type="button" class="btn-primary" onclick="window.print()"
-                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
-                            Print PDF
-                        </button>
-                        <button type="button" class="btn-primary" onclick="exportMasterPDRTReportToExcel()"
-                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
-                            Export Excel
-                        </button>
-                    </div>
-                </div>
-
-                <div id="print-area-pdrt-weekly">
-                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
-                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ - PD RT</h2>
-                        <h3 id="print-pdrt-report-date-heading" style="color: var(--text-muted); margin-top: 4px;">અઠવાડિયું: -</h3>
-                    </div>
-
-                    <div class="flex-between">
-                        <h3>સાપ્તાહિક PD RT રિપોર્ટ (રશિયન અને ટેબલ નંગ)</h3>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="custom-table" id="master-pdrt-reports-table">
-                            <thead>
-                                <tr>
-                                    <th rowspan="2" style="vertical-align: middle; text-align: center;">તારીખ</th>
-                                    <th rowspan="2" style="vertical-align: middle; text-align: center;">દિવસ</th>
-                                    <th id="master-pdrt-rep-u1-title" colspan="2">વિભાગ ૧</th>
-                                    <th id="master-pdrt-rep-u2-title" colspan="2">વિભાગ ૨</th>
-                                    <th rowspan="2" style="vertical-align: middle; text-align: center; width: 40px;">=</th>
-                                    <th colspan="2">PD</th>
-                                </tr>
-                                <tr>
-                                    <th>રશિયન</th>
-                                    <th>ટેબલ</th>
-                                    <th>રશિયન</th>
-                                    <th>ટેબલ</th>
-                                    <th>રશિયન</th>
-                                    <th>ટેબલ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="master-pdrt-reports-tbody">
-                                <!-- Dynamic -->
-                            </tbody>
-                            <tfoot>
-                                <tr class="totals-row">
-                                    <td colspan="2">મેન કુલ સરવાળો</td>
-                                    <td class="total-value" id="master-pdrt-report-total-u1-russian" style="font-weight: 800;">0</td>
-                                    <td class="total-value" id="master-pdrt-report-total-u1-table" style="font-weight: 800;">0</td>
-                                    <td class="total-value" id="master-pdrt-report-total-u2-russian" style="font-weight: 800;">0</td>
-                                    <td class="total-value" id="master-pdrt-report-total-u2-table" style="font-weight: 800;">0</td>
-                                    <td style="font-weight: 800; text-align: center;">=</td>
-                                    <td class="total-value" id="master-pdrt-report-total-russian" style="font-weight: 800;">0</td>
-                                    <td class="total-value" id="master-pdrt-report-total-table" style="font-weight: 800;">0</td>
-                                </tr>
-                                <tr class="average-row">
-                                    <td colspan="2" style="text-align: left; font-weight: 700; color: var(--text-color);">
-                                        સરેરાશ દિવસો: <input type="number" id="master-pdrt-report-avg-days" value="6" min="1" class="form-control" style="width: 80px; display: inline-block; margin-left: 10px; padding: 4px 8px; height: auto; font-size: 0.9rem;" oninput="calculateMasterPDRTReportAverages()">
-                                    </td>
-                                    <td class="total-value" id="master-pdrt-report-avg-u1-russian" style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
-                                    <td class="total-value" id="master-pdrt-report-avg-u1-table" style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
-                                    <td class="total-value" id="master-pdrt-report-avg-u2-russian" style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
-                                    <td class="total-value" id="master-pdrt-report-avg-u2-table" style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
-                                    <td style="font-weight: 800; text-align: center; color: var(--accent);">=</td>
-                                    <td class="total-value" id="master-pdrt-report-avg-russian" style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
-                                    <td class="total-value" id="master-pdrt-report-avg-table" style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3.4: PD RT MONTHLY REPORTS -->
-            <div id="mtab-pdrt-monthly-reports" class="master-tab-pane" style="display: none;">
-                <div class="flex-between non-printable" style="margin-bottom: 16px;">
-                    <div class="date-picker-wrapper">
-                        <label for="master-pdrt-monthly-report-date">મહિનો પસંદ કરો:</label>
-                        <input type="month" id="master-pdrt-monthly-report-date" class="form-control" style="width: auto;"
-                            onchange="loadMasterPDRTMonthlyReport()">
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <button type="button" class="btn-primary" onclick="window.print()"
-                            style="background: var(--primary-light); box-shadow: none; width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
-                            Print PDF
-                        </button>
-                        <button type="button" class="btn-primary" onclick="exportMasterPDRTMonthlyReportToExcel()"
-                            style="width: auto; padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
-                            Export Excel
-                        </button>
-                    </div>
-                </div>
-
-                <div id="print-area-pdrt-monthly">
-                    <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
-                        <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ - PD RT</h2>
-                        <h3 id="print-pdrt-monthly-report-heading" style="color: var(--text-muted); margin-top: 4px;">મહિનો: -</h3>
-                    </div>
-
-                    <div class="flex-between">
-                        <h3>માસિક PD RT રિપોર્ટ (રશિયન અને ટેબલ નંગ)</h3>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="custom-table" id="master-pdrt-monthly-reports-table">
-                            <thead>
-                                <tr>
-                                    <th rowspan="2" style="vertical-align: middle; text-align: center;">અઠવાડિયું (રેન્જ)</th>
-                                    <th id="master-pdrt-monthly-rep-u1-title" colspan="2">વિભાગ ૧</th>
-                                    <th id="master-pdrt-monthly-rep-u2-title" colspan="2">વિભાગ ૨</th>
-                                    <th rowspan="2" style="vertical-align: middle; text-align: center; width: 40px;">=</th>
-                                    <th colspan="2">PD</th>
-                                </tr>
-                                <tr>
-                                    <th>રશિયન</th>
-                                    <th>ટેબલ</th>
-                                    <th>રશિયન</th>
-                                    <th>ટેબલ</th>
-                                    <th>રશિયન</th>
-                                    <th>ટેબલ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="master-pdrt-monthly-reports-tbody">
-                                <!-- Dynamic -->
-                            </tbody>
-                            <tfoot>
-                                <tr class="totals-row">
-                                    <td>મેન કુલ સરવાળો</td>
-                                    <td class="total-value" id="master-pdrt-monthly-report-total-u1-russian" style="font-weight: 800;">0</td>
-                                    <td class="total-value" id="master-pdrt-monthly-report-total-u1-table" style="font-weight: 800;">0</td>
-                                    <td class="total-value" id="master-pdrt-monthly-report-total-u2-russian" style="font-weight: 800;">0</td>
-                                    <td class="total-value" id="master-pdrt-monthly-report-total-u2-table" style="font-weight: 800;">0</td>
-                                    <td style="font-weight: 800; text-align: center;">=</td>
-                                    <td class="total-value" id="master-pdrt-monthly-report-total-russian" style="font-weight: 800;">0</td>
-                                    <td class="total-value" id="master-pdrt-monthly-report-total-table" style="font-weight: 800;">0</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3.3: PD RT MASTER -->
-            <div id="mtab-pdrt-master" class="master-tab-pane" style="display: none;">
-                <div class="glass-panel" style="box-shadow: none; max-width: 700px; margin: 0 auto;">
-                    <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">PD RT યુઝર્સ સેટિંગ્સ (PD RT Master)</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">અહીંથી તમે PD RT ના ૩ રોલના નામ અને લોગિન પાસવર્ડ બદલી શકો છો.</p>
-                    
                     <div class="table-responsive">
                         <table class="custom-table">
                             <thead>
                                 <tr>
-                                    <th>રોલ (Role)</th>
-                                    <th>નામ (Username)</th>
-                                    <th>લોગિન પાસવર્ડ (Password)</th>
-                                    <th style="width: 100px;">એક્શન</th>
+                                    <th id="master-pdrt-dash-u1-title" colspan="2">વિભાગ ૧</th>
+                                    <th id="master-pdrt-dash-u2-title" colspan="2">વિભાગ ૨</th>
+                                    <th style="width: 50px; text-align: center;">=</th>
+                                    <th colspan="2">PD</th>
+                                </tr>
+                                <tr>
+                                    <th>રશિયન</th>
+                                    <th>ટેબલ</th>
+                                    <th>રશિયન</th>
+                                    <th>ટેબલ</th>
+                                    <th style="text-align: center;">=</th>
+                                    <th>રશિયન</th>
+                                    <th>ટેબલ</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td style="font-weight: 700;">ડિપાર્ટમેન્ટ હેડ ૧ (User 1)</td>
-                                    <td><input type="text" id="pdrt-m-u1-username" class="form-control" style="font-weight: 700;"></td>
-                                    <td><input type="text" id="pdrt-m-u1-password" class="form-control" style="font-family: monospace;"></td>
-                                    <td><button type="button" class="btn-primary btn-sm" onclick="savePDRTMasterUser('pd_rt_user1')" style="margin:0;">સાચવો</button></td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight: 700;">ડિપાર્ટમેન્ટ હેડ ૨ (User 2)</td>
-                                    <td><input type="text" id="pdrt-m-u2-username" class="form-control" style="font-weight: 700;"></td>
-                                    <td><input type="text" id="pdrt-m-u2-password" class="form-control" style="font-family: monospace;"></td>
-                                    <td><button type="button" class="btn-primary btn-sm" onclick="savePDRTMasterUser('pd_rt_user2')" style="margin:0;">સાચવો</button></td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight: 700;">સુપરવાઇઝર (User 3)</td>
-                                    <td><input type="text" id="pdrt-m-u3-username" class="form-control" style="font-weight: 700;"></td>
-                                    <td><input type="text" id="pdrt-m-u3-password" class="form-control" style="font-family: monospace;"></td>
-                                    <td><button type="button" class="btn-primary btn-sm" onclick="savePDRTMasterUser('pd_rt_user3')" style="margin:0;">સાચવો</button></td>
-                                </tr>
+                            <tbody id="master-pdrt-dashboard-tbody">
+                                <!-- Dynamic -->
                             </tbody>
                         </table>
                     </div>
+
+                    <div
+                        style="margin-top: 16px; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+                        <span>અપ્રૂવલ સ્ટેટસ:</span>
+                        <span id="master-pdrt-dash-approval-badge" class="badge-status pending">PENDING</span>
+                        <span id="master-pdrt-dash-approval-details"
+                            style="color: var(--text-muted); font-size: 0.85rem;"></span>
+                    </div>
                 </div>
-            </div>
+
+                <!-- TAB 3.2: PD RT REPORTS (Weekly) -->
+                <div id="mtab-pdrt-reports" class="master-tab-pane" style="display: none;">
+
+                    <div id="print-area-pdrt-weekly">
+                        <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                            <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ - PD RT</h2>
+                            <h3 id="print-pdrt-report-date-heading" style="color: var(--text-muted); margin-top: 4px;">
+                                અઠવાડિયું: -</h3>
+                        </div>
+
+                        <div class="flex-between">
+                            <h3>સાપ્તાહિક PD RT રિપોર્ટ (રશિયન અને ટેબલ નંગ)</h3>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="custom-table" id="master-pdrt-reports-table">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" style="vertical-align: middle; text-align: center;">તારીખ</th>
+                                        <th rowspan="2" style="vertical-align: middle; text-align: center;">દિવસ</th>
+                                        <th id="master-pdrt-rep-u1-title" colspan="2">વિભાગ ૧</th>
+                                        <th id="master-pdrt-rep-u2-title" colspan="2">વિભાગ ૨</th>
+                                        <th rowspan="2"
+                                            style="vertical-align: middle; text-align: center; width: 40px;">=</th>
+                                        <th colspan="2">PD</th>
+                                    </tr>
+                                    <tr>
+                                        <th>રશિયન</th>
+                                        <th>ટેબલ</th>
+                                        <th>રશિયન</th>
+                                        <th>ટેબલ</th>
+                                        <th>રશિયન</th>
+                                        <th>ટેબલ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="master-pdrt-reports-tbody">
+                                    <!-- Dynamic -->
+                                </tbody>
+                                <tfoot>
+                                    <tr class="totals-row">
+                                        <td colspan="2">મેન કુલ સરવાળો</td>
+                                        <td class="total-value" id="master-pdrt-report-total-u1-russian"
+                                            style="font-weight: 800;">0</td>
+                                        <td class="total-value" id="master-pdrt-report-total-u1-table"
+                                            style="font-weight: 800;">0</td>
+                                        <td class="total-value" id="master-pdrt-report-total-u2-russian"
+                                            style="font-weight: 800;">0</td>
+                                        <td class="total-value" id="master-pdrt-report-total-u2-table"
+                                            style="font-weight: 800;">0</td>
+                                        <td style="font-weight: 800; text-align: center;">=</td>
+                                        <td class="total-value" id="master-pdrt-report-total-russian"
+                                            style="font-weight: 800;">0</td>
+                                        <td class="total-value" id="master-pdrt-report-total-table"
+                                            style="font-weight: 800;">0</td>
+                                    </tr>
+                                    <tr class="average-row">
+                                        <td colspan="2"
+                                            style="text-align: left; font-weight: 700; color: var(--text-color);">
+                                            સરેરાશ દિવસો: <input type="number" id="master-pdrt-report-avg-days"
+                                                value="6" min="1" class="form-control"
+                                                style="width: 80px; display: inline-block; margin-left: 10px; padding: 4px 8px; height: auto; font-size: 0.9rem;"
+                                                oninput="calculateMasterPDRTReportAverages()">
+                                        </td>
+                                        <td class="total-value" id="master-pdrt-report-avg-u1-russian"
+                                            style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                        <td class="total-value" id="master-pdrt-report-avg-u1-table"
+                                            style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                        <td class="total-value" id="master-pdrt-report-avg-u2-russian"
+                                            style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                        <td class="total-value" id="master-pdrt-report-avg-u2-table"
+                                            style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                        <td style="font-weight: 800; text-align: center; color: var(--accent);">=</td>
+                                        <td class="total-value" id="master-pdrt-report-avg-russian"
+                                            style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                        <td class="total-value" id="master-pdrt-report-avg-table"
+                                            style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3.4: PD RT MONTHLY REPORTS -->
+                <div id="mtab-pdrt-monthly-reports" class="master-tab-pane" style="display: none;">
+
+                    <div id="print-area-pdrt-monthly">
+                        <div style="text-align: center; margin-bottom: 20px; display: none;" class="printable-only">
+                            <h2 style="font-weight: 800;">હીરા રિપોર્ટિંગ સિસ્ટમ - PD RT</h2>
+                            <h3 id="print-pdrt-monthly-report-heading"
+                                style="color: var(--text-muted); margin-top: 4px;">મહિનો: -</h3>
+                        </div>
+
+                        <div class="flex-between">
+                            <h3>માસિક PD RT રિપોર્ટ (રશિયન અને ટેબલ નંગ)</h3>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="custom-table" id="master-pdrt-monthly-reports-table">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" style="vertical-align: middle; text-align: center;">અઠવાડિયું
+                                            (રેન્જ)</th>
+                                        <th id="master-pdrt-monthly-rep-u1-title" colspan="2">વિભાગ ૧</th>
+                                        <th id="master-pdrt-monthly-rep-u2-title" colspan="2">વિભાગ ૨</th>
+                                        <th rowspan="2"
+                                            style="vertical-align: middle; text-align: center; width: 40px;">=</th>
+                                        <th colspan="2">PD</th>
+                                    </tr>
+                                    <tr>
+                                        <th>રશિયન</th>
+                                        <th>ટેબલ</th>
+                                        <th>રશિયન</th>
+                                        <th>ટેબલ</th>
+                                        <th>રશિયન</th>
+                                        <th>ટેબલ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="master-pdrt-monthly-reports-tbody">
+                                    <!-- Dynamic -->
+                                </tbody>
+                                <tfoot>
+                                    <tr class="totals-row">
+                                        <td>મેન કુલ સરવાળો</td>
+                                        <td class="total-value" id="master-pdrt-monthly-report-total-u1-russian"
+                                            style="font-weight: 800;">0</td>
+                                        <td class="total-value" id="master-pdrt-monthly-report-total-u1-table"
+                                            style="font-weight: 800;">0</td>
+                                        <td class="total-value" id="master-pdrt-monthly-report-total-u2-russian"
+                                            style="font-weight: 800;">0</td>
+                                        <td class="total-value" id="master-pdrt-monthly-report-total-u2-table"
+                                            style="font-weight: 800;">0</td>
+                                        <td style="font-weight: 800; text-align: center;">=</td>
+                                        <td class="total-value" id="master-pdrt-monthly-report-total-russian"
+                                            style="font-weight: 800;">0</td>
+                                        <td class="total-value" id="master-pdrt-monthly-report-total-table"
+                                            style="font-weight: 800;">0</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3.3: PD RT MASTER -->
+                <div id="mtab-pdrt-master" class="master-tab-pane" style="display: none;">
+                    <div class="glass-panel" style="box-shadow: none; max-width: 700px; margin: 0 auto;">
+                        <h3
+                            style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                            PD RT યુઝર્સ સેટિંગ્સ (PD RT Master)</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">અહીંથી તમે PD RT ના
+                            ૩ રોલના નામ અને લોગિન પાસવર્ડ બદલી શકો છો.</p>
+
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>રોલ (Role)</th>
+                                        <th>નામ (Username)</th>
+                                        <th>લોગિન પાસવર્ડ (Password)</th>
+                                        <th style="width: 100px;">એક્શન</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="font-weight: 700;">ડિપાર્ટમેન્ટ હેડ ૧ (User 1)</td>
+                                        <td><input type="text" id="pdrt-m-u1-username" class="form-control"
+                                                style="font-weight: 700;"></td>
+                                        <td><input type="text" id="pdrt-m-u1-password" class="form-control"
+                                                style="font-family: monospace;"></td>
+                                        <td><button type="button" class="btn-primary btn-sm"
+                                                onclick="savePDRTMasterUser('pd_rt_user1')"
+                                                style="margin:0;">સાચવો</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 700;">ડિપાર્ટમેન્ટ હેડ ૨ (User 2)</td>
+                                        <td><input type="text" id="pdrt-m-u2-username" class="form-control"
+                                                style="font-weight: 700;"></td>
+                                        <td><input type="text" id="pdrt-m-u2-password" class="form-control"
+                                                style="font-family: monospace;"></td>
+                                        <td><button type="button" class="btn-primary btn-sm"
+                                                onclick="savePDRTMasterUser('pd_rt_user2')"
+                                                style="margin:0;">સાચવો</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 700;">સુપરવાઇઝર (User 3)</td>
+                                        <td><input type="text" id="pdrt-m-u3-username" class="form-control"
+                                                style="font-weight: 700;"></td>
+                                        <td><input type="text" id="pdrt-m-u3-password" class="form-control"
+                                                style="font-family: monospace;"></td>
+                                        <td><button type="button" class="btn-primary btn-sm"
+                                                onclick="savePDRTMasterUser('pd_rt_user3')"
+                                                style="margin:0;">સાચવો</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- Close content-wrapper -->
         </div>
 
     </div>
@@ -2225,19 +2648,30 @@
     </div>
 
     <!-- Custom Theme Modal Dialog -->
-    <div id="custom-dialog-overlay" class="modal-overlay" style="display: none; z-index: 10000; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
-        <div class="modal-content" style="max-width: 420px; border: 1px solid var(--border-color); background: #ffffff; box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.05); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; align-items: center;">
+    <div id="custom-dialog-overlay" class="modal-overlay"
+        style="display: none; z-index: 10000; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+        <div class="modal-content"
+            style="max-width: 420px; border: 1px solid var(--border-color); background: #ffffff; box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.05); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; align-items: center;">
             <div id="custom-dialog-body" style="text-align: center; margin-bottom: 24px; width: 100%;">
                 <div id="custom-dialog-icon" style="font-size: 3rem; margin-bottom: 16px;">💡</div>
-                <h3 id="custom-dialog-title" style="margin-bottom: 12px; color: var(--text-main); font-weight: 700; font-size: 1.25rem; margin-top: 0;">સંદેશ</h3>
-                <p id="custom-dialog-text" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin: 0; word-break: break-word;"></p>
+                <h3 id="custom-dialog-title"
+                    style="margin-bottom: 12px; color: var(--text-main); font-weight: 700; font-size: 1.25rem; margin-top: 0;">
+                    સંદેશ</h3>
+                <p id="custom-dialog-text"
+                    style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin: 0; word-break: break-word;">
+                </p>
                 <div id="custom-dialog-input-container" style="display: none; margin-top: 16px; width: 100%;">
-                    <input type="text" id="custom-dialog-input" class="form-control" style="text-align: center; background: #ffffff; border-color: #cbd5e1; color: var(--text-main); width: 100%; box-sizing: border-box;">
+                    <input type="text" id="custom-dialog-input" class="form-control"
+                        style="text-align: center; background: #ffffff; border-color: #cbd5e1; color: var(--text-main); width: 100%; box-sizing: border-box;">
                 </div>
             </div>
             <div id="custom-dialog-buttons" style="display: flex; gap: 12px; justify-content: center; width: 100%;">
-                <button id="custom-dialog-btn-cancel" class="btn-logout" style="display: none; margin: 0; min-width: 110px; padding: 8px 16px; font-weight: 600;">ના (No)</button>
-                <button id="custom-dialog-btn-ok" class="btn-primary" style="margin: 0; min-width: 110px; padding: 8px 16px; font-weight: 600; background: var(--accent); border-color: var(--accent);">સમજાઈ ગયું (OK)</button>
+                <button id="custom-dialog-btn-cancel" class="btn-logout"
+                    style="display: none; margin: 0; min-width: 110px; padding: 8px 16px; font-weight: 600;">ના
+                    (No)</button>
+                <button id="custom-dialog-btn-ok" class="btn-primary"
+                    style="margin: 0; min-width: 110px; padding: 8px 16px; font-weight: 600; background: var(--accent); border-color: var(--accent);">સમજાઈ
+                    ગયું (OK)</button>
             </div>
         </div>
     </div>
@@ -2248,7 +2682,7 @@
         const DB_KEY = 'diamond_production_db_v1';
         let dbState = {};
 
-        
+
 
         function showCustomDialog({ type, title, text, defaultValue }) {
             return new Promise((resolve) => {
@@ -2266,7 +2700,7 @@
 
                 titleEl.textContent = title || 'માહિતી (Information)';
                 textEl.textContent = text || '';
-                
+
                 if (type === 'alert') {
                     iconEl.textContent = '🔔';
                     btnOk.textContent = 'સમજાઈ ગયું (OK)';
@@ -2288,7 +2722,7 @@
                 setTimeout(() => {
                     overlay.classList.add('active');
                 }, 10);
-                
+
                 if (type === 'prompt') {
                     setTimeout(() => {
                         inputEl.focus();
@@ -2317,7 +2751,7 @@
 
                 window.addEventListener('keydown', handleDialogKeys);
 
-                btnOk.onclick = function() {
+                btnOk.onclick = function () {
                     window.removeEventListener('keydown', handleDialogKeys);
                     overlay.classList.remove('active');
                     setTimeout(() => {
@@ -2330,7 +2764,7 @@
                     }
                 };
 
-                btnCancel.onclick = function() {
+                btnCancel.onclick = function () {
                     window.removeEventListener('keydown', handleDialogKeys);
                     overlay.classList.remove('active');
                     setTimeout(() => {
@@ -2414,14 +2848,14 @@
         function ensureDefaultUsers(state) {
             if (!state) return;
             if (!state.users) state.users = [];
-            
+
             // Ensure master exists
             let master = state.users.find(u => u.id === 'master');
             if (!master) {
                 master = { id: 'master', username: 'એડમિન', password: '123', role: 'master' };
                 state.users.unshift(master);
             }
-            
+
             // Ensure subadmin exists
             let subadmin = state.users.find(u => u.id === 'subadmin');
             if (!subadmin) {
@@ -2466,7 +2900,7 @@
                     if (cachedUser) {
                         activeUser = JSON.parse(cachedUser);
                     }
-                } catch (e) {}
+                } catch (e) { }
             }
 
             let deviceUserId = activeUser ? activeUser.id : null;
@@ -2526,13 +2960,13 @@
 
                         if (!serverSub) {
                             // If the server doesn't have this submission:
-                            
+
                             // PROTECTED: Always restore local submissions to server if server is missing them.
                             // This prevents data loss when Firebase gets wiped or corrupted.
                             // Only skip if a DIFFERENT user's device is trying to restore someone else's data
                             // AND the server clearly has other data (not wiped).
                             const serverLooksWiped = !serverHasKhatas && localHasKhatas;
-                            
+
                             if (!serverLooksWiped && deviceUserId && userId !== deviceUserId) {
                                 // Server is healthy and this isn't our submission - skip it
                                 return;
@@ -3047,7 +3481,7 @@
             document.getElementById('master-falavni-date').value = todayStr;
             document.getElementById('master-report-date').value = todayStr;
             document.getElementById('master-monthly-report-date').value = todayStr.substring(0, 7);
-            
+
             // PD RT & Falavni Date Inputs Initialization
             document.getElementById('pd-rt-date').value = todayStr;
             document.getElementById('pd-rt-approve-date').value = todayStr;
@@ -3265,7 +3699,7 @@
             const select = document.getElementById('login-username');
             if (!select) return;
             select.innerHTML = '';
-            
+
             let filteredUsers = [];
             if (activeLoginTab === 'khata') {
                 filteredUsers = dbState.users.filter(u => !u.role.startsWith('pd_rt_'));
@@ -3276,7 +3710,7 @@
             const masterUser = filteredUsers.find(u => u.id === 'master');
             const subadminUser = filteredUsers.find(u => u.id === 'subadmin');
             const otherUsers = filteredUsers.filter(u => u.id !== 'master' && u.id !== 'subadmin');
-            
+
             const orderedUsers = [];
             if (masterUser) orderedUsers.push(masterUser);
             if (subadminUser) orderedUsers.push(subadminUser);
@@ -3304,7 +3738,7 @@
                 if (exists) {
                     const isPdrtUser = exists.role.startsWith('pd_rt_');
                     const targetTab = isPdrtUser ? 'pdrt' : 'khata';
-                    
+
                     // Switch login tab first so the dropdown contains the correct user list
                     switchLoginTab(targetTab);
 
@@ -3391,7 +3825,7 @@
                 document.getElementById('user-panel').style.display = 'none';
                 document.getElementById('pd-rt-approver-panel').style.display = 'none';
                 document.getElementById('pd-rt-user-panel').style.display = 'block';
-                
+
                 document.getElementById('pd-rt-user-title').textContent = user.username;
                 loadPDRTUserEntry();
             } else if (user.role === 'pd_rt_approver') {
@@ -3399,14 +3833,14 @@
                 document.getElementById('user-panel').style.display = 'none';
                 document.getElementById('pd-rt-user-panel').style.display = 'none';
                 document.getElementById('pd-rt-approver-panel').style.display = 'block';
-                
+
                 loadPDRTApprovalDashboard();
             } else if (user.role === 'master' || user.role === 'subadmin') {
                 document.getElementById('user-panel').style.display = 'none';
                 document.getElementById('pd-rt-user-panel').style.display = 'none';
                 document.getElementById('pd-rt-approver-panel').style.display = 'none';
-                document.getElementById('master-panel').style.display = 'block';
-                
+                document.getElementById('master-panel').style.display = 'flex';
+
                 // Show/hide Falavni based on subadmin
                 const falavniTabBtn = document.getElementById('main-tab-falavni');
                 if (falavniTabBtn) {
@@ -3416,7 +3850,7 @@
                         falavniTabBtn.style.display = '';
                     }
                 }
-                
+
                 const pdrtTabBtn = document.getElementById('main-tab-pdrt');
                 if (pdrtTabBtn) {
                     if (user.role === 'subadmin') {
@@ -4439,7 +4873,7 @@
                             const ent = sub.entries[khataId];
                             const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
                             if (!khataObj) return; // Skip deleted khata
-                            
+
                             if (currentUser.role === 'subadmin') {
                                 if (ent.isHolidayFalavni) {
                                     holidayCount++;
@@ -4633,7 +5067,7 @@
                             const ent = sub.entries[khataId];
                             const khataObj = dbState.khatas.find(k => k.id === khataId) || assignedKhatas.find(k => k.id === khataId);
                             if (!khataObj) return; // Skip deleted khata
-                            
+
                             if (ent.isHolidayFalavni) {
                                 holidayCount++;
                                 holidayKhatas.push(khataObj.name);
@@ -4779,12 +5213,12 @@
             const daysInput = document.getElementById('master-report-avg-days');
             if (!daysInput) return;
             const days = parseFloat(daysInput.value) || 0;
-            
+
             const totalNangEl = document.getElementById('master-report-total-nang');
             const totalTaliyaEl = document.getElementById('master-report-total-taliya');
             const totalPelEl = document.getElementById('master-report-total-pel');
             const totalMathalaEl = document.getElementById('master-report-total-mathala');
-            
+
             if (days <= 0) {
                 if (document.getElementById('master-report-avg-nang')) document.getElementById('master-report-avg-nang').textContent = '-';
                 if (document.getElementById('master-report-avg-taliya')) document.getElementById('master-report-avg-taliya').textContent = '-';
@@ -4792,17 +5226,17 @@
                 if (document.getElementById('master-report-avg-mathala')) document.getElementById('master-report-avg-mathala').textContent = '-';
                 return;
             }
-            
+
             if (totalNangEl) {
                 const totalNang = parseFloat(totalNangEl.textContent) || 0;
                 document.getElementById('master-report-avg-nang').textContent = (totalNang / days).toFixed(1);
             }
-            
+
             if (totalTaliyaEl) {
                 const totalTaliya = parseFloat(totalTaliyaEl.textContent) || 0;
                 const totalPelVal = totalPelEl ? (parseFloat(totalPelEl.textContent) || 0) : 0;
                 const totalMathalaVal = totalMathalaEl ? (parseFloat(totalMathalaEl.textContent) || 0) : 0;
-                
+
                 document.getElementById('master-report-avg-taliya').textContent = (totalTaliya / days).toFixed(1);
                 document.getElementById('master-report-avg-pel').textContent = (totalPelVal / days).toFixed(1);
                 document.getElementById('master-report-avg-mathala').textContent = (totalMathalaVal / days).toFixed(1);
@@ -5362,7 +5796,7 @@
                 filteredKhatas = dbState.khatas.filter(khata => {
                     const nameMatch = (khata.name || '').toLowerCase().includes(searchQuery);
                     const locMatch = (khata.location || '').toLowerCase().includes(searchQuery);
-                    
+
                     let userMatch = false;
                     if (khata.userId) {
                         const assignedUser = dbState.users.find(u => u.id === khata.userId);
@@ -5370,7 +5804,7 @@
                             userMatch = assignedUser.username.toLowerCase().includes(searchQuery);
                         }
                     }
-                    
+
                     return nameMatch || locMatch || userMatch;
                 });
             }
@@ -5418,7 +5852,7 @@
             const datalist = document.getElementById('location-suggestions');
             if (!datalist) return;
             datalist.innerHTML = '';
-            
+
             const locations = [...new Set(dbState.khatas.map(k => k.location).filter(loc => loc && loc.trim()))];
             locations.forEach(loc => {
                 const opt = document.createElement('option');
@@ -5594,14 +6028,14 @@
             }
             const user = dbState.users.find(u => u.id === userId);
             if (!user) return;
-            
+
             const newName = await customPrompt("નવું નામ દાખલ કરો: (Enter new name)", user.username);
             if (newName && newName.trim()) {
                 user.username = newName.trim();
                 await saveDB();
                 renderMasterUserList();
                 populateLoginRoles();
-                
+
                 if (currentUser && currentUser.id === userId) {
                     currentUser.username = user.username;
                     sessionStorage.setItem('diamond_active_user', JSON.stringify(currentUser));
@@ -5630,7 +6064,7 @@
                 if (index !== -1) {
                     dbState.users[index].username = name;
                     dbState.users[index].password = password;
-                    
+
                     if (currentUser && currentUser.id === id) {
                         currentUser.username = name;
                         sessionStorage.setItem('diamond_active_user', JSON.stringify(currentUser));
@@ -5879,7 +6313,7 @@
 
             const daysInput = document.getElementById('master-report-avg-days');
             const avgDays = daysInput ? (parseFloat(daysInput.value) || 6) : 6;
- 
+
             if (currentUser.role === 'subadmin') {
                 csvContent += `Grand Total,,${totalNang}\n`;
                 csvContent += `Average (${avgDays} Days),,${(totalNang / avgDays).toFixed(1)}\n`;
@@ -6101,9 +6535,9 @@
 
         function switchMasterMainTab(mainTabId) {
             activeMasterMainTab = mainTabId;
-            
+
             // Manage main buttons active state
-            const mainButtons = document.querySelectorAll('#master-panel .tab-nav:first-child .tab-btn');
+            const mainButtons = document.querySelectorAll('#master-panel .sidebar-main-btn');
             mainButtons.forEach(btn => {
                 if (btn.id === `main-tab-${mainTabId}`) {
                     btn.classList.add('active');
@@ -6139,6 +6573,33 @@
                     b.classList.remove('active');
                 }
             });
+
+            // Hide all date wrappers in the active sub-nav
+            const activeSubNav = document.getElementById(`sub-nav-${mainTabId}`);
+            if (activeSubNav) {
+                activeSubNav.querySelectorAll('.date-picker-wrapper').forEach(w => {
+                    w.classList.remove('active');
+                });
+                
+                // Map paneId to the wrapper ID we want to display
+                let wrapperId = '';
+                if (paneId === 'mtab-dashboard') wrapperId = 'wrapper-master-dashboard-date';
+                else if (paneId === 'mtab-reports') wrapperId = 'wrapper-master-report-date';
+                else if (paneId === 'mtab-monthly-reports') wrapperId = 'wrapper-master-monthly-report-date';
+                else if (paneId === 'mtab-falavni-dashboard') wrapperId = 'wrapper-master-falavni-date';
+                else if (paneId === 'mtab-falavni-reports') wrapperId = 'wrapper-master-falavni-report-date';
+                else if (paneId === 'mtab-falavni-monthly-reports') wrapperId = 'wrapper-master-falavni-monthly-report-date';
+                else if (paneId === 'mtab-pdrt-dashboard') wrapperId = 'wrapper-master-pdrt-dashboard-date';
+                else if (paneId === 'mtab-pdrt-reports') wrapperId = 'wrapper-master-pdrt-report-date';
+                else if (paneId === 'mtab-pdrt-monthly-reports') wrapperId = 'wrapper-master-pdrt-monthly-report-date';
+
+                if (wrapperId) {
+                    const targetWrapper = document.getElementById(wrapperId);
+                    if (targetWrapper) {
+                        targetWrapper.classList.add('active');
+                    }
+                }
+            }
 
             // Hide all master panes
             const panes = document.querySelectorAll('#master-panel .master-tab-pane');
@@ -6211,7 +6672,7 @@
                 if (userSub.status === 'approved') {
                     statusText.textContent = `ઓકે (Approved ✔️)`;
                     statusText.style.color = 'var(--success)';
-                    
+
                     russianInput.disabled = true;
                     tableInput.disabled = true;
                     submitBtn.disabled = true;
@@ -6219,7 +6680,7 @@
                 } else {
                     statusText.textContent = `સબમિટ કરેલ (Pending Review ⏳)`;
                     statusText.style.color = 'var(--warning)';
-                    
+
                     russianInput.disabled = false;
                     tableInput.disabled = false;
                     submitBtn.disabled = false;
@@ -6230,7 +6691,7 @@
                 tableInput.value = 0;
                 statusText.textContent = `એન્ટ્રી સબમિટ બાકી છે (Not Submitted)`;
                 statusText.style.color = 'var(--danger)';
-                
+
                 russianInput.disabled = false;
                 tableInput.disabled = false;
                 submitBtn.disabled = false;
@@ -6338,11 +6799,11 @@
             }
 
             const dateSubs = dbState.pd_rt_submissions[dateVal] || {};
-            
+
             // Load Usernames dynamically from dbState.users
             const u1Name = dbState.users.find(u => u.id === 'pd_rt_user1')?.username || 'રશિયન ટેબલ';
             const u2Name = dbState.users.find(u => u.id === 'pd_rt_user2')?.username || 'વિભાગ ૨';
-            
+
             document.getElementById('pd-rt-user1-display-name').textContent = u1Name;
             document.getElementById('pd-rt-user2-display-name').textContent = u2Name;
 
@@ -6388,23 +6849,23 @@
             if (isApproved) {
                 statusText.textContent = `મંજૂર કરેલ છે ✔️ (Approved by ${dateSubs.approvedBy || 'Supervisor'})`;
                 statusText.style.color = 'var(--success)';
-                
+
                 u1RussianInput.disabled = true;
                 u1TableInput.disabled = true;
                 u2RussianInput.disabled = true;
                 u2TableInput.disabled = true;
-                
+
                 approveBtn.disabled = true;
                 approveBtn.style.opacity = '0.5';
             } else {
                 statusText.textContent = `અપ્રૂવલ બાકી ⏳`;
                 statusText.style.color = 'var(--danger)';
-                
+
                 u1RussianInput.disabled = false;
                 u1TableInput.disabled = false;
                 u2RussianInput.disabled = false;
                 u2TableInput.disabled = false;
-                
+
                 approveBtn.disabled = false;
                 approveBtn.style.opacity = '1';
             }
@@ -6549,7 +7010,7 @@
             } else {
                 badge.textContent = 'PENDING APPROVAL';
                 badge.className = 'badge-status pending';
-                
+
                 // Show submission status details of each department
                 const u1Status = u1Sub ? 'Submitted ✔️' : 'Pending ❌';
                 const u2Status = u2Sub ? 'Submitted ✔️' : 'Pending ❌';
@@ -6590,7 +7051,7 @@
 
             weekDates.forEach(wd => {
                 const dateSubs = dbState.pd_rt_submissions[wd.dateKey] || {};
-                
+
                 let u1Russian = 0, u1Table = 0, u1Has = false;
                 let u2Russian = 0, u2Table = 0, u2Has = false;
                 let isApproved = dateSubs.status === 'approved';
@@ -6612,7 +7073,7 @@
                 const displayU1Table = isApproved && u1Has ? u1Table : '-';
                 const displayU2Russian = isApproved && u2Has ? u2Russian : '-';
                 const displayU2Table = isApproved && u2Has ? u2Table : '-';
-                
+
                 const displayTotalRussian = isApproved ? (u1Russian + u2Russian) : '-';
                 const displayTotalTable = isApproved ? (u1Table + u2Table) : '-';
 
@@ -6699,7 +7160,7 @@
 
             let csvContent = `PD RT Weekly Production Report\n`;
             csvContent += `Week: ${weekDates[0].displayDate} to ${weekDates[6].displayDate}\n\n`;
-            
+
             // CSV double row header to support colspan layout
             csvContent += `,,${u1Name},,${u2Name},,,PD,\n`;
             csvContent += "Date,Day,Russian Pcs,Table Pcs,Russian Pcs,Table Pcs,,Russian Pcs,Table Pcs\n";
@@ -6977,10 +7438,10 @@
 
             document.getElementById('pdrt-m-u1-username').value = u1.username;
             document.getElementById('pdrt-m-u1-password').value = u1.password;
-            
+
             document.getElementById('pdrt-m-u2-username').value = u2.username;
             document.getElementById('pdrt-m-u2-password').value = u2.password;
-            
+
             document.getElementById('pdrt-m-u3-username').value = u3.username;
             document.getElementById('pdrt-m-u3-password').value = u3.password;
         }

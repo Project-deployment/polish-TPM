@@ -6840,14 +6840,14 @@
                 russianInput.value = userSub.russian || 0;
                 tableInput.value = userSub.table || 0;
 
-                if (userSub.status === 'approved') {
-                    statusText.textContent = `ઓકે (Approved ✔️)`;
+                if (dateSubs.status === 'approved') {
+                    statusText.textContent = `ઓકે (Approved ✔️ - ફેરફાર કરવા માટે નવું સબમિટ કરો)`;
                     statusText.style.color = 'var(--success)';
 
-                    russianInput.disabled = true;
-                    tableInput.disabled = true;
-                    submitBtn.disabled = true;
-                    submitBtn.style.opacity = '0.5';
+                    russianInput.disabled = false;
+                    tableInput.disabled = false;
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
                 } else {
                     statusText.textContent = `સબમિટ કરેલ (Pending Review ⏳)`;
                     statusText.style.color = 'var(--warning)';
@@ -6894,7 +6894,7 @@
                 if (userSub) {
                     russian = userSub.russian || 0;
                     table = userSub.table || 0;
-                    if (userSub.status === 'approved') {
+                    if (dateSubs.status === 'approved') {
                         statusHtml = '<span class="badge-status submitted" style="font-size:0.75rem; padding: 2px 8px; line-height: 1;">ઓકે ✔️</span>';
                     } else {
                         statusHtml = '<span class="badge-status pending" style="font-size:0.75rem; padding: 2px 8px; line-height: 1; background: var(--warning-glow); color: var(--warning);">પેન્ડિંગ ⏳</span>';
@@ -6936,18 +6936,35 @@
 
             if (!dbState.pd_rt_submissions) dbState.pd_rt_submissions = {};
             if (!dbState.pd_rt_submissions[dateVal]) dbState.pd_rt_submissions[dateVal] = {};
+            
+            // If the date was approved, reset it because a user changed the values
+            dbState.pd_rt_submissions[dateVal].status = 'pending';
+            dbState.pd_rt_submissions[dateVal].approvedBy = null;
+            dbState.pd_rt_submissions[dateVal].approvedAt = null;
+            
             dbState.pd_rt_submissions[dateVal][currentUser.id] = subData;
 
             setLocalDB(dbState);
 
             showGlobalLoader(true);
             const success = await savePDRTSubmissionToFirebase(dateVal, currentUser.id, subData);
+            
+            // Also reset approval status in Firebase meta block
+            const metaData = {
+                status: 'pending',
+                approvedBy: null,
+                approvedAt: null
+            };
+            const successMeta = await savePDRTSubmissionToFirebase(dateVal, 'meta', metaData);
+            
+            // Upload the full DB state to sync the changes
+            const successFull = await saveFullDBToFirebase();
             showGlobalLoader(false);
 
             if (success) {
                 dbState.pd_rt_submissions[dateVal][currentUser.id].synced = true;
                 setLocalDB(dbState);
-                await customAlert("એન્ટ્રી સફળતાપૂર્વક સબમિટ થઈ ગઈ છે!");
+                await customAlert("એન્ટ્રી સફળતાપૂર્વક સબમિટ થઈ ગઈ છે અને અપ્રૂવલ રીસેટ થઈ ગયું છે!");
                 loadPDRTUserEntry();
             } else {
                 await customAlert("સબમિટ કરવા માટે ઇન્ટરનેટ જોડાણ તપાસો. લૉકલ ડેટા સાચવેલ છે.");

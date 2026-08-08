@@ -3022,10 +3022,19 @@
                         const serverSub = serverDateSubs[userId];
 
                         if (!serverSub) {
-                            // Restore only if it belongs to this device's user and hasn't been synced yet
-                            if (userId === deviceUserId && !localSub.synced) {
-                                serverDateSubs[userId] = localSub;
+                            // PROTECTED: Always restore local PD RT submissions to server if server is missing them.
+                            // Only skip if a DIFFERENT user's device is trying to restore someone else's data
+                            // AND the server has other users/khatas (not wiped).
+                            const serverLooksWiped = !serverHasKhatas && localHasKhatas;
+                            const isDeviceAdmin = (deviceUserRole === 'master' || deviceUserRole === 'subadmin');
+                            
+                            if (!serverLooksWiped && deviceUserId && userId !== deviceUserId && !isDeviceAdmin) {
+                                // Server is healthy, this isn't our submission, and we are not an admin - skip it
+                                return;
                             }
+                            
+                            serverDateSubs[userId] = localSub;
+                            localSub.synced = false;
                         } else {
                             const localTime = localSub.submittedAt ? new Date(localSub.submittedAt).getTime() : 0;
                             const serverTime = serverSub.submittedAt ? new Date(serverSub.submittedAt).getTime() : 0;

@@ -1647,19 +1647,22 @@
             </div>
             <div class="form-group" style="margin-bottom: 16px;">
                 <label for="pd-rt-date">તારીખ</label>
-                <input type="date" id="pd-rt-date" class="form-control" onchange="loadPDRTUserEntry()">
-            </div>
-            <div class="form-group" style="margin-bottom: 16px;">
-                <label for="pd-rt-russian-pcs">રશિયન નંગ (Russian Pcs)</label>
-                <input type="number" id="pd-rt-russian-pcs" class="form-control" min="0" value="0"
-                    onfocus="if(this.value === '0') this.value='';" onblur="if(this.value === '') this.value='0';"
-                    oninput="if(parseInt(this.value) < 0) this.value = 0;">
+                <input type="date" id="pd-rt-date" class="form-control" onchange="loadPDRTUserEntry()"
+                    onkeydown="if(event.key === 'Enter') { event.preventDefault(); document.getElementById('pd-rt-table-pcs').focus(); }">
             </div>
             <div class="form-group" style="margin-bottom: 16px;">
                 <label for="pd-rt-table-pcs">ટેબલ નંગ (Table Pcs)</label>
                 <input type="number" id="pd-rt-table-pcs" class="form-control" min="0" value="0"
                     onfocus="if(this.value === '0') this.value='';" onblur="if(this.value === '') this.value='0';"
-                    oninput="if(parseInt(this.value) < 0) this.value = 0;">
+                    oninput="if(parseInt(this.value) < 0) this.value = 0;"
+                    onkeydown="if(event.key === 'Enter') { event.preventDefault(); document.getElementById('pd-rt-russian-pcs').focus(); }">
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="pd-rt-russian-pcs">રશિયન નંગ (Russian Pcs)</label>
+                <input type="number" id="pd-rt-russian-pcs" class="form-control" min="0" value="0"
+                    onfocus="if(this.value === '0') this.value='';" onblur="if(this.value === '') this.value='0';"
+                    oninput="if(parseInt(this.value) < 0) this.value = 0;"
+                    onkeydown="if(event.key === 'Enter') { event.preventDefault(); submitPDRTEntry(); }">
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
                 <span id="pd-rt-status-text" style="font-weight: 700; color: var(--danger);">એન્ટ્રી સબમિટ બાકી
@@ -1678,8 +1681,8 @@
                         <tr>
                             <th>તારીખ</th>
                             <th>દિવસ</th>
-                            <th>રશિયન</th>
                             <th>ટેબલ</th>
+                            <th>રશિયન</th>
                             <th>સ્ટેટસ</th>
                         </tr>
                     </thead>
@@ -1711,28 +1714,28 @@
                         <tr>
                             <th>વિભાગ (Department)</th>
                             <th>સ્ટેટસ</th>
-                            <th style="width: 150px;">રશિયન નંગ</th>
                             <th style="width: 150px;">ટેબલ નંગ</th>
+                            <th style="width: 150px;">રશિયન નંગ</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td style="font-weight: 700;" id="pd-rt-user1-display-name">રશિયન ટેબલ</td>
                             <td id="pd-rt-user1-status">-</td>
-                            <td><input type="number" id="pd-rt-review-u1-russian" class="form-control" min="0"
+                            <td><input type="number" id="pd-rt-review-u1-table" class="form-control" min="0"
                                     style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()">
                             </td>
-                            <td><input type="number" id="pd-rt-review-u1-table" class="form-control" min="0"
+                            <td><input type="number" id="pd-rt-review-u1-russian" class="form-control" min="0"
                                     style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()">
                             </td>
                         </tr>
                         <tr>
                             <td style="font-weight: 700;" id="pd-rt-user2-display-name">વિભાગ ૨</td>
                             <td id="pd-rt-user2-status">-</td>
-                            <td><input type="number" id="pd-rt-review-u2-russian" class="form-control" min="0"
+                            <td><input type="number" id="pd-rt-review-u2-table" class="form-control" min="0"
                                     style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()">
                             </td>
-                            <td><input type="number" id="pd-rt-review-u2-table" class="form-control" min="0"
+                            <td><input type="number" id="pd-rt-review-u2-russian" class="form-control" min="0"
                                     style="padding: 6px; font-weight: 700;" oninput="calculatePDRTApprovalTotals()">
                             </td>
                         </tr>
@@ -1740,8 +1743,8 @@
                     <tfoot>
                         <tr class="totals-row">
                             <td colspan="2">કુલ સરવાળો</td>
-                            <td id="pd-rt-total-russian" style="font-weight: 800;">0</td>
                             <td id="pd-rt-total-table" style="font-weight: 800;">0</td>
+                            <td id="pd-rt-total-russian" style="font-weight: 800;">0</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -2411,13 +2414,13 @@
                                     <th colspan="2">PD</th>
                                 </tr>
                                 <tr>
-                                    <th>રશિયન</th>
                                     <th>ટેબલ</th>
                                     <th>રશિયન</th>
                                     <th>ટેબલ</th>
+                                    <th>રશિયન</th>
                                     <th style="text-align: center;">=</th>
-                                    <th>રશિયન</th>
                                     <th>ટેબલ</th>
+                                    <th>રશિયન</th>
                                 </tr>
                             </thead>
                             <tbody id="master-pdrt-dashboard-tbody">
@@ -2446,7 +2449,7 @@
                         </div>
 
                         <div class="flex-between">
-                            <h3>સાપ્તાહિક PD RT રિપોર્ટ (રશિયન અને ટેબલ નંગ)</h3>
+                            <h3>સાપ્તાહિક PD RT રિપોર્ટ (ટેબલ અને રશિયન નંગ)</h3>
                         </div>
 
                         <div class="table-responsive">
@@ -2462,12 +2465,12 @@
                                         <th colspan="2">PD</th>
                                     </tr>
                                     <tr>
-                                        <th>રશિયન</th>
                                         <th>ટેબલ</th>
                                         <th>રશિયન</th>
                                         <th>ટેબલ</th>
                                         <th>રશિયન</th>
                                         <th>ટેબલ</th>
+                                        <th>રશિયન</th>
                                     </tr>
                                 </thead>
                                 <tbody id="master-pdrt-reports-tbody">
@@ -2476,18 +2479,18 @@
                                 <tfoot>
                                     <tr class="totals-row">
                                         <td colspan="2">મેન કુલ સરવાળો</td>
-                                        <td class="total-value" id="master-pdrt-report-total-u1-russian"
-                                            style="font-weight: 800;">0</td>
                                         <td class="total-value" id="master-pdrt-report-total-u1-table"
                                             style="font-weight: 800;">0</td>
-                                        <td class="total-value" id="master-pdrt-report-total-u2-russian"
+                                        <td class="total-value" id="master-pdrt-report-total-u1-russian"
                                             style="font-weight: 800;">0</td>
                                         <td class="total-value" id="master-pdrt-report-total-u2-table"
                                             style="font-weight: 800;">0</td>
-                                        <td style="font-weight: 800; text-align: center;">=</td>
-                                        <td class="total-value" id="master-pdrt-report-total-russian"
+                                        <td class="total-value" id="master-pdrt-report-total-u2-russian"
                                             style="font-weight: 800;">0</td>
+                                        <td style="font-weight: 800; text-align: center;">=</td>
                                         <td class="total-value" id="master-pdrt-report-total-table"
+                                            style="font-weight: 800;">0</td>
+                                        <td class="total-value" id="master-pdrt-report-total-russian"
                                             style="font-weight: 800;">0</td>
                                     </tr>
                                     <tr class="average-row">
@@ -2498,18 +2501,18 @@
                                                 style="width: 80px; display: inline-block; margin-left: 10px; padding: 4px 8px; height: auto; font-size: 0.9rem;"
                                                 oninput="calculateMasterPDRTReportAverages()">
                                         </td>
-                                        <td class="total-value" id="master-pdrt-report-avg-u1-russian"
-                                            style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
                                         <td class="total-value" id="master-pdrt-report-avg-u1-table"
                                             style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
-                                        <td class="total-value" id="master-pdrt-report-avg-u2-russian"
+                                        <td class="total-value" id="master-pdrt-report-avg-u1-russian"
                                             style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
                                         <td class="total-value" id="master-pdrt-report-avg-u2-table"
                                             style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
-                                        <td style="font-weight: 800; text-align: center; color: var(--accent);">=</td>
-                                        <td class="total-value" id="master-pdrt-report-avg-russian"
+                                        <td class="total-value" id="master-pdrt-report-avg-u2-russian"
                                             style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                        <td style="font-weight: 800; text-align: center; color: var(--accent);">=</td>
                                         <td class="total-value" id="master-pdrt-report-avg-table"
+                                            style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
+                                        <td class="total-value" id="master-pdrt-report-avg-russian"
                                             style="font-weight: 600; font-size: 1.2rem; color: var(--danger);">0</td>
                                     </tr>
                                 </tfoot>
@@ -2529,7 +2532,7 @@
                         </div>
 
                         <div class="flex-between">
-                            <h3>માસિક PD RT રિપોર્ટ (રશિયન અને ટેબલ નંગ)</h3>
+                            <h3>માસિક PD RT રિપોર્ટ (ટેબલ અને રશિયન નંગ)</h3>
                         </div>
 
                         <div class="table-responsive">
@@ -2545,12 +2548,12 @@
                                         <th colspan="2">PD</th>
                                     </tr>
                                     <tr>
-                                        <th>રશિયન</th>
                                         <th>ટેબલ</th>
                                         <th>રશિયન</th>
                                         <th>ટેબલ</th>
                                         <th>રશિયન</th>
                                         <th>ટેબલ</th>
+                                        <th>રશિયન</th>
                                     </tr>
                                 </thead>
                                 <tbody id="master-pdrt-monthly-reports-tbody">
@@ -2559,18 +2562,18 @@
                                 <tfoot>
                                     <tr class="totals-row">
                                         <td>મેન કુલ સરવાળો</td>
-                                        <td class="total-value" id="master-pdrt-monthly-report-total-u1-russian"
-                                            style="font-weight: 800;">0</td>
                                         <td class="total-value" id="master-pdrt-monthly-report-total-u1-table"
                                             style="font-weight: 800;">0</td>
-                                        <td class="total-value" id="master-pdrt-monthly-report-total-u2-russian"
+                                        <td class="total-value" id="master-pdrt-monthly-report-total-u1-russian"
                                             style="font-weight: 800;">0</td>
                                         <td class="total-value" id="master-pdrt-monthly-report-total-u2-table"
                                             style="font-weight: 800;">0</td>
-                                        <td style="font-weight: 800; text-align: center;">=</td>
-                                        <td class="total-value" id="master-pdrt-monthly-report-total-russian"
+                                        <td class="total-value" id="master-pdrt-monthly-report-total-u2-russian"
                                             style="font-weight: 800;">0</td>
+                                        <td style="font-weight: 800; text-align: center;">=</td>
                                         <td class="total-value" id="master-pdrt-monthly-report-total-table"
+                                            style="font-weight: 800;">0</td>
+                                        <td class="total-value" id="master-pdrt-monthly-report-total-russian"
                                             style="font-weight: 800;">0</td>
                                     </tr>
                                 </tfoot>
@@ -6778,8 +6781,8 @@
                 tr.innerHTML = `
                     <td style="font-weight: 700; color: var(--primary);">${wd.displayDate}</td>
                     <td><span class="location-badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size:0.75rem; padding: 2px 8px;">${wd.dayName}</span></td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${russian}</td>
                     <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${table}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${russian}</td>
                     <td>${statusHtml}</td>
                 `;
                 tbody.appendChild(tr);
@@ -7041,13 +7044,13 @@
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td style="font-weight: 700; font-variant-numeric: tabular-nums;">${isApproved && u1Sub ? u1Russian : '-'}</td>
                 <td style="font-weight: 700; font-variant-numeric: tabular-nums;">${isApproved && u1Sub ? u1Table : '-'}</td>
-                <td style="font-weight: 700; font-variant-numeric: tabular-nums;">${isApproved && u2Sub ? u2Russian : '-'}</td>
+                <td style="font-weight: 700; font-variant-numeric: tabular-nums;">${isApproved && u1Sub ? u1Russian : '-'}</td>
                 <td style="font-weight: 700; font-variant-numeric: tabular-nums;">${isApproved && u2Sub ? u2Table : '-'}</td>
+                <td style="font-weight: 700; font-variant-numeric: tabular-nums;">${isApproved && u2Sub ? u2Russian : '-'}</td>
                 <td style="font-weight: 800; text-align: center; color: var(--accent); font-size: 1.1rem;">=</td>
-                <td style="font-weight: 800; font-variant-numeric: tabular-nums; color: var(--primary);">${isApproved ? (u1Russian + u2Russian) : '-'}</td>
                 <td style="font-weight: 800; font-variant-numeric: tabular-nums; color: var(--primary);">${isApproved ? (u1Table + u2Table) : '-'}</td>
+                <td style="font-weight: 800; font-variant-numeric: tabular-nums; color: var(--primary);">${isApproved ? (u1Russian + u2Russian) : '-'}</td>
             `;
             tbody.appendChild(tr);
 
@@ -7141,13 +7144,13 @@
                 tr.innerHTML = `
                     <td style="font-weight: 700; color: var(--primary);">${wd.displayDate}</td>
                     <td><span class="location-badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700;">${wd.dayName}</span></td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU1Russian}</td>
                     <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU1Table}</td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU2Russian}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU1Russian}</td>
                     <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU2Table}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU2Russian}</td>
                     <td style="font-weight: 800; text-align: center; color: var(--accent);">=</td>
-                    <td style="font-weight: 700; font-variant-numeric: tabular-nums; color: var(--danger);">${displayTotalRussian}</td>
                     <td style="font-weight: 700; font-variant-numeric: tabular-nums; color: var(--danger);">${displayTotalTable}</td>
+                    <td style="font-weight: 700; font-variant-numeric: tabular-nums; color: var(--danger);">${displayTotalRussian}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -7214,7 +7217,7 @@
 
             // CSV double row header to support colspan layout
             csvContent += `,,${u1Name},,${u2Name},,,PD,\n`;
-            csvContent += "Date,Day,Russian Pcs,Table Pcs,Russian Pcs,Table Pcs,,Russian Pcs,Table Pcs\n";
+            csvContent += "Date,Day,Table Pcs,Russian Pcs,Table Pcs,Russian Pcs,,Table Pcs,Russian Pcs\n";
 
             let grandU1Russian = 0;
             let grandU1Table = 0;
@@ -7258,10 +7261,10 @@
                     grandTotalTable += (u1Table + u2Table);
                 }
 
-                csvContent += `"${wd.displayDate}","${wd.dayName}",${displayU1Russian},${displayU1Table},${displayU2Russian},${displayU2Table},=,${displayTotalRussian},${displayTotalTable}\n`;
+                csvContent += `"${wd.displayDate}","${wd.dayName}",${displayU1Table},${displayU1Russian},${displayU2Table},${displayU2Russian},=,${displayTotalTable},${displayTotalRussian}\n`;
             });
 
-            csvContent += `Grand Total,,${grandU1Russian},${grandU1Table},${grandU2Russian},${grandU2Table},=,${grandTotalRussian},${grandTotalTable}\n`;
+            csvContent += `Grand Total,,${grandU1Table},${grandU1Russian},${grandU2Table},${grandU2Russian},=,${grandTotalTable},${grandTotalRussian}\n`;
 
             const csvData = "\uFEFF" + csvContent;
             const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
@@ -7366,13 +7369,13 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-weight: 700; color: var(--primary);">અઠવાડિયું ${index + 1} (${week.displayRange})</td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU1Russian}</td>
                     <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU1Table}</td>
-                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU2Russian}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU1Russian}</td>
                     <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU2Table}</td>
+                    <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${displayU2Russian}</td>
                     <td style="font-weight: 800; text-align: center; color: var(--accent);">=</td>
-                    <td style="font-weight: 700; font-variant-numeric: tabular-nums; color: var(--danger);">${displayTotalRussian}</td>
                     <td style="font-weight: 700; font-variant-numeric: tabular-nums; color: var(--danger);">${displayTotalTable}</td>
+                    <td style="font-weight: 700; font-variant-numeric: tabular-nums; color: var(--danger);">${displayTotalRussian}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -7405,7 +7408,7 @@
 
             let csvContent = `PD RT Monthly Production Report - Month: ${displayMonth}\n\n`;
             csvContent += `,,${u1Name},,${u2Name},,,PD,\n`;
-            csvContent += "Week,Range,Russian Pcs,Table Pcs,Russian Pcs,Table Pcs,,Russian Pcs,Table Pcs\n";
+            csvContent += "Week,Range,Table Pcs,Russian Pcs,Table Pcs,Russian Pcs,,Table Pcs,Russian Pcs\n";
 
             let grandU1Russian = 0;
             let grandU1Table = 0;
@@ -7463,10 +7466,10 @@
                     grandTotalTable += (weekU1Table + weekU2Table);
                 }
 
-                csvContent += `"અઠવાડિયું ${index + 1}","${week.displayRange}",${displayU1Russian},${displayU1Table},${displayU2Russian},${displayU2Table},=,${displayTotalRussian},${displayTotalTable}\n`;
+                csvContent += `"અઠવાડિયું ${index + 1}","${week.displayRange}",${displayU1Table},${displayU1Russian},${displayU2Table},${displayU2Russian},=,${displayTotalTable},${displayTotalRussian}\n`;
             });
 
-            csvContent += `Grand Total,,${grandU1Russian},${grandU1Table},${grandU2Russian},${grandU2Table},=,${grandTotalRussian},${grandTotalTable}\n`;
+            csvContent += `Grand Total,,${grandU1Table},${grandU1Russian},${grandU2Table},${grandU2Russian},=,${grandTotalTable},${grandTotalRussian}\n`;
 
             const csvData = "\uFEFF" + csvContent;
             const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });

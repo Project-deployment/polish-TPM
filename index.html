@@ -3460,6 +3460,129 @@
             }
         }
 
+        async function runAutoBackupRecovery() {
+            try {
+                const recoveredFlag = localStorage.getItem('diamond_backup_recovered_2026');
+                if (recoveredFlag === 'true') return; // Already run
+
+                const backupStored = localStorage.getItem('diamond_production_db_backup');
+                if (!backupStored) return;
+
+                const bytes = CryptoJS.AES.decrypt(backupStored, CRYPTO_KEY);
+                const decStr = bytes.toString(CryptoJS.enc.Utf8);
+                if (!decStr) return;
+
+                const backupData = JSON.parse(decStr);
+                if (!backupData) return;
+
+                console.log("🔍 Auto-backup found. Starting checks for data recovery...");
+
+                // Get current local db state
+                let currentLocal = null;
+                const stored = localStorage.getItem(DB_KEY);
+                if (stored) {
+                    try {
+                        const curBytes = CryptoJS.AES.decrypt(stored, CRYPTO_KEY);
+                        const curDecStr = curBytes.toString(CryptoJS.enc.Utf8);
+                        currentLocal = JSON.parse(curDecStr);
+                    } catch (e) {
+                        try { currentLocal = JSON.parse(stored); } catch(err) {}
+                    }
+                }
+
+                if (!currentLocal) {
+                    currentLocal = JSON.parse(JSON.stringify(defaultState));
+                }
+
+                let restoredAny = false;
+
+                // 1. Recover missing pd_rt_submissions
+                if (backupData.pd_rt_submissions) {
+                    if (!currentLocal.pd_rt_submissions) currentLocal.pd_rt_submissions = {};
+                    
+                    Object.keys(backupData.pd_rt_submissions).forEach(dateKey => {
+                        const backupDateSub = backupData.pd_rt_submissions[dateKey];
+                        const currentDateSub = currentLocal.pd_rt_submissions[dateKey];
+                        
+                        if (!currentDateSub) {
+                            currentLocal.pd_rt_submissions[dateKey] = backupDateSub;
+                            restoredAny = true;
+                            console.log(`Restored pd_rt_submissions for date: ${dateKey}`);
+                        } else {
+                            // Check if backup has user submissions that are missing in current
+                            Object.keys(backupDateSub).forEach(userId => {
+                                if (userId !== 'status' && userId !== 'approvedBy' && userId !== 'approvedAt') {
+                                    if (!currentDateSub[userId]) {
+                                        currentDateSub[userId] = backupDateSub[userId];
+                                        currentDateSub[userId].synced = false;
+                                        restoredAny = true;
+                                        console.log(`Restored pd_rt_submission for ${userId} on ${dateKey}`);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+
+                // 2. Recover missing regular submissions
+                if (backupData.submissions) {
+                    if (!currentLocal.submissions) currentLocal.submissions = {};
+                    
+                    Object.keys(backupData.submissions).forEach(dateKey => {
+                        const backupDateSub = backupData.submissions[dateKey];
+                        const currentDateSub = currentLocal.submissions[dateKey];
+                        
+                        if (!currentDateSub) {
+                            currentLocal.submissions[dateKey] = backupDateSub;
+                            restoredAny = true;
+                            console.log(`Restored submissions for date: ${dateKey}`);
+                        } else {
+                            Object.keys(backupDateSub).forEach(userId => {
+                                if (!currentDateSub[userId]) {
+                                    currentDateSub[userId] = backupDateSub[userId];
+                                    currentDateSub[userId].synced = false;
+                                    restoredAny = true;
+                                    console.log(`Restored submission for ${userId} on ${dateKey}`);
+                                }
+                            });
+                        }
+                    });
+                }
+
+                // 3. Recover custom users (passwords and usernames)
+                if (backupData.users && currentLocal.users) {
+                    backupData.users.forEach(backupUser => {
+                        const currentUser = currentLocal.users.find(u => u.id === backupUser.id);
+                        if (currentUser) {
+                            if (currentUser.username !== backupUser.username || currentUser.password !== backupUser.password) {
+                                currentUser.username = backupUser.username;
+                                currentUser.password = backupUser.password;
+                                restoredAny = true;
+                                console.log(`Restored user credentials for: ${backupUser.id}`);
+                            }
+                        } else {
+                            currentLocal.users.push(backupUser);
+                            restoredAny = true;
+                            console.log(`Restored missing user: ${backupUser.id}`);
+                        }
+                    });
+                }
+
+                if (restoredAny) {
+                    // Save back to local storage
+                    const str = JSON.stringify(currentLocal);
+                    const encrypted = CryptoJS.AES.encrypt(str, CRYPTO_KEY).toString();
+                    localStorage.setItem(DB_KEY, encrypted);
+                    
+                    // Mark as recovered
+                    localStorage.setItem('diamond_backup_recovered_2026', 'true');
+                    alert("તમારા ગઈકાલના સ્થાનિક ડેટા અને એકાઉન્ટ સેટિંગ્સ સફળતાપૂર્વક બેકઅપમાંથી પુનઃપ્રાપ્ત (Recover) કરવામાં આવ્યા છે! (Offline backup recovered successfully!)");
+                }
+            } catch (err) {
+                console.error("Auto backup recovery error:", err);
+            }
+        }
+
         // Helper to get formatted today string (YYYY-MM-DD)
         function getTodayDateString() {
             const today = new Date();
@@ -3475,6 +3598,7 @@
         // PAGE NAVIGATION / LOGIN FLOW
         // ==============================================
         window.addEventListener('DOMContentLoaded', async () => {
+            await runAutoBackupRecovery();
             await initDB();
             populateLoginRoles();
 
@@ -6905,19 +7029,49 @@
                 approveBtn.disabled = true;
                 approveBtn.style.opacity = '0.5';
             } else {
-                statusText.textContent = `અપ્રૂવલ બાકી ⏳`;
-                statusText.style.color = 'var(--danger)';
-
                 u1RussianInput.disabled = false;
                 u1TableInput.disabled = false;
                 u2RussianInput.disabled = false;
                 u2TableInput.disabled = false;
-
-                approveBtn.disabled = false;
-                approveBtn.style.opacity = '1';
             }
 
             calculatePDRTApprovalTotals();
+        }
+
+        function checkApproveButtonState() {
+            const dateVal = document.getElementById('pd-rt-approve-date').value;
+            if (!dateVal) return;
+            const dateSubs = dbState.pd_rt_submissions[dateVal] || {};
+            const isApproved = dateSubs.status === 'approved';
+            const approveBtn = document.getElementById('btn-approve-pd-rt');
+            const statusText = document.getElementById('pd-rt-approval-status');
+            
+            if (isApproved) {
+                approveBtn.disabled = true;
+                approveBtn.style.opacity = '0.5';
+                return;
+            }
+
+            const u1Russian = parseInt(document.getElementById('pd-rt-review-u1-russian').value) || 0;
+            const u1Table = parseInt(document.getElementById('pd-rt-review-u1-table').value) || 0;
+            const u2Russian = parseInt(document.getElementById('pd-rt-review-u2-russian').value) || 0;
+            const u2Table = parseInt(document.getElementById('pd-rt-review-u2-table').value) || 0;
+
+            const u1HasData = (u1Russian > 0 || u1Table > 0);
+            const u2HasData = (u2Russian > 0 || u2Table > 0);
+            const bothHaveData = u1HasData && u2HasData;
+
+            if (!bothHaveData) {
+                statusText.textContent = `અપ્રૂવલ બાકી ⏳ (બંને વિભાગનો ડેટા સબમિટ થયા પછી જ અપ્રૂવ થશે)`;
+                statusText.style.color = 'var(--danger)';
+                approveBtn.disabled = true;
+                approveBtn.style.opacity = '0.5';
+            } else {
+                statusText.textContent = `અપ્રૂવલ બાકી ⏳`;
+                statusText.style.color = 'var(--danger)';
+                approveBtn.disabled = false;
+                approveBtn.style.opacity = '1';
+            }
         }
 
         function calculatePDRTApprovalTotals() {
@@ -6928,6 +7082,8 @@
 
             document.getElementById('pd-rt-total-russian').textContent = u1Russian + u2Russian;
             document.getElementById('pd-rt-total-table').textContent = u1Table + u2Table;
+            
+            checkApproveButtonState();
         }
 
         async function approvePDRTData() {

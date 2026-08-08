@@ -2292,10 +2292,16 @@
                                 👁️
                             </button>
                         </div>
-                        <button class="btn-primary" onclick="updateFirebaseConfig()"
-                            style="width: auto; align-self: flex-start; margin-top: 4px; box-shadow: none; background: var(--accent);">
-                            સેવ અને લિંક કરો (Save & Connect)
-                        </button>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button class="btn-primary" onclick="updateFirebaseConfig()"
+                                style="width: auto; margin-top: 4px; box-shadow: none; background: var(--accent);">
+                                સેવ અને લિંક કરો (Save & Connect)
+                            </button>
+                            <button class="btn-primary" onclick="resetFirebaseUrl()"
+                                style="width: auto; margin-top: 4px; box-shadow: none; background: var(--primary-light);">
+                                ડિફોલ્ટ સેટ કરો (Reset to Default)
+                            </button>
+                        </div>
 
 
 
@@ -2967,8 +2973,9 @@
                             // AND the server clearly has other data (not wiped).
                             const serverLooksWiped = !serverHasKhatas && localHasKhatas;
 
-                            if (!serverLooksWiped && deviceUserId && userId !== deviceUserId) {
-                                // Server is healthy and this isn't our submission - skip it
+                            const isDeviceAdmin = (deviceUserRole === 'master' || deviceUserRole === 'subadmin');
+                            if (!serverLooksWiped && deviceUserId && userId !== deviceUserId && !isDeviceAdmin) {
+                                // Server is healthy, this isn't our submission, and we are not an admin - skip it
                                 return;
                             }
 
@@ -3029,7 +3036,7 @@
                     });
 
                     // Preserve metadata properties during database merging
-                    const serverSubs = server.pd_rt_submissions[dateKey] || {};
+                    const serverSubs = (server.pd_rt_submissions && server.pd_rt_submissions[dateKey]) || {};
                     const localSubs = local.pd_rt_submissions[dateKey] || {};
                     if (serverSubs.status === 'approved' || localSubs.status === 'approved') {
                         merged.pd_rt_submissions[dateKey].status = 'approved';
@@ -3370,6 +3377,12 @@
                 } catch (e) {
                     savedUrl = defaultUrl;
                 }
+            }
+            // Fallback to defaultUrl if savedUrl is empty/corrupted or invalid
+            if (!savedUrl || !savedUrl.startsWith('http')) {
+                savedUrl = defaultUrl;
+                const encryptedDefault = CryptoJS.AES.encrypt(defaultUrl, CRYPTO_KEY).toString();
+                localStorage.setItem('diamond_firebase_url', encryptedDefault);
             }
             FIREBASE_URL = savedUrl;
 
@@ -4923,7 +4936,7 @@
                         } else {
                             statusHtml = '<span class="badge-status submitted">OK</span>';
                             let uN = 0;
-                            Object.values(sub.entries).forEach(ent => {
+                            Object.values(sub.entries || {}).forEach(ent => {
                                 if (ent.nang !== undefined && !ent.isHolidayFalavni) {
                                     uN += ent.nang || 0;
                                 }
@@ -4941,7 +4954,7 @@
                         } else {
                             statusHtml = '<span class="badge-status submitted">OK</span>';
                             let uT = 0, uP = 0, uM = 0, uN = 0;
-                            Object.values(sub.entries).forEach(ent => {
+                            Object.values(sub.entries || {}).forEach(ent => {
                                 uT += ent.taliya || 0;
                                 uP += ent.pel || 0;
                                 uM += ent.mathala || 0;
@@ -5104,7 +5117,7 @@
                     } else {
                         statusHtml = '<span class="badge-status submitted">OK</span>';
                         let uN = 0;
-                        Object.values(sub.entries).forEach(ent => {
+                        Object.values(sub.entries || {}).forEach(ent => {
                             if (ent.nang !== undefined && !ent.isHolidayFalavni) {
                                 uN += ent.nang || 0;
                             }
@@ -6187,6 +6200,28 @@
                 location.reload();
             } else {
                 await customAlert("લિંક કરવામાં ભૂલ આવી! કૃપા કરીને URL ચકાસો. (Connection failed. Please check the URL.)");
+            }
+        }
+
+        async function resetFirebaseUrl() {
+            if (await customConfirm("શું તમે ડેટાબેઝ URL ને ડિફોલ્ટ પર ફરી સેટ કરવા માંગો છો? (Are you sure you want to reset the Database URL to default?)")) {
+                const defaultUrl = decryptXOR('0c1d151d1c544b701f15147250585340011a090f070f0d720f001f3e475c461b161d050f41080d2d0e07182c57595d1807060c', 'diamond_key_2026');
+                const encryptedDefault = CryptoJS.AES.encrypt(defaultUrl, CRYPTO_KEY).toString();
+                localStorage.setItem('diamond_firebase_url', encryptedDefault);
+                FIREBASE_URL = defaultUrl;
+                const fbInput = document.getElementById('firebase-url-input');
+                if (fbInput) {
+                    fbInput.value = '••••••••••••••••••••••••••••••••';
+                }
+                showGlobalLoader(true);
+                const fetched = await fetchFromFirebase();
+                showGlobalLoader(false);
+                if (fetched) {
+                    await customAlert("ડેટાબેઝ સફળતાપૂર્વક ડિફોલ્ટ પર સેટ અને લિંક થઈ ગયો છે! (Database reset to default and connected!)");
+                    location.reload();
+                } else {
+                    await customAlert("કનેક્શન નિષ્ફળ ગયું! (Connection failed!)");
+                }
             }
         }
 
